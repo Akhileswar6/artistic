@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
+import EmailIcon from "../assets/email.png";
 
 export default function SignIn({ onClose }) {
 const [errors, setErrors] = useState({});
@@ -81,7 +82,7 @@ const [errors, setErrors] = useState({});
                 onClick={() => setStep("email")}
                 className="w-full h-10 border border-gray-300 rounded-md flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-100 transition pr-4 shadow-md "
               >
-                <img src="/src/assets/email.png" alt="Email Icon" className="w-8 h-8" />
+                <img src={EmailIcon} alt="Email Icon" className="w-8 h-8" />
                 Sign in with email
               </button>
             </div>
@@ -131,7 +132,7 @@ const [errors, setErrors] = useState({});
     <input
       type="text"
       placeholder="Enter your full name"
-      className="w-full border border-gray-300 shadow-sm p-2 mt-2 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-black "
+      className="w-full border border-gray-300 shadow-sm p-2 mt-2 rounded-md text-[14px] focus:outline-none focus:ring focus:ring-black "
       value={fullName}
       onChange={(e) => setFullName(e.target.value)}
     />
@@ -220,7 +221,7 @@ const [errors, setErrors] = useState({});
               <input
                 type="email"
                 placeholder="Enter your email address"
-                className="w-full border border-gray-300 shadow-md p-2 mt-2 rounded-sm text-[14px]"
+                className="w-full border border-gray-300 shadow-sm p-2 mt-2 rounded-sm text-[14px] focus:outline-none focus:ring-1 focus:ring-black"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
