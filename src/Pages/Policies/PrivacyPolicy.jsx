@@ -17,7 +17,7 @@ const [darkPolicy, setDarkPolicy] = useState(
 
   return (
     <div
-      className={`w-full min-h-screen transition-colors ${
+      className={`w-full min-h-[100dvh] transition-colors ${
         darkPolicy ? "bg-[#0f0f0f]" : "bg-[#fbf8f3]"
       }`}
     >
