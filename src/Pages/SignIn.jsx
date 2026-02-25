@@ -71,7 +71,7 @@ const [errors, setErrors] = useState({});
             <div className="space-y-4 max-w-sm mx-auto text-[15px]">
 
               <button
-                className="w-full h-10 border rounded-full flex items-center justify-center gap-3 cursor-pointer hover:bg-gray-100 transition"
+                className="w-full h-10 border border-gray-300 rounded-md flex items-center justify-center gap-3 cursor-pointer transition shadow-md"
               >
                 <FcGoogle size={22} />
                 Sign in with Google
@@ -79,7 +79,7 @@ const [errors, setErrors] = useState({});
 
               <button
                 onClick={() => setStep("email")}
-                className="w-full h-10 border rounded-full flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-100 transition pr-4 "
+                className="w-full h-10 border border-gray-300 rounded-md flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-100 transition pr-4 shadow-md "
               >
                 <img src="/src/assets/email.png" alt="Email Icon" className="w-8 h-8" />
                 Sign in with email
@@ -131,7 +131,7 @@ const [errors, setErrors] = useState({});
     <input
       type="text"
       placeholder="Enter your full name"
-      className="w-full border p-2 mt-2 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-black"
+      className="w-full border border-gray-300 shadow-sm p-2 mt-2 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-black "
       value={fullName}
       onChange={(e) => setFullName(e.target.value)}
     />
@@ -148,7 +148,7 @@ const [errors, setErrors] = useState({});
     <input
       type="email"
       placeholder="Enter your email address"
-      className="w-full border p-2 mt-2 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-black"
+      className="w-full border  border-gray-300 shadow-sm p-2 mt-2 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-black"
       value={email}
       onChange={(e) => setEmail(e.target.value)}
     />
@@ -220,7 +220,7 @@ const [errors, setErrors] = useState({});
               <input
                 type="email"
                 placeholder="Enter your email address"
-                className="w-full border p-2 mt-2 rounded-sm text-[14px]"
+                className="w-full border border-gray-300 shadow-md p-2 mt-2 rounded-sm text-[14px]"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
