@@ -76,7 +76,7 @@ Contact us for questions.
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className={`max-w-full shadow-lg p-8 transition-colors ${
-          darkPolicy ? "bg-[#1a1a1a]" : "bg-white"
+          darkPolicy ? " bg-[#0e0e12]" : "bg-white"
         }`}
         style={{ fontFamily: "Inter, serif" }}
       >
@@ -85,7 +85,7 @@ Contact us for questions.
           
 
           <h1
-            className={`text-[26px] font-semibold  ${
+            className={`text-[28px] font-semibold  ${
               darkPolicy ? "text-white" : "text-black"
             }`}
             style={{ fontFamily: "Playfair Display, serif" }}
@@ -93,7 +93,7 @@ Contact us for questions.
             Terms of Service
 
           </h1>
-             <span className={`text-[12px] pb-4 ${darkPolicy ? "text-white" : "text-black"}`}>
+             <span className={`text-[12px] ${darkPolicy ? "text-white" : "text-black"}`}>
 Last Updated: February 25, 2026<br /> 
        </span>
           

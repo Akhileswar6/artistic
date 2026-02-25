@@ -30,7 +30,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
 
   return (
     <div
-      className="sticky top-0 z-40 w-full bg-[#0f0f0f] shadow-md"
+      className="sticky top-0 z-40 w-full  bg-[#0f0f0f]  shadow-md"
       style={{ fontFamily: "Inter, serif" }}
     >
       {/* TOP BAR */}
