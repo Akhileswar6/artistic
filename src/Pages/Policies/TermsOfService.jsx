@@ -93,7 +93,7 @@ Contact us for questions.
             Terms of Service
 
           </h1>
-             <span className={`text-[12px] ${darkPolicy ? "text-white" : "text-black"}`}>
+             <span className={`text-[12px] mt-1 ${darkPolicy ? "text-white" : "text-black"}`}>
 Last Updated: February 25, 2026<br /> 
        </span>
           

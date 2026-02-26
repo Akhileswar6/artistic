@@ -19,7 +19,7 @@ const [darkPolicy, setDarkPolicy] = useState(
     <div
       className={`w-full min-h-screen transition-colors ${
         darkPolicy ? "bg-[#0f0f0f]" : "bg-[#fbf8f3]"
-      }`}
+      }`} style = {{fontFamily: "Inter, serif"}}
     >
       {/* CONSTANT DARK NAVBAR */}
       <PolicyNavbar
@@ -34,7 +34,7 @@ const [darkPolicy, setDarkPolicy] = useState(
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className={`max-w-full shadow-lg p-8 transition-colors ${
-          darkPolicy ? "bg-[#1a1a1a]" : "bg-white"
+          darkPolicy ? "bg-[#0e0e12]" : "bg-white"
         }`}
         style={{ fontFamily: "Inter, serif" }}
       >
@@ -131,7 +131,7 @@ const Section = ({ title, content, dark }) => (
     </h2>
     <p
       className={`text-sm leading-relaxed ${
-        dark ? "text-[#b5b5b5]" : "text-[#6b5a48]"
+        dark ? "text-white" : "text-[#6b5a48]"
       }`}
     >
       {content}

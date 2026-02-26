@@ -17,9 +17,9 @@ const [darkPolicy, setDarkPolicy] = useState(
 
   return (
     <div
-      className={`w-full min-h-[100dvh] transition-colors ${
+      className={`w-full min-h-screen transition-colors ${
         darkPolicy ? "bg-[#0f0f0f]" : "bg-[#fbf8f3]"
-      }`}
+      }`} style = {{fontFamily: "Inter, serif"}}
     >
       {/* CONSTANT DARK NAVBAR */}
       <PolicyNavbar
@@ -34,7 +34,7 @@ const [darkPolicy, setDarkPolicy] = useState(
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className={`max-w-full shadow-lg p-8 transition-colors ${
-          darkPolicy ? "bg-[#1a1a1a]" : "bg-white"
+          darkPolicy ? "bg-[#0e0e12]" : "bg-white"
         }`}
         style={{ fontFamily: "Inter, serif" }}
       >
@@ -50,7 +50,7 @@ const [darkPolicy, setDarkPolicy] = useState(
           >
             Privacy Policy
           </h1>
-                       <span className={`text-[12px] ${darkPolicy ? "text-white" : "text-black"}`}>
+                       <span className={`text-[12px] mt-2 ${darkPolicy ? "text-white" : "text-black"}`}>
 Last Updated: February 25, 2026<br /> 
        </span>
         </div>
@@ -238,7 +238,7 @@ const Section = ({ title, content, dark }) => (
   <div className="mb-6">
     <h2
       className={`text-[16px] font-semibold mb-2 ${
-        dark ? "text-[#f0f0f0]" : "text-black"
+        dark ? "text-white" : "text-black"
       }`}
     >
       {title}
