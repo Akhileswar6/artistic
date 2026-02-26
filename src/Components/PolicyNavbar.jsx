@@ -108,7 +108,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
         </div>
 
         {/* MOBILE BUTTONS */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex md:hidden items-center gap-3">
           <button
             onClick={toggleTheme}
             className="p-1.5 rounded-full border 
@@ -124,7 +124,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
 
           <button
             onClick={() => setOpen(!open)}
-            className="text-white cursor-pointer focus:outline-none"
+            className="text-white cursor-pointer focus:outline-none "
             aria-label="Toggle menu"
           >
             {open ? <X size={24} /> : <Menu size={24} />}
