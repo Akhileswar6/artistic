@@ -93,9 +93,7 @@ Contact us for questions.
             Terms of Service
 
           </h1>
-             <span className={`text-[12px] mt-1 ${darkPolicy ? "text-white" : "text-black"}`}>
-Last Updated: February 25, 2026<br /> 
-       </span>
+
           
         </div>
 
@@ -178,8 +176,9 @@ SketchCraft reserves the right to refuse or cancel orders that violate these con
         <Section dark={darkPolicy} title="12. Governing Law" content={<>These Terms shall be governed by and interpreted in accordance with the laws of India.</>} />
         <Section dark={darkPolicy} title="13. Contact Information" content={<>For any questions regarding these Terms, please contact:<br /> 
 
-Email: artistic@gmail.com<br /> 
-Website: artistic.studio</>} />
+<Dot className="inline"/>Email: artistic@gmail.com<br /> 
+<Dot className="inline"/>Phone: +1 (555) 123-4567</>}
+/>
 
 
 
@@ -194,8 +193,14 @@ Website: artistic.studio</>} />
         >
           Download Terms as PDF
         </button>
+
+        <div className={`mt-8 text-xs ${darkPolicy ? "text-[#888]" : "text-black"}`}>
+          Last updated: {new Date().toLocaleDateString()}
+        </div >
+        
         
       </motion.div>
+      
     </div>
   );
 }
@@ -217,6 +222,8 @@ const Section = ({ title, content, dark }) => (
     >
       {content}
     </p>
+
+
   </div>
 );
 

@@ -1,7 +1,7 @@
-import { RotateCcw } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import PolicyNavbar from "../../Components/PolicyNavbar.jsx";
+import { Dot } from "lucide-react";
 
 export default function RefundPolicy() {
 const [darkPolicy, setDarkPolicy] = useState(
@@ -40,21 +40,13 @@ const [darkPolicy, setDarkPolicy] = useState(
       >
         {/* HEADER */}
         <div className="flex items-center gap-3 mb-6">
-          <div
-            className={`p-2 rounded-full ${
-              darkPolicy
-                ? "bg-[#2a2a2a] text-[#f5f5f5]"
-                : "bg-[#D3D3D3] text-black"
-            }`}
-          >
-            <RotateCcw size={22} />
-          </div>
+         
 
           <h1
-            className={`text-[26px] font-semibold ${
+            className={`text-[28px] font-semibold ${
               darkPolicy ? "text-[#f5f5f5]" : "text-[#3a2a1a]"
             }`}
-            style={{ fontFamily: "Inter, serif" }}
+            style={{ fontFamily: "Playfair Display, serif" }}
           >
             Refund Policy
           </h1>
@@ -66,47 +58,114 @@ const [darkPolicy, setDarkPolicy] = useState(
             darkPolicy ? "text-[#b5b5b5]" : "text-[#6b5a48]"
           }`}
         >
-          At <span className="font-medium">SketchCraft</span>, every artwork is
-          handcrafted with care. Please read our refund policy carefully before
-          placing an order.
+          At <span className="font-bold">artistic</span>, every artwork is thoughtfully crafted and customized based on individual client requests. Due to the personalized nature of our services, we encourage customers to review this Refund Policy carefully before placing an order.<br/>
+
+By placing an order with artistic, you agree to the terms outlined below.
         </p>
 
         <Section
           dark={darkPolicy}
           title="1. Custom Artwork Policy"
-          content="All artworks are custom-made based on the customer’s request. Due to the personalized nature of the service, refunds are generally not provided once work has begun."
+          content = {<>All artworks provided by artistic are custom-made and created specifically based on the images, references, and instructions submitted by the customer.<br/>
+
+    Because each order is personalized:<br/>
+
+ <Dot className="inline"/>Refunds are generally not provided once work has commenced.<br/>
+
+ <Dot className="inline"/>Minor artistic variations do not qualify as grounds for refund.<br/>
+
+ <Dot className="inline"/>Customers are responsible for providing accurate references and instructions at the time of order.</>}
         />
 
         <Section
           dark={darkPolicy}
           title="2. Order Cancellation"
-          content="Orders may be cancelled only before the artist has started working on the sketch. Once the artwork process has started, cancellations are not accepted."
+          content = {<>Orders may be canceled only under the following condition:<br/>
+
+<Dot className="inline"/>The cancellation request is made before the artwork process has begun.<br/>
+
+Once the artist has started working on the order, cancellations are not permitted due to the time and effort invested in the custom creation process.</>}
         />
 
         <Section
           dark={darkPolicy}
-          title="3. Revision Support"
-          content="We offer revisions as per the selected package to ensure customer satisfaction. Revision requests do not qualify for refunds."
+          title="3. Revisions"
+          content = {<>artistic may offer revisions depending on the selected package or agreement.<br/>
+
+Please note:<br/>
+
+<Dot className="inline"/>Revisions are intended to refine the artwork within reasonable limits.<br/>
+
+<Dot className="inline"/>Revision requests do not qualify for refunds.<br/>
+
+<Dot className="inline"/>Excessive or unreasonable revision requests may be declined at our discretion.</>}
         />
 
         <Section
           dark={darkPolicy}
-          title="4. Damaged or Incorrect Orders"
-          content="If you receive an incorrect or damaged final product, please contact us within 48 hours of delivery. We will review and resolve the issue appropriately."
+          title="4. Incorrect or Damaged Deliverables"
+          content = {<>If you receive: <br/>
+
+An incorrect final file, or<br/>
+
+<Dot className="inline"/>A damaged digital deliverable,<br/>
+
+<Dot className="inline"/>You must notify us within 48 hours of delivery.<br/>
+
+We will review the issue and may:<br/>
+
+<Dot className="inline"/>Correct and resend the file, or<br/>
+
+<Dot className="inline"/>Provide an appropriate resolution at our discretion.<br/>
+
+Failure to report issues within the stated timeframe may limit our ability to assist.</>}
         />
 
         <Section
           dark={darkPolicy}
-          title="5. Payment Disputes"
-          content="Any unauthorized payment disputes should be reported immediately. We reserve the right to suspend services in case of fraudulent activity."
+          title="5. Payment Disputes & Fraud Prevention"
+          content = {<>If you notice any unauthorized payment activity, please contact us immediately.<br/>
+
+artistic reserves the right to:<br/>
+
+<Dot className="inline"/>Suspend services in cases of suspected fraud<br/>
+
+<Dot className="inline"/>Refuse future orders<br/>
+
+<Dot className="inline"/>Take necessary action to protect against chargeback abuse</>}
         />
 
         <Section
           dark={darkPolicy}
-          title="6. Policy Updates"
-          content="SketchCraft reserves the right to update this Refund Policy at any time. Changes will be effective immediately upon posting."
+          title="6. Non-Refundable Circumstances"
+          content = {<>Refunds will not be issued for:<br/>
+
+<Dot className="inline"/>Change of mind after order confirmation<br/>
+
+<Dot className="inline"/>Dissatisfaction based on personal artistic preference (when the artwork matches the agreed description)<br/>
+
+<Dot className="inline"/>Delays caused by incomplete or unclear customer submissions</>}
         />
 
+        <Section
+          dark={darkPolicy}
+          title="7. Policy Updates"
+          content = {<>artistic reserves the right to update or modify this Refund Policy at any time. Updates will be posted on this page with a revised “Last Updated” date. Continued use of our services constitutes acceptance of the updated policy.</>}
+        />
+
+
+        
+        <Section
+          dark={darkPolicy}
+          title="8. Contact Us"
+          content = {<>If you have any questions or concerns about this Refund Policy, please contact us at:<br/>
+
+<Dot className="inline"/>Email: support@artistic.com<br/>
+
+<Dot className="inline"/>Phone: +1 (555) 123-4567</>}
+        />
+
+      
         <div
           className={`mt-10 text-xs ${
             darkPolicy ? "text-[#888]" : "text-[#9b8a7a]"
@@ -124,14 +183,14 @@ const Section = ({ title, content, dark }) => (
   <div className="mb-6">
     <h2
       className={`text-[16px] font-semibold mb-2 ${
-        dark ? "text-[#f0f0f0]" : "text-[#2d1f12]"
+        dark ? "text-white" : "text-black"
       }`}
     >
       {title}
     </h2>
     <p
       className={`text-sm leading-relaxed ${
-        dark ? "text-white" : "text-[#6b5a48]"
+        dark ? "text-[#b5b5b5]" : "text-black"
       }`}
     >
       {content}

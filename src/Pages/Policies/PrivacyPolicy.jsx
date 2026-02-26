@@ -50,9 +50,7 @@ const [darkPolicy, setDarkPolicy] = useState(
           >
             Privacy Policy
           </h1>
-                       <span className={`text-[12px] mt-2 ${darkPolicy ? "text-white" : "text-black"}`}>
-Last Updated: February 25, 2026<br /> 
-       </span>
+
         </div>
 
         {/* INTRO */}
@@ -217,9 +215,9 @@ To exercise these rights, please contact us.</>}
         dark = {darkPolicy}
         title="11. Contact Us"
         content = {<>If you have any questions about this Privacy Policy, please contact us at:<br/>
-Email:  akhilkamale@gmail.com
+<Dot className="inline"/>Email:  artistic@gmail.com
 <br/>
-Website: artistic.studio</>}
+<Dot className="inline"/>Phone: +1 (555) 123-4567</>}
         />
 
         <div
@@ -228,6 +226,11 @@ Website: artistic.studio</>}
           }`}
         >
         </div>
+
+        <div className={`mt-8 text-xs ${darkPolicy ? "text-[#888]" : "text-black"}`}>
+          Last updated: {new Date().toLocaleDateString()}
+        </div >
+
       </motion.div>
     </div>
   );
