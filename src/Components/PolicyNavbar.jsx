@@ -17,16 +17,6 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
     localStorage.setItem("policyTheme", newTheme ? "dark" : "light");
   };
 
-  // Nav link styling (NO underline here)
-  // const navClass = ({ isActive }) =>
-  //   `
-  //   block px-4 py-2 text-[14px] transition-colors duration-200
-  //   ${
-  //     isActive
-  //       ? "text-white"
-  //       : "text-[#d1d1d1] hover:text-white"
-  //   }
-  // `;
 
 
   const navClass = ({ isActive }) =>
@@ -45,7 +35,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
       style={{ fontFamily: "Inter, serif" }}
     >
       {/* TOP BAR */}
-      <div className="w-full px-4 md:px-10 py-2 flex items-center">
+      <div className="w-full md:px-10   px-4 py-2 flex items-center">
         
         {/* LOGO */}
         <NavLink
@@ -64,7 +54,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
               <span className="relative inline-block">
                 Terms of Service
                 {isActive && (
-                  <span className=" w-full h-[2px] " />
+                  <span className=" w-full h-[2px] bg-white" />
                 )}
               </span>
             )}
@@ -109,8 +99,8 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
                  border-neutral-400 dark:border-neutral-700
                  bg-neutral-200 dark:bg-neutral-800
                  text-black dark:text-white
-                  hover:bg-neutral-300 dark:hover:bg-neutral-700
-                 transition-all duration-300 cursor-pointer"
+                 cursor-pointer hover:bg-neutral-800 dark:hover:bg-neutral-700
+                 rounded-full transition-all duration-300"
             aria-label="Toggle theme"
           >
             {darkPolicy ? <Sun size={18} /> : <Moon size={18} />}
@@ -121,10 +111,10 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
         <div className="flex md:hidden items-center gap-2">
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-[#1f1f1f] text-white transition"
+            className="w-9 h-9 flex items-center justify-center text-white"
             aria-label="Toggle theme"
           >
-            {darkPolicy ? <Sun size={18} /> : <Moon size={18} />}
+            {darkPolicy ? <Sun size={17} /> : <Moon size={17} />}
           </button>
 
           <button
@@ -132,7 +122,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
             className="text-white cursor-pointer focus:outline-none"
             aria-label="Toggle menu"
           >
-            {open ? <X size={18} /> : <Menu size={18} />}
+            {open ? <X size={17} /> : <Menu size={17} />}
           </button>
         </div>
       </div>
