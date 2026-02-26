@@ -18,15 +18,26 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
   };
 
   // Nav link styling (NO underline here)
+  // const navClass = ({ isActive }) =>
+  //   `
+  //   block px-4 py-2 text-[14px] transition-colors duration-200
+  //   ${
+  //     isActive
+  //       ? "text-white"
+  //       : "text-[#d1d1d1] hover:text-white"
+  //   }
+  // `;
+
+
   const navClass = ({ isActive }) =>
-    `
-    block px-4 py-2 text-[14px] transition-colors duration-200
-    ${
-      isActive
-        ? "text-white"
-        : "text-[#d1d1d1] hover:text-white"
-    }
-  `;
+  `
+  px-3 py-2 text-[13px] rounded-sm transition-all duration-200
+  ${
+    isActive
+      ? "bg-neutral-800 text-white"
+      : "text-[#d1d1d1] hover:text-white hover:bg-neutral-900"
+  }
+`;
 
   return (
     <div
@@ -46,14 +57,14 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
         </NavLink>
 
         {/* DESKTOP NAV */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-3">
 
           <NavLink to="/terms" className={navClass}>
             {({ isActive }) => (
               <span className="relative inline-block">
-                Terms
+                Terms of Service
                 {isActive && (
-                  <span className="absolute left-0 -bottom-2 w-full h-[2px] bg-white" />
+                  <span className=" w-full h-[2px] " />
                 )}
               </span>
             )}
@@ -62,9 +73,9 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
           <NavLink to="/privacy-policy" className={navClass}>
             {({ isActive }) => (
               <span className="relative inline-block">
-                Privacy
+                Privacy Policy
                 {isActive && (
-                  <span className="absolute left-0 -bottom-2 w-full h-[2px] bg-white" />
+                  <span className=" w-full h-[2px] bg-white" />
                 )}
               </span>
             )}
@@ -73,9 +84,9 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
           <NavLink to="/refund-policy" className={navClass}>
             {({ isActive }) => (
               <span className="relative inline-block">
-                Refund
+                Refund Policy
                 {isActive && (
-                  <span className="absolute left-0 -bottom-2 w-full h-[2px] bg-white" />
+                  <span className=" w-full h-[2px] bg-white" />
                 )}
               </span>
             )}
@@ -83,10 +94,10 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
 
           <NavLink to="/cancellation-policy" className={navClass}>
             {({ isActive }) => (
-              <span className="relative inline-block">
-                Cancellation
+              <span className=" relative inline-block">
+                Cancellation Policy
                 {isActive && (
-                  <span className="absolute left-0 -bottom-2 w-full h-[2px] bg-white" />
+                  <span className=" w-full h-[2px] bg-white" />
                 )}
               </span>
             )}
@@ -94,7 +105,12 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
 
           <button
             onClick={toggleTheme}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-[#1f1f1f] text-white hover:bg-[#2a2a2a] transition"
+            className="p-1.5 rounded-full border 
+                 border-neutral-400 dark:border-neutral-700
+                 bg-neutral-200 dark:bg-neutral-800
+                 text-black dark:text-white
+                  hover:bg-neutral-300 dark:hover:bg-neutral-700
+                 transition-all duration-300 cursor-pointer"
             aria-label="Toggle theme"
           >
             {darkPolicy ? <Sun size={18} /> : <Moon size={18} />}
@@ -123,12 +139,12 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
 
       {/* MOBILE MENU */}
       {open && (
-        <div className="md:hidden px-4 pb-4 space-y-2 bg-[#0f0f0f] border-t border-white/10 ">
+        <div className="md:hidden  px-4 pb-4 space-y-2 bg-[#0f0f0f] border-t border-white/10  flex flex-col items-start pt-4">
           
           <NavLink to="/terms" className={navClass}>
             {({ isActive }) => (
-              <span className="relative inline-block mt-2">
-                Terms
+              <span className="relative inline-block ">
+                Terms of Service
                 {isActive && (
                   <span className=" w-full h-[2px] bg-white" />
                 )}
@@ -139,7 +155,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
           <NavLink to="/privacy-policy" className={navClass}>
             {({ isActive }) => (
               <span className="relative inline-block">
-                Privacy
+                Privacy Policy
                 {isActive && (
                   <span className=" w-full h-[2px] bg-white" />
                 )}
@@ -150,7 +166,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
           <NavLink to="/refund-policy" className={navClass}>
             {({ isActive }) => (
               <span className="relative inline-block">
-                Refund
+                Refund Policy
                 {isActive && (
                   <span className=" w-full h-[2px] bg-white" />
                 )}
@@ -161,7 +177,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
           <NavLink to="/cancellation-policy" className={navClass}>
             {({ isActive }) => (
               <span className="relative inline-block">
-                Cancellation
+                Cancellation Policy
                 {isActive && (
                   <span className=" w-full h-[2px] bg-white" />
                 )}
