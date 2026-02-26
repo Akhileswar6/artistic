@@ -114,7 +114,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
             className="w-9 h-9 flex items-center justify-center text-white"
             aria-label="Toggle theme"
           >
-            {darkPolicy ? <Sun size={17} /> : <Moon size={17} />}
+            {darkPolicy ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
           <button
@@ -122,7 +122,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
             className="text-white cursor-pointer focus:outline-none"
             aria-label="Toggle menu"
           >
-            {open ? <X size={17} /> : <Menu size={17} />}
+            {open ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
