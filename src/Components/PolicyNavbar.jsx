@@ -111,7 +111,12 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
         <div className="flex md:hidden items-center gap-2">
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center text-white"
+            className="p-1.5 rounded-full border 
+                 border-neutral-400 dark:border-neutral-700
+                 bg-neutral-200 dark:bg-neutral-800
+                 text-black dark:text-white
+                  hover:bg-neutral-300 dark:hover:bg-neutral-700
+                 transition-all duration-300 cursor-pointer"
             aria-label="Toggle theme"
           >
             {darkPolicy ? <Sun size={18} /> : <Moon size={18} />}
@@ -122,7 +127,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
             className="text-white cursor-pointer focus:outline-none"
             aria-label="Toggle menu"
           >
-            {open ? <X size={18} /> : <Menu size={18} />}
+            {open ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
