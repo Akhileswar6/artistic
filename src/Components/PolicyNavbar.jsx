@@ -35,7 +35,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
       style={{ fontFamily: "Inter, serif" }}
     >
       {/* TOP BAR */}
-      <div className="w-full md:px-10   px-4 py-2 flex items-center">
+      <div className="w-full md:px-8   px-4 py-2 flex items-center">
         
         {/* LOGO */}
         <NavLink
@@ -109,6 +109,8 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
 
         {/* MOBILE BUTTONS */}
         <div className="flex md:hidden items-center gap-3">
+
+
           <button
             onClick={toggleTheme}
             className="p-1.5 rounded-full border 
@@ -135,6 +137,8 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
       {/* MOBILE MENU */}
       {open && (
         <div className="md:hidden  px-4 pb-4 space-y-2 bg-[#0f0f0f] border-t border-white/10  flex flex-col items-start pt-4">
+
+          
           
           <NavLink to="/terms" className={navClass}>
             {({ isActive }) => (
