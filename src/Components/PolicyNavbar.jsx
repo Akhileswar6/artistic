@@ -40,7 +40,7 @@ export default function PolicyNavbar({ darkPolicy, setDarkPolicy }) {
         {/* LOGO */}
         <NavLink
           to="/"
-          className="text-[20px] text-white mr-auto"
+          className="text-[22px] text-white mr-auto" style={{ fontFamily: "Playfair Display, serif" }}
           onClick={() => setOpen(false)}
         >
           artistic

@@ -10,7 +10,6 @@ const [darkPolicy, setDarkPolicy] = useState(
 
 
 
-  // ✅ Always open from top
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -55,9 +54,10 @@ const [darkPolicy, setDarkPolicy] = useState(
         {/* INTRO */}
         <p
           className={`text-sm mb-8 ${
-            darkPolicy ? "text-[#b5b5b5]" : "text-[#6b5a48]"
+            darkPolicy ? "text-[#b5b5b5]" : "text-black"
           }`}
         >
+        
           At <span className="font-bold">artistic</span>, every artwork is thoughtfully crafted and customized based on individual client requests. Due to the personalized nature of our services, we encourage customers to review this Refund Policy carefully before placing an order.<br/>
 
 By placing an order with artistic, you agree to the terms outlined below.
@@ -168,10 +168,11 @@ artistic reserves the right to:<br/>
       
         <div
           className={`mt-10 text-xs ${
-            darkPolicy ? "text-[#888]" : "text-[#9b8a7a]"
+            darkPolicy ? "text-[#888]" : "text-black"
           }`}
         >
-          Last updated: {new Date().toLocaleDateString()}
+          Last updated: February 27, 2026
+
         </div>
       </motion.div>
     </div>

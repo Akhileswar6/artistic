@@ -10,7 +10,6 @@ const [darkPolicy, setDarkPolicy] = useState(
 
 
 
-  // ✅ Always open from top
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -43,7 +42,7 @@ const [darkPolicy, setDarkPolicy] = useState(
           
 
           <h1
-            className={`text-[26px] font-semibold ${
+            className={`text-[28px] font-semibold ${
               darkPolicy ? "text-[#f5f5f5]" : "text-black"
             }`}
             style={{ fontFamily: "Playfair Display, serif" }}
@@ -228,7 +227,8 @@ To exercise these rights, please contact us.</>}
         </div>
 
         <div className={`mt-8 text-xs ${darkPolicy ? "text-[#888]" : "text-black"}`}>
-          Last updated: {new Date().toLocaleDateString()}
+          Last updated: February 27, 2026
+
         </div >
 
       </motion.div>

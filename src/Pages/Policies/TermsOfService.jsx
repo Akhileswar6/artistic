@@ -10,61 +10,111 @@ const [darkPolicy, setDarkPolicy] = useState(
 );
 
 
-  // ✅ Always open page from top
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const termsText = `
-SketchCraft – Terms of Service
+Welcome to artistic. These Terms of Service (“Terms”) govern your access to and use of our website and services. By accessing or using artistic, you agree to comply with and be legally bound by these Terms. If you do not agree to these Terms, please discontinue use of our services immediately.
 
-1. Services Offered
-SketchCraft provides custom hand-drawn sketches based on user-submitted images.
+1. Overview of Services
+SketchCraft provides custom hand-drawn and/or digital sketch artwork created based on images or references submitted by users.
+All artwork is made to order and tailored specifically to each customer.
 
-2. User Responsibilities
-Users must provide accurate information and lawful content.
+2. Eligibility
+By using our services, you confirm that:
+You are at least 18 years old, or have parental/guardian consent.
+You provide accurate and lawful information.
+You own or have proper authorization to use the images you submit.
 
-3. Orders & Custom Work
-All artworks are custom-made.
+3. User Responsibilities
+When submitting content to SketchCraft, you agree:
+Not to upload copyrighted material without permission.
+Not to submit illegal, explicit, abusive, defamatory, or harmful content.
+Not to misuse, hack, or attempt to disrupt the website or services.
+SketchCraft reserves the right to refuse or cancel orders that violate these conditions.
 
-4. Payments
-Payments must be completed before work begins.
+4. Orders & Custom Artwork
+All orders are custom-made based on the user’s submission..
+Once work has begun, changes may be limited.
+The final artwork may vary slightly due to artistic interpretation.
+Estimated delivery timelines are provided but not guaranteed.
 
-5. Intellectual Property
-Artwork ownership transfers after payment.
+5. Pricing & Payment
+Full payment is required before work begins.
+Prices are displayed prior to order confirmation.
+SketchCraft reserves the right to modify pricing at any time.
+Failure to complete payment will result in cancellation of the order.
 
-6. Refunds
-Refunds follow the Refund Policy.
+6. Intellectual Property Rights
+Upon full payment, the customer receives rights to use the final artwork for personal use.
+SketchCraft retains the right to showcase completed artwork in portfolios, social media, or promotional materials unless the customer requests confidentiality before project completion.
+Commercial use, resale, or reproduction requires prior written permission unless explicitly agreed otherwise.
 
-7. Liability
-No liability for indirect damages.
+7. Order Refusal & Termination
+SketchCraft reserves the right to:
+Refuse any order at its discretion.
+Cancel orders involving prohibited content.
+Suspend or terminate access if Terms are violated.
 
-8. Privacy
-User data is protected.
+8. Limitation of Liability
+To the fullest extent permitted by law:
+SketchCraft shall not be liable for indirect, incidental, or consequential damages.
+Total liability shall not exceed the amount paid for the specific order.
 
-9. Updates
-Terms may change.
+9. Third-Party Services
+Our website may use third-party services (such as payment gateways). SketchCraft is not responsible for issues arising from third-party platforms.
 
-10. Contact
-Contact us for questions.
+10. Privacy
+User data is handled in accordance with our Privacy Policy. By using our services, you consent to the collection and use of information as described therein.
+
+11. Changes to Terms
+We reserve the right to update these Terms at any time. Updated versions will be posted on this page with a revised “Last Updated” date. Continued use of the website indicates acceptance of the updated Terms.
+
+12. Governing Law
+These Terms shall be governed by and interpreted in accordance with the laws of India.
+
+13. Contact Information
+For any questions regarding these Terms, please contact:
+Email: artistic@gmail.com
+Phone: +1 (555) 123-4567
 `;
 
-  const downloadPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text("SketchCraft – Terms of Service", 10, 15);
-    doc.setFontSize(11);
-    doc.text(termsText, 10, 30, { maxWidth: 180 });
-    doc.save("SketchCraft_Terms_of_Service.pdf");
-  };
+ const downloadPDF = () => {
+  const doc = new jsPDF("p", "mm", "a4");
 
+  const pageHeight = doc.internal.pageSize.height;
+  const margin = 10;
+  const maxLineWidth = 190;
+
+  doc.setFontSize(16);
+  doc.text("Artistic – Terms of Service", margin, 15);
+
+  doc.setFontSize(11);
+
+  const splitText = doc.splitTextToSize(termsText, maxLineWidth);
+
+  let y = 30;
+
+  splitText.forEach((line) => {
+    if (y > pageHeight - margin) {
+      doc.addPage();
+      y = margin;
+    }
+
+    doc.text(line, margin, y);
+    y += 6; // line spacing
+  });
+
+  doc.save("Artistic_Terms_of_Service.pdf");
+};
   return (
     <div
       className={`w-full min-h-screen transition-colors ${
         darkPolicy ? "bg-[#0f0f0f]" : "bg-[#fbf8f3]"
       }`} style={{fontFamily: "Inter, serif"}}
     >
-      {/* ✅ NAVBAR CONTROLS THEME */}
+      {/* NAVBAR CONTROLS THEME */}
       <PolicyNavbar
         darkPolicy={darkPolicy}
         setDarkPolicy={setDarkPolicy}
@@ -195,7 +245,7 @@ SketchCraft reserves the right to refuse or cancel orders that violate these con
         </button>
 
         <div className={`mt-8 text-xs ${darkPolicy ? "text-[#888]" : "text-black"}`}>
-          Last updated: {new Date().toLocaleDateString()}
+          Last updated: February 27, 2026
         </div >
         
         
