@@ -1,7 +1,15 @@
-export default function Home() {
+export default function Home({ isDark }) {
   return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold">Home Page</h1>
+    <div
+      className={`min-h-screen p-10 transition-colors duration-300 ${
+        isDark
+          ? "bg-[#0f1115] text-white"
+          : "bg-white text-black"
+      }`}
+    >
+      <h1 className="text-3xl font-bold">
+        Home Page
+      </h1>
     </div>
   );
 }

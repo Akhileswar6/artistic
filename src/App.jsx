@@ -1,7 +1,5 @@
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./Layout/Navbar";
-import Footer from "./Layout/Footer";
-import AuthLayout from "./Layout/AuthLayout";
 import Layout from "./Layout/Layout";
 
 // Main Pages
@@ -11,32 +9,32 @@ import Order from "./Pages/Order";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 
-// Policy Pages
-import PrivacyPolicy from "./Pages/Policies/PrivacyPolicy";
-import CancellationPolicy from "./Pages/Policies/CancellationPolicy";
-import RefundPolicy from "./Pages/Policies/RefundPolicy";
-import TermsOfService from "./Pages/Policies/TermsOfService";
-
 export default function App() {
+
+  const [isDark, setIsDark] = useState(
+    localStorage.getItem("theme") === "dark"
+  );
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDark]);
+
   return (
     <div className="min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
       <Routes>
-
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+        <Route element={<Layout isDark={isDark} setIsDark={setIsDark} />}>
+          <Route path="/" element={<Home isDark={isDark} />} />
+          <Route path="/gallery" element={<Gallery isDark={isDark}/>} />
+          <Route path="/order" element={<Order isDark={isDark}/>} />
+          <Route path="/about" element={<About isDark={isDark}/>} />
+          <Route path="/contact" element={<Contact isDark={isDark}/>} />
         </Route>
-
-        <Route element={<AuthLayout />}>
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/cancellation-policy" element={<CancellationPolicy />} />
-          <Route path="/refund-policy" element={<RefundPolicy />} />
-          <Route path="/terms" element={<TermsOfService />} />
-        </Route>
-
       </Routes>
     </div>
   );
