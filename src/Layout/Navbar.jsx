@@ -190,7 +190,7 @@ export default function Navbar({ isDark, setIsDark }) {
 >
 
   {/* 🔹 NAV LINKS */}
-  <div className="flex flex-col text-sm" style={{ fontFamily: "Inter, serif" }}>
+  <div className="flex flex-col text-[15px]" style={{ fontFamily: "Inter, serif" }}>
     {navLinks.map((link) => (
       <NavLink
         key={link.path}

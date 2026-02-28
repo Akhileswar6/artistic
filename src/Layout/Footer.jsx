@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Instagram, Github, Linkedin, Facebook } from "griddy-icons";
+import instagram from "../assets/instagram_dark.png";
+import facebook from "../assets/facebook_dark.png";
+import linkedin from "../assets/linkedin_dark.png";
+import github from "../assets/github_dark.png";
+
+
 
 export default function Footer({ isDark }) {
   return (
@@ -36,18 +42,46 @@ export default function Footer({ isDark }) {
             </p>
 
             <div className="flex items-center gap-4 mt-4">
-              {[Instagram, Facebook, Linkedin, Github].map((Icon, i) => (
-                <Icon
-                  key={i}
-                  size={24}
-                  className={`transition cursor-pointer ${
-                    isDark
-                      ? "text-neutral-400 hover:text-white"
-                      : "text-neutral-600 hover:text-black"
-                  }`}
-                />
-              ))}
-            </div>
+  {[
+    {
+      LightIcon: Instagram,
+      darkImg: instagram,
+      alt: "Instagram",
+    },
+    {
+      LightIcon: Facebook,
+      darkImg: facebook,
+      alt: "Facebook",
+    },
+    {
+      LightIcon: Linkedin,
+      darkImg: linkedin,
+      alt: "LinkedIn",
+    },
+    {
+      LightIcon: Github,
+      darkImg: github,
+      alt: "GitHub",
+    },
+  ].map((item, i) => {
+    const LightIcon = item.LightIcon;
+
+    return isDark ? (
+      <img
+        key={i}
+        src={item.darkImg}
+        alt={item.alt}
+        className="w-6 h-6 cursor-pointer transition hover:scale-110 "
+      />
+    ) : (
+      <LightIcon
+        key={i}
+        size={24}
+        className="text-black transition cursor-pointer hover:scale-110 hover:text-neutral-700"
+      />
+    );
+  })}
+</div>
           </div>
 
           {/* Links */}
