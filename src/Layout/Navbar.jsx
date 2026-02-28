@@ -180,7 +180,7 @@ export default function Navbar({ isDark, setIsDark }) {
 
       {/* ================= SLIDE DRAWER ================= */}
 <div
-  className={`fixed left-0 top-[56px] h-[calc(100%-56px)] w-[250px] z-50 transform transition-transform duration-300 ease-in-out ${
+  className={`fixed left-0 top-[56px] h-[calc(100%-56px)] w-[200px] z-50 transform transition-transform duration-300 ease-in-out ${
     isOpen ? "translate-x-0" : "-translate-x-full"
   } ${
     isDark ? "bg-[#0f1115] text-white" : "bg-white text-black"
@@ -189,31 +189,62 @@ export default function Navbar({ isDark, setIsDark }) {
   } flex flex-col`}
 >
 
+  {/* 🔹 NAV LINKS */}
   <div className="flex flex-col text-sm" style={{ fontFamily: "Inter, serif" }}>
-
     {navLinks.map((link) => (
       <NavLink
-  key={link.path}
-  to={link.path}
-  onClick={() => setIsOpen(false)}
-  className={({ isActive }) =>
-    `px-6 py-4 transition-colors ${
-      isActive
-        ? isDark
-          ? "text-white"        // Dark mode active
-          : "text-black"        // Light mode active
-        : isDark
-          ? "text-neutral-400 hover:text-white"
-          : "text-neutral-600 hover:text-black"
-    }`
-  }
->
-  {link.label}
-</NavLink>
+        key={link.path}
+        to={link.path}
+        onClick={() => setIsOpen(false)}
+        className={({ isActive }) =>
+          `px-8 py-4 transition-colors ${
+            isActive
+              ? isDark
+                ? "text-white"
+                : "text-black"
+              : isDark
+                ? "text-neutral-400 hover:text-white"
+                : "text-neutral-600 hover:text-black"
+          }`
+        }
+      >
+        {link.label}
+      </NavLink>
     ))}
-
   </div>
+
+  {/* 🔥 ADD THIS BLOCK HERE (BOTTOM SECTION) */}
+  <div className="mt-auto px-6 py-5 flex flex-col gap-4 text-sm" style={{ fontFamily: "Inter, serif" }}>
+    <button
+      onClick={() => {
+        setShowSignIn(true);
+        setIsOpen(false);
+      }}
+      className={`w-full h-8 rounded-md text-sm border transition-all duration-200 cursor-pointer ${
+        isDark
+          ? "bg-black text-white border-neutral-700 hover:bg-neutral-900"
+          : "bg-white text-black border-neutral-300 shadow-md hover:bg-gray-100"
+      }`}
+    >
+      Sign In
+    </button>
+
+    <Link
+      to="/order"
+      onClick={() => setIsOpen(false)}
+      className={`w-full h-8  flex items-center justify-center gap-2 rounded-md text-sm border transition-all duration-200 cursor-pointer ${
+        isDark
+          ? "bg-black text-white border-neutral-700 hover:bg-neutral-900"
+          : "bg-white text-black border-neutral-300 shadow-md hover:bg-gray-100"
+      }`}
+    >
+      <ShoppingBag size={18} />
+      Order Now
+    </Link>
+  </div>
+
 </div>
+
 
       {/* ================= SIGN IN MODAL ================= */}
       {showSignIn && (
