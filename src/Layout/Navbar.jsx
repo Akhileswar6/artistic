@@ -62,10 +62,10 @@ export default function Navbar({ isDark, setIsDark }) {
           <div className="flex items-center gap-12">
             <NavLink to="/">
               <span
-                className={`text-[25px] font-semibold ${
+                className={`text-[24px] ${
                   isDark ? "text-white" : "text-black"
                 }`}
-                style={{ fontFamily: "Playfair Display, serif" }}
+                style={{ fontFamily: "Ribeye, serif" }}
               >
                 artistic
               </span>
@@ -142,12 +142,12 @@ export default function Navbar({ isDark, setIsDark }) {
             <button onClick={() => setIsOpen(!isOpen)}>
   {isOpen ? (
     <X
-      size={19}
+      size={20}
       className={isDark ? "text-white" : "text-black"}
     />
   ) : (
     <Menu
-      size={19}
+      size={20}
       className={isDark ? "text-white" : "text-black"}
     />
   )}
@@ -158,7 +158,7 @@ export default function Navbar({ isDark, setIsDark }) {
                 className={`text-[20px] font-semibold ${
                   isDark ? "text-white" : "text-black"
                 }`}
-                style={{ fontFamily: "Playfair Display, serif" }}
+                style={{ fontFamily: "Yatra One, system-ui" }}
               >
                 artistic
               </span>
