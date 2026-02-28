@@ -142,12 +142,12 @@ export default function Navbar({ isDark, setIsDark }) {
             <button onClick={() => setIsOpen(!isOpen)}>
   {isOpen ? (
     <X
-      size={20}
+      size={22}
       className={isDark ? "text-white" : "text-black"}
     />
   ) : (
     <Menu
-      size={20}
+      size={22}
       className={isDark ? "text-white" : "text-black"}
     />
   )}
