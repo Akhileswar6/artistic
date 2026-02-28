@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { Link } from "react-router-dom";
 import EmailIcon from "../assets/email.png";
 
-export default function SignIn({ onClose }) {
+export default function SignIn({ onClose, isDark }) {
   const [errors, setErrors] = useState({});
   const [fullName, setFullName] = useState("");
   const [step, setStep] = useState("options");
@@ -13,11 +13,9 @@ export default function SignIn({ onClose }) {
 
   const handleOtpChange = (value, index) => {
     if (!/^\d?$/.test(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
     if (value && index < 5) {
       document.getElementById(`otp-${index + 1}`).focus();
     }
@@ -36,12 +34,21 @@ export default function SignIn({ onClose }) {
       className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
-      <div className="bg-white dark:bg-[#0f1115] text-black dark:text-white w-full max-w-xl rounded-md p-12 relative shadow-2xl transition-colors duration-300">
-
+      <div
+        className={`w-full max-w-xl rounded-md p-12 relative shadow-2xl transition-colors duration-300 ${
+          isDark
+            ? "bg-[#0f1115] text-white"
+            : "bg-white text-black"
+        }`}
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition cursor-pointer"
+          className={`absolute top-5 right-5 transition cursor-pointer ${
+            isDark
+              ? "text-gray-400 hover:text-white"
+              : "text-gray-600 hover:text-black"
+          }`}
         >
           <X size={20} />
         </button>
@@ -60,7 +67,11 @@ export default function SignIn({ onClose }) {
             <div className="space-y-4 max-w-sm mx-auto text-[15px]">
 
               <button
-                className="w-full h-10 border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#1c1c1c] rounded-md flex items-center justify-center gap-3 cursor-pointer transition shadow-md"
+                className={`w-full h-10 border rounded-md flex items-center justify-center gap-3 cursor-pointer transition shadow-md ${
+                  isDark
+                    ? "border-neutral-700 bg-[#1c1c1c]"
+                    : "border-gray-300 bg-white"
+                }`}
               >
                 <FcGoogle size={22} />
                 Sign in with Google
@@ -68,30 +79,34 @@ export default function SignIn({ onClose }) {
 
               <button
                 onClick={() => setStep("email")}
-                className="w-full h-10 border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#1c1c1c] rounded-md flex items-center justify-center gap-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-neutral-800 transition pr-4 shadow-md"
+                className={`w-full h-10 border rounded-md flex items-center justify-center gap-2 cursor-pointer transition pr-4 shadow-md ${
+                  isDark
+                    ? "border-neutral-700 bg-[#1c1c1c] hover:bg-neutral-800"
+                    : "border-gray-300 bg-white hover:bg-gray-100"
+                }`}
               >
                 <img src={EmailIcon} alt="Email Icon" className="w-8 h-8" />
                 Sign in with email
               </button>
             </div>
 
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>
               Don't have an account?{" "}
               <span
                 onClick={() => setStep("signup-email")}
-                className="underline cursor-pointer hover:text-black dark:hover:text-white transition"
+                className="underline cursor-pointer"
               >
                 Create one
               </span>
             </p>
 
-            <p className="text-[12px] text-gray-600 dark:text-gray-400">
+            <p className={`text-[12px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
               By signing in, you agree to artistic's{" "}
-              <Link to="/terms" className="underline cursor-pointer hover:text-black dark:hover:text-white transition">
+              <Link to="/terms" className="underline">
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link to="/privacy-policy" className="underline cursor-pointer hover:text-black dark:hover:text-white transition">
+              <Link to="/privacy-policy" className="underline">
                 Privacy Policy
               </Link>
             </p>
@@ -116,7 +131,11 @@ export default function SignIn({ onClose }) {
                 <input
                   type="text"
                   placeholder="Enter your full name"
-                  className="w-full border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#1c1c1c] shadow-sm p-2 mt-2 rounded-md text-[14px] focus:outline-none focus:ring focus:ring-black dark:focus:ring-white"
+                  className={`w-full border shadow-sm p-2 mt-2 rounded-md text-[14px] focus:outline-none ${
+                    isDark
+                      ? "border-neutral-700 bg-[#1c1c1c] text-white focus:ring-1 focus:ring-white"
+                      : "border-gray-300 bg-white text-black focus:ring-1 focus:ring-black"
+                  }`}
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                 />
@@ -132,7 +151,11 @@ export default function SignIn({ onClose }) {
                 <input
                   type="email"
                   placeholder="Enter your email address"
-                  className="w-full border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#1c1c1c] shadow-sm p-2 mt-2 rounded-md text-[14px] focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                  className={`w-full border shadow-sm p-2 mt-2 rounded-md text-[14px] focus:outline-none ${
+                    isDark
+                      ? "border-neutral-700 bg-[#1c1c1c] text-white focus:ring-1 focus:ring-white"
+                      : "border-gray-300 bg-white text-black focus:ring-1 focus:ring-black"
+                  }`}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -142,47 +165,30 @@ export default function SignIn({ onClose }) {
                   </p>
                 )}
               </div>
-
             </div>
 
             <button
               onClick={() => {
-                if (validateForm()) {
-                  setStep("otp");
-                }
+                if (validateForm()) setStep("otp");
               }}
-              className="px-8 py-2 text-[14px] rounded-full transition bg-black dark:bg-white text-white dark:text-black hover:bg-neutral-900 dark:hover:bg-neutral-200"
+              className={`px-8 py-2 text-[14px] rounded-full transition ${
+                isDark
+                  ? "bg-white text-black hover:bg-neutral-200"
+                  : "bg-black text-white hover:bg-neutral-900"
+              }`}
             >
               Create account
             </button>
 
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>
               Already have an account?{" "}
               <span
                 onClick={() => setStep("options")}
-                className="underline cursor-pointer hover:text-black dark:hover:text-white transition"
+                className="underline cursor-pointer"
               >
                 Sign in
               </span>
             </p>
-
-            <p className="text-[12px] text-gray-600 dark:text-gray-400 max-w-md mx-auto">
-              By Creating account, you accept artistic's{" "}
-              <Link
-                to="/terms"
-                className="underline hover:text-black dark:hover:text-white transition"
-              >
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link
-                to="/privacy-policy"
-                className="underline hover:text-black dark:hover:text-white transition"
-              >
-                Privacy Policy
-              </Link>.
-            </p>
-
           </div>
         )}
 
@@ -202,7 +208,11 @@ export default function SignIn({ onClose }) {
               <input
                 type="email"
                 placeholder="Enter your email address"
-                className="w-full border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#1c1c1c] shadow-sm p-2 mt-2 rounded-sm text-[14px] focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                className={`w-full border shadow-sm p-2 mt-2 rounded-sm text-[14px] focus:outline-none ${
+                  isDark
+                    ? "border-neutral-700 bg-[#1c1c1c] text-white focus:ring-1 focus:ring-white"
+                    : "border-gray-300 bg-white text-black focus:ring-1 focus:ring-black"
+                }`}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -210,67 +220,17 @@ export default function SignIn({ onClose }) {
 
             <button
               onClick={() => setStep("otp")}
-              className="bg-black dark:bg-white text-[14px] text-white dark:text-black px-6 py-2 rounded-full cursor-pointer hover:bg-neutral-900 dark:hover:bg-neutral-200 transition"
+              className={`px-6 py-2 rounded-full transition ${
+                isDark
+                  ? "bg-white text-black hover:bg-neutral-200"
+                  : "bg-black text-white hover:bg-neutral-900"
+              }`}
             >
               Continue
             </button>
-
-            <p
-              onClick={() => setStep("options")}
-              className="underline cursor-pointer text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
-            >
-              Back to sign in options
-            </p>
           </div>
         )}
 
-        {/* ================= OTP ================= */}
-        {step === "otp" && (
-          <div className="text-center space-y-6">
-
-            <h1
-              className="text-3xl font-semibold"
-              style={{ fontFamily: "Playfair Display, serif" }}
-            >
-              Check your email inbox
-            </h1>
-
-            <p className="text-gray-600 dark:text-gray-400">
-              Enter the 6-digit code sent to:
-            </p>
-
-            <p className="font-semibold">{email}</p>
-
-            <div className="flex justify-center gap-3 mt-4">
-              {otp.map((digit, index) => (
-                <input
-                  key={index}
-                  id={`otp-${index}`}
-                  type="text"
-                  maxLength="1"
-                  value={digit}
-                  onChange={(e) =>
-                    handleOtpChange(e.target.value, index)
-                  }
-                  className="w-12 h-12 text-center border border-gray-300 dark:border-neutral-700 bg-white dark:bg-[#1c1c1c] rounded-md text-lg"
-                />
-              ))}
-            </div>
-
-            <button
-              className="bg-gray-300 dark:bg-neutral-700 text-white px-8 py-2 rounded-full cursor-not-allowed"
-            >
-              Submit
-            </button>
-
-            <p
-              onClick={() => setStep("email")}
-              className="underline cursor-pointer text-sm text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition"
-            >
-              Change email
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

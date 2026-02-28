@@ -25,7 +25,6 @@ export default function Navbar({ isDark, setIsDark }) {
 
   const updateUnderline = () => {
     if (activeIndex === -1) return;
-
     const el = linkRefs.current[activeIndex];
     if (el) {
       setActiveStyle({
@@ -46,35 +45,37 @@ export default function Navbar({ isDark, setIsDark }) {
 
   return (
     <>
+      {/* ================= MAIN NAVBAR ================= */}
       <div
-        className={`w-full px-3 py-2 border-b transition-colors duration-300 ${
+        className={`sticky top-0 z-50 w-full border-b transition-colors duration-300 ${
           isDark
             ? "bg-[#0f1115] border-neutral-800"
             : "bg-white border-neutral-300"
-        }`}  style={{ fontFamily:"Inter, serif"}}
+        }`}
+        style={{ fontFamily: "Inter, serif" }}
       >
-        <div className="flex items-center justify-between">
 
-          {/* Left Side */}
-          <div className="flex items-center px-4 gap-12">
+        {/* ===== DESKTOP NAVBAR ===== */}
+        <div className="hidden md:flex items-center justify-between px-6 py-3">
 
-            <NavLink to="/" className="flex items-center gap-3">
-              
+          {/* Left */}
+          <div className="flex items-center gap-12">
+            <NavLink to="/">
               <span
                 className={`text-[25px] font-semibold ${
                   isDark ? "text-white" : "text-black"
-                }`} style={{ fontFamily:"Playfair Display, serif"}}
+                }`}
+                style={{ fontFamily: "Playfair Display, serif" }}
               >
                 artistic
               </span>
             </NavLink>
 
             {/* Desktop Links */}
-            <div className="relative hidden md:flex items-center gap-5 ">
-
+            <div className="relative flex items-center gap-6">
               {activeIndex !== -1 && (
                 <div
-                  className={`absolute -bottom-1 h-[2px] transition-all duration-300  ${
+                  className={`absolute -bottom-1 h-[2px] transition-all duration-300 ${
                     isDark ? "bg-white" : "bg-black"
                   }`}
                   style={activeStyle}
@@ -87,7 +88,7 @@ export default function Navbar({ isDark, setIsDark }) {
                   to={link.path}
                   ref={(el) => (linkRefs.current[index] = el)}
                   className={({ isActive }) =>
-                    `relative z-10 px-2 py-1 text-[14.5px] transition-colors duration-200 ${
+                    `relative z-10 text-[14.5px] transition-colors duration-200 ${
                       isActive
                         ? isDark
                           ? "text-white"
@@ -104,17 +105,13 @@ export default function Navbar({ isDark, setIsDark }) {
             </div>
           </div>
 
-          {/* Right Side Desktop */}
-          <div className="hidden md:flex items-center gap-6">
+          {/* Right */}
+          <div className="flex items-center gap-6">
             <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
-
-
-
 
             <button
               onClick={() => setShowSignIn(true)}
-              className={`px-4 py-2 rounded-full text-sm border border-neutral-400 dark:border-neutral-700
-                 transition-all cursor-pointer active:scale-95 duration-200 ${
+              className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${
                 isDark
                   ? "bg-black text-white border-neutral-700 hover:bg-neutral-900"
                   : "bg-white text-black border-neutral-900 hover:bg-neutral-200"
@@ -125,7 +122,7 @@ export default function Navbar({ isDark, setIsDark }) {
 
             <Link
               to="/order"
-              className={`px-4 py-2 flex gap-2 rounded-full text-sm border transition-all duration-200 cursor-pointer active:scale-95 ${
+              className={`px-4 py-2 flex gap-2 rounded-full text-sm border transition-all duration-200 ${
                 isDark
                   ? "bg-black text-white border-neutral-700 hover:bg-neutral-900"
                   : "bg-white text-black border-neutral-900 hover:bg-neutral-200"
@@ -135,21 +132,90 @@ export default function Navbar({ isDark, setIsDark }) {
               Order Now
             </Link>
           </div>
+        </div>
 
-          {/* Mobile */}
-          <div className="md:hidden flex items-center gap-4">
-            <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
-            <button onClick={() => setIsOpen(true)}>
-              <Menu
-                size={24}
-                className={isDark ? "text-white" : "text-black"}
-              />
-            </button>
+        {/* ===== MOBILE NAVBAR ===== */}
+        <div className="flex md:hidden items-center justify-between px-4 py-3">
+
+          {/* Left: Hamburger + Logo */}
+          <div className="flex items-center gap-4">
+            <button onClick={() => setIsOpen(!isOpen)}>
+  {isOpen ? (
+    <X
+      size={20}
+      className={isDark ? "text-white" : "text-black"}
+    />
+  ) : (
+    <Menu
+      size={20}
+      className={isDark ? "text-white" : "text-black"}
+    />
+  )}
+</button>
+
+            <NavLink to="/">
+              <span
+                className={`text-[20px] font-semibold ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+                style={{ fontFamily: "Playfair Display, serif" }}
+              >
+                artistic
+              </span>
+            </NavLink>
           </div>
+
+          {/* Right */}
+          <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
         </div>
       </div>
 
-      {showSignIn && <SignIn onClose={() => setShowSignIn(false)} />}
+      {/* ================= MOBILE OVERLAY ================= */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/40 z-40"
+        />
+      )}
+
+      {/* ================= SLIDE DRAWER ================= */}
+<div
+  className={`fixed left-0 top-[56px] h-[calc(100%-56px)] w-[340px] z-50 transform transition-transform duration-300 ease-in-out ${
+    isOpen ? "translate-x-0" : "-translate-x-full"
+  } ${
+    isDark ? "bg-[#0f1115] text-white" : "bg-white text-black"
+  } border-r ${
+    isDark ? "border-neutral-800" : "border-neutral-300"
+  } flex flex-col`}
+>
+
+  <div className="flex flex-col text-lg">
+
+    {navLinks.map((link) => (
+      <NavLink
+        key={link.path}
+        to={link.path}
+        onClick={() => setIsOpen(false)}
+        className={`px-6 py-4 border-b transition-colors ${
+          isDark
+            ? "border-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-900"
+            : "border-neutral-200 text-neutral-600 hover:text-black hover:bg-gray-100"
+        }`}
+      >
+        {link.label}
+      </NavLink>
+    ))}
+
+  </div>
+</div>
+
+      {/* ================= SIGN IN MODAL ================= */}
+      {showSignIn && (
+        <SignIn
+          onClose={() => setShowSignIn(false)}
+          isDark={isDark}
+        />
+      )}
     </>
   );
 }

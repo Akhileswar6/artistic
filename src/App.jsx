@@ -8,7 +8,6 @@ import Gallery from "./Pages/Gallery";
 import Order from "./Pages/Order";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
-
 export default function App() {
 
   const [isDark, setIsDark] = useState(
@@ -26,16 +25,16 @@ export default function App() {
   }, [isDark]);
 
   return (
-    <div className="min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
-      <Routes>
-        <Route element={<Layout isDark={isDark} setIsDark={setIsDark} />}>
-          <Route path="/" element={<Home isDark={isDark} />} />
-          <Route path="/gallery" element={<Gallery isDark={isDark}/>} />
-          <Route path="/order" element={<Order isDark={isDark}/>} />
-          <Route path="/about" element={<About isDark={isDark}/>} />
-          <Route path="/contact" element={<Contact isDark={isDark}/>} />
-        </Route>
-      </Routes>
-    </div>
-  );
+  <div className="min-h-screen flex flex-col">
+    <Routes>
+      <Route element={<Layout isDark={isDark} setIsDark={setIsDark} />}>
+        <Route path="/" element={<Home isDark={isDark} />} />
+        <Route path="/gallery" element={<Gallery isDark={isDark} />} />
+        <Route path="/order" element={<Order isDark={isDark} />} />
+        <Route path="/about" element={<About isDark={isDark} />} />
+        <Route path="/contact" element={<Contact isDark={isDark} />} />
+      </Route>
+    </Routes>
+  </div>
+);
 }
