@@ -138,16 +138,16 @@ export default function Navbar({ isDark, setIsDark }) {
         <div className="flex md:hidden items-center justify-between px-4 py-3">
 
           {/* Left: Hamburger + Logo */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ">
             <button onClick={() => setIsOpen(!isOpen)}>
   {isOpen ? (
     <X
-      size={20}
+      size={19}
       className={isDark ? "text-white" : "text-black"}
     />
   ) : (
     <Menu
-      size={20}
+      size={19}
       className={isDark ? "text-white" : "text-black"}
     />
   )}
@@ -180,7 +180,7 @@ export default function Navbar({ isDark, setIsDark }) {
 
       {/* ================= SLIDE DRAWER ================= */}
 <div
-  className={`fixed left-0 top-[56px] h-[calc(100%-56px)] w-[340px] z-50 transform transition-transform duration-300 ease-in-out ${
+  className={`fixed left-0 top-[56px] h-[calc(100%-56px)] w-[250px] z-50 transform transition-transform duration-300 ease-in-out ${
     isOpen ? "translate-x-0" : "-translate-x-full"
   } ${
     isDark ? "bg-[#0f1115] text-white" : "bg-white text-black"
@@ -189,21 +189,27 @@ export default function Navbar({ isDark, setIsDark }) {
   } flex flex-col`}
 >
 
-  <div className="flex flex-col text-lg">
+  <div className="flex flex-col text-sm" style={{ fontFamily: "Inter, serif" }}>
 
     {navLinks.map((link) => (
       <NavLink
-        key={link.path}
-        to={link.path}
-        onClick={() => setIsOpen(false)}
-        className={`px-6 py-4 border-b transition-colors ${
-          isDark
-            ? "border-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-900"
-            : "border-neutral-200 text-neutral-600 hover:text-black hover:bg-gray-100"
-        }`}
-      >
-        {link.label}
-      </NavLink>
+  key={link.path}
+  to={link.path}
+  onClick={() => setIsOpen(false)}
+  className={({ isActive }) =>
+    `px-6 py-4 transition-colors ${
+      isActive
+        ? isDark
+          ? "text-white"        // Dark mode active
+          : "text-black"        // Light mode active
+        : isDark
+          ? "text-neutral-400 hover:text-white"
+          : "text-neutral-600 hover:text-black"
+    }`
+  }
+>
+  {link.label}
+</NavLink>
     ))}
 
   </div>
