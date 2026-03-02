@@ -94,7 +94,7 @@ export default function Footer({ isDark }) {
             }`}>
               <li><Link to="/" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Home</Link></li>
               <li><Link to="/gallery" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Gallery</Link></li>
-              <li><Link to="/order" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Order</Link></li>
+              <li><Link to="/order" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Order Now</Link></li>
               <li><Link to="/about" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>About</Link></li>
               <li><Link to="/contact" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Contact</Link></li>
             </ul>

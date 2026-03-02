@@ -47,7 +47,7 @@ export default function Navbar({ isDark, setIsDark }) {
     <>
       {/* ================= MAIN NAVBAR ================= */}
       <div
-        className={`sticky top-0 z-50 w-full border-b transition-colors duration-300 ${
+        className={`sticky top-0 z-50 w-full shadow-md border-b transition-colors duration-300 ${
           isDark
             ? "bg-[#0f1115] border-neutral-800"
             : "bg-white border-neutral-300"
