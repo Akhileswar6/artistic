@@ -49,14 +49,14 @@ export default function Navbar({ isDark, setIsDark }) {
       <div
         className={`sticky top-0 z-50 w-full shadow-md border-b transition-colors duration-300 ${
           isDark
-            ? "bg-[#0f1115] border-neutral-800"
+            ? "bg-black border-neutral-800"
             : "bg-white border-neutral-300"
         }`}
         style={{ fontFamily: "Inter, serif" }}
       >
 
         {/* ===== DESKTOP NAVBAR ===== */}
-        <div className="hidden md:flex items-center justify-between px-6 py-3">
+        <div className="hidden md:flex items-center justify-between px-6 py-2">
 
           {/* Left */}
           <div className="flex items-center gap-12">
@@ -64,14 +64,14 @@ export default function Navbar({ isDark, setIsDark }) {
               <span
                 className={`text-[25px] font-semibold ${
                   isDark ? "text-white" : "text-black"
-                }`} style={{ fontFamily:"Playfair Display, serif"}}
+                }`} style={{fontFamily: "Bricolage Grotesque, sans-serif"}}
               >
                 artistic
               </span>
             </NavLink>
 
             {/* Desktop Links */}
-            <div className="relative flex items-center gap-6">
+            <div className="relative flex items-center gap-8">
               {activeIndex !== -1 && (
                 <div
                   className={`absolute -bottom-1 h-[2px] transition-all duration-300 ${
@@ -87,7 +87,7 @@ export default function Navbar({ isDark, setIsDark }) {
                   to={link.path}
                   ref={(el) => (linkRefs.current[index] = el)}
                   className={({ isActive }) =>
-                    `relative z-10 text-[14.5px] transition-colors duration-200 ${
+                    `relative z-10 text-[14px] transition-colors duration-200 ${
                       isActive
                         ? isDark
                           ? "text-white"
@@ -110,10 +110,10 @@ export default function Navbar({ isDark, setIsDark }) {
 
             <button
               onClick={() => setShowSignIn(true)}
-              className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${
+              className={`px-4 py-1.5 text-[13px] rounded-lg border bg-[#1c1c1c] transition cursor-pointer ${
                 isDark
-                  ? "bg-black text-white border-neutral-700 hover:bg-neutral-900"
-                  : "bg-white text-black border-neutral-900 hover:bg-neutral-200"
+                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                  : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100"
               }`}
             >
               Sign In
@@ -121,10 +121,10 @@ export default function Navbar({ isDark, setIsDark }) {
 
             <Link
               to="/order"
-              className={`px-4 py-2 flex gap-2 rounded-full text-sm border transition-all duration-200 ${
+              className={`px-4 py-1.5 flex gap-2 rounded-lg text-[13px] border transition-all duration-200 ${
                 isDark
-                  ? "bg-black text-white border-neutral-700 hover:bg-neutral-900"
-                  : "bg-white text-black border-neutral-900 hover:bg-neutral-200"
+                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                  : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100 "
               }`}
             >
               <ShoppingBag size={18} />
@@ -182,7 +182,7 @@ export default function Navbar({ isDark, setIsDark }) {
   className={`fixed left-0 top-[56px] h-[calc(100%-56px)] w-[200px] z-50 transform transition-transform duration-300 ease-in-out ${
     isOpen ? "translate-x-0" : "-translate-x-full"
   } ${
-    isDark ? "bg-[#0f1115] text-white" : "bg-white text-black"
+    isDark ? "bg-black text-white" : "bg-white text-black"
   } border-r ${
     isDark ? "border-neutral-800" : "border-neutral-300"
   } flex flex-col`}
@@ -212,17 +212,16 @@ export default function Navbar({ isDark, setIsDark }) {
     ))}
   </div>
 
-  {/* 🔥 ADD THIS BLOCK HERE (BOTTOM SECTION) */}
   <div className="mt-auto px-6 py-5 flex flex-col gap-4 text-sm" style={{ fontFamily: "Inter, serif" }}>
     <button
       onClick={() => {
         setShowSignIn(true);
         setIsOpen(false);
       }}
-      className={`w-full h-8 rounded-md text-sm border transition-all duration-200 cursor-pointer ${
+      className={`w-full h-8 rounded-lg text-[13px] border transition-all duration-200 cursor-pointer ${
         isDark
-          ? "bg-black text-white border-neutral-700 hover:bg-neutral-900"
-          : "bg-white text-black border-neutral-300 shadow-md hover:bg-gray-100"
+          ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+          : "bg-white text-black border-neutral-300 shadow-lg hover:bg-gray-100"
       }`}
     >
       Sign In
@@ -233,8 +232,8 @@ export default function Navbar({ isDark, setIsDark }) {
       onClick={() => setIsOpen(false)}
       className={`w-full h-8  flex items-center justify-center gap-2 rounded-md text-sm border transition-all duration-200 cursor-pointer ${
         isDark
-          ? "bg-black text-white border-neutral-700 hover:bg-neutral-900"
-          : "bg-white text-black border-neutral-300 shadow-md hover:bg-gray-100"
+          ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+          : "bg-white text-black border-neutral-300 shadow-lg hover:bg-gray-100"
       }`}
     >
       <ShoppingBag size={18} />
