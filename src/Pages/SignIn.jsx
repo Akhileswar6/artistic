@@ -262,10 +262,10 @@ export default function SignIn({ onClose, isDark }) {
               </span>
               
             </p>
-            <p className={`text-[14px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+            <Link to="/signin-options" className={`text-[14px] cursor-pointer ${isDark ? "text-gray-400" : "text-gray-600"}`}>
               <ArrowLeft className="inline-block mr-2" size={16} />
               Back to Sign In Options
-            </p>
+            </Link>
 
           </div>
         )}
