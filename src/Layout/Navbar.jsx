@@ -62,10 +62,9 @@ export default function Navbar({ isDark, setIsDark }) {
           <div className="flex items-center gap-12">
             <NavLink to="/">
               <span
-                className={`text-[24px] ${
+                className={`text-[25px] font-semibold ${
                   isDark ? "text-white" : "text-black"
-                }`}
-                style={{ fontFamily: "Ribeye, serif" }}
+                }`} style={{ fontFamily:"Playfair Display, serif"}}
               >
                 artistic
               </span>

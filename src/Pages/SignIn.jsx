@@ -35,10 +35,10 @@ export default function SignIn({ onClose, isDark }) {
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       <div
-        className={`w-full max-w-xl rounded-md p-12 relative shadow-2xl transition-colors duration-300 ${
+        className={`w-full max-w-xl rounded-md p-12 relative shadow-2xl transition-colors duration-300  ${
           isDark
-            ? "bg-[#0f1115] text-white"
-            : "bg-white text-black"
+            ? "bg-[#141414] text-white border-neutral-800"
+            : "bg-white text-black border-neutral-300"
         }`}
       >
         {/* Close Button */}
@@ -64,12 +64,12 @@ export default function SignIn({ onClose, isDark }) {
               Welcome back..
             </h2>
 
-            <div className="space-y-4 max-w-sm mx-auto text-[15px]">
+            <div className="space-y-4 max-w-sm mx-auto text-[15px]" >
 
               <button
                 className={`w-full h-10 border rounded-md flex items-center justify-center gap-3 cursor-pointer transition shadow-md ${
                   isDark
-                    ? "border-neutral-700 bg-[#1c1c1c]"
+                    ? "border-neutral-700 bg-[#202020] hover:bg-neutral-800"
                     : "border-gray-300 bg-white"
                 }`}
               >
@@ -81,7 +81,7 @@ export default function SignIn({ onClose, isDark }) {
                 onClick={() => setStep("email")}
                 className={`w-full h-10 border rounded-md flex items-center justify-center gap-2 cursor-pointer transition pr-4 shadow-md ${
                   isDark
-                    ? "border-neutral-700 bg-[#1c1c1c] hover:bg-neutral-800"
+                    ? "border-neutral-700 bg-[#202020] hover:bg-neutral-800"
                     : "border-gray-300 bg-white hover:bg-gray-100"
                 }`}
               >
@@ -90,23 +90,23 @@ export default function SignIn({ onClose, isDark }) {
               </button>
             </div>
 
-            <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+            <p className={`text-sm ${isDark ? "text-gray-400 " : "text-gray-600"}`}>
               Don't have an account?{" "}
               <span
                 onClick={() => setStep("signup-email")}
-                className="underline cursor-pointer"
+                className={`underline cursor-pointer ${isDark ? "hover:text-white" : "hover:text-black"}`}
               >
                 Create one
               </span>
             </p>
 
-            <p className={`text-[12px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+            <p className={`text-[13px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
               By signing in, you agree to artistic's{" "}
-              <Link to="/terms" className="underline">
+              <Link to="/terms" className={`underline cursor-pointer ${isDark ? "hover:text-white" : "hover:text-black"}`}>
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link to="/privacy-policy" className="underline">
+              <Link to="/privacy-policy" className={`underline cursor-pointer ${isDark ? "hover:text-white" : "hover:text-black"}`}>
                 Privacy Policy
               </Link>
             </p>
