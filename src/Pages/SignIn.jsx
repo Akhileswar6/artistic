@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { X } from "lucide-react";
+import { X, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import EmailIcon from "../assets/email.png";
 
@@ -10,6 +10,7 @@ export default function SignIn({ onClose, isDark }) {
   const [step, setStep] = useState("options");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState(Array(6).fill(""));
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const handleOtpChange = (value, index) => {
     if (!/^\d?$/.test(value)) return;
@@ -167,13 +168,35 @@ export default function SignIn({ onClose, isDark }) {
               </div>
             </div>
 
+            {/* Terms and Conditions */}
+<div className="max-w-md mx-auto text-left flex items-start gap-3">
+
+  <input
+    type="checkbox"
+    checked={acceptTerms}
+    onChange={(e) => setAcceptTerms(e.target.checked)}
+    className="mt-1 w-4 h-4 cursor-pointer"
+  />
+
+  <div>
+    <p className={`text-[14px] font-medium ${isDark ? "text-white" : "text-black"}`}>
+      Accept terms and conditions
+    </p>
+
+    <p className={`text-[13px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+      By clicking this checkbox, you agree to the terms.
+    </p>
+  </div>
+
+</div>
+
             <button
               onClick={() => {
                 if (validateForm()) setStep("otp");
               }}
-              className={`px-8 py-2 text-[14px] rounded-full transition ${
+              className={`px-5 py-1.5 text-[14px] rounded-full transition cursor-pointer ${
                 isDark
-                  ? "bg-white text-black hover:bg-neutral-200"
+                  ? "bg-white text-black"
                   : "bg-black text-white hover:bg-neutral-900"
               }`}
             >
@@ -184,7 +207,7 @@ export default function SignIn({ onClose, isDark }) {
               Already have an account?{" "}
               <span
                 onClick={() => setStep("options")}
-                className="underline cursor-pointer"
+                className={`underline cursor-pointer ${isDark ? "hover:text-white" : "hover:text-black"}`}
               >
                 Sign in
               </span>
@@ -220,7 +243,7 @@ export default function SignIn({ onClose, isDark }) {
 
             <button
               onClick={() => setStep("otp")}
-              className={`px-6 py-2 rounded-full transition ${
+              className={`px-5 py-1.5 text-[14px] rounded-full transition cursor-pointer ${
                 isDark
                   ? "bg-white text-black hover:bg-neutral-200"
                   : "bg-black text-white hover:bg-neutral-900"
@@ -228,6 +251,22 @@ export default function SignIn({ onClose, isDark }) {
             >
               Continue
             </button>
+
+            <p className={`text-[14px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+              Don't have an account?{" "}
+              <span
+                onClick={() => setStep("signup-email")}
+                className={`underline cursor-pointer ${isDark ? "hover:text-white" : "hover:text-black"}`}
+              >
+                Create one
+              </span>
+              
+            </p>
+            <p className={`text-[14px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+              <ArrowLeft className="inline-block mr-2" size={16} />
+              Back to Sign In Options
+            </p>
+
           </div>
         )}
 
