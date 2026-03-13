@@ -33,7 +33,7 @@ export default function Contact({ isDark }) {
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${
-        isDark ? "bg-black text-white" : "bg-[#f6f2ef] text-black"
+        isDark ? "bg-black text-white" : "bg-white text-black"
       }`} style={{ fontFamily: "Inter, sans-serif" }}
     >
       <div className="max-w-7xl mx-auto px-6 py-20">
@@ -72,7 +72,7 @@ export default function Contact({ isDark }) {
   whileInView={{ opacity: 1, x: 0 }}
   viewport={{ once: true, amount: 0.2 }}
   transition={{ duration: 0.6 }}
-  className={`md:col-span-2 rounded-2xl border p-8 ${
+  className={`md:col-span-2 rounded-2xl border p-8 shadow-lg ${
     isDark
       ? "bg-[#141414] border-neutral-800"
       : "bg-white border-neutral-200"
@@ -164,7 +164,7 @@ export default function Contact({ isDark }) {
 
   {/* Contact Details Card */}
   <div
-    className={`rounded-xl border p-6 ${
+    className={`rounded-xl border p-6 shadow-lg ${
       isDark
         ? "bg-[#141414] border-neutral-800"
         : "bg-white border-neutral-200"
@@ -235,15 +235,15 @@ export default function Contact({ isDark }) {
 
         <div className="flex gap-2 mt-2">
 
-          <div className="p-3 rounded-lg cursor-pointer transition hover:bg-neutral-800">
+          <div className="p-3 rounded-lg cursor-pointer transition">
             <Instagram size={18} />
           </div>
 
-          <div className="p-3 rounded-lg cursor-pointer transition hover:bg-neutral-800">
+          <div className="p-3 rounded-lg cursor-pointer transition">
             <Twitter size={18} />
           </div>
 
-          <div className="p-3 rounded-lg cursor-pointer transition hover:bg-neutral-800">
+          <div className="p-3 rounded-lg cursor-pointer transition">
             <MessageCircle size={18} />
           </div>
 

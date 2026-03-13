@@ -1,1 +1,54 @@
 @import "tailwindcss";
+
+
+
+.scroll-row {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+}
+
+.card {
+  width: 320px;
+  flex-shrink: 0;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+}
+
+/* LEFT SCROLL */
+.scroll-left {
+  animation: scrollLeft 80s linear infinite;
+}
+
+/* RIGHT SCROLL */
+.scroll-right {
+  animation: scrollRight 80s linear infinite;
+}
+
+.scroll-row:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

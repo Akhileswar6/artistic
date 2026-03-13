@@ -3,7 +3,7 @@ export default function Order({ isDark }) {
     <div
       className={`min-h-screen p-10 transition-colors duration-300 ${
         isDark
-          ? "bg-[#0f1115] text-white"
+          ? "bg-black text-white"
           : "bg-white text-black"
       }`}
     >

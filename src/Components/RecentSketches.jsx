@@ -1,0 +1,103 @@
+import { Link } from "react-router-dom";
+
+export default function RecentSketches({ isDark }) {
+
+  const sketches = [
+    { img: "https://picsum.photos/500/500?1", title: "Pencil Portrait" },
+    { img: "https://picsum.photos/500/500?2", title: "Charcoal Artwork" },
+    { img: "https://picsum.photos/500/500?3", title: "Color Portrait" },
+    { img: "https://picsum.photos/500/500?4", title: "Realistic Pencil Sketch" },
+    { img: "https://picsum.photos/500/500?5", title: "Couple Portrait" },
+    { img: "https://picsum.photos/500/500?6", title: "Charcoal Portrait" }
+  ];
+
+  return (
+    <div className="mt-40">
+
+      {/* Title */}
+      <div className="text-center mb-14">
+
+        <span
+          className={`text-xs px-3 py-1 rounded-full border ${
+            isDark ? "border-neutral-700" : "border-neutral-300"
+          }`}
+        >
+          Recent Work
+        </span>
+
+        <h2
+          className="text-4xl mt-4 font-semibold"
+          style={{ fontFamily: "Playfair Display, serif" }}
+        >
+          Recent Sketches
+        </h2>
+
+        <p
+          className={`mt-3 text-[16px] ${
+            isDark ? "text-neutral-400" : "text-neutral-600"
+          }`}
+        >
+          Some of our latest hand-drawn artworks
+        </p>
+
+      </div>
+
+      {/* Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+
+        {sketches.map((sketch, i) => (
+
+          <div
+            key={i}
+            className={`group overflow-hidden rounded-xl border transition duration-300 ${
+              isDark
+                ? "border-neutral-800 bg-[#111]"
+                : "border-neutral-200 bg-white shadow-sm"
+            }`}
+          >
+
+            <div className="overflow-hidden aspect-square">
+
+              <img
+                src={sketch.img}
+                alt="sketch"
+                loading="lazy"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+
+            </div>
+
+            <div className="p-3">
+
+              <h3 className="text-sm font-medium">
+                {sketch.title}
+              </h3>
+
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
+
+      {/* Button */}
+      <div className="flex justify-center mt-10">
+
+        <Link to="/samples">
+          <button
+            className={`px-5 py-2.5 rounded-full text-sm border ${
+              isDark
+                ? "border-neutral-700 text-white"
+                : "border-neutral-300 text-black"
+            }`}
+          >
+            View Full Gallery
+          </button>
+        </Link>
+
+      </div>
+
+    </div>
+  );
+}

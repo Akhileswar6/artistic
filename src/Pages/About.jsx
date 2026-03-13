@@ -1,4 +1,7 @@
 import { Heart, Award, Star } from "lucide-react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import akhil from "../assets/Akhil.JPG";
 
 export default function About({ isDark }) {
   return (
@@ -8,41 +11,23 @@ export default function About({ isDark }) {
       }`}
       style={{ fontFamily: "Inter, sans-serif" }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-20">
+      <div className="max-w-7xl mx-auto px-6 py-15">
 
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+<motion.div
+  initial={{ opacity: 0, y: 80 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.7 }}
+  className="grid md:grid-cols-[420px_1fr] gap-14 items-center"
+>
+          <div className="relative flex justify-center md:justify-start">
 
-          {/* Artist Image */}
-          <div className="relative">
-
-            <img
-              src="https://images.unsplash.com/photo-1607746882042-944635dfe10e"
-              alt="artist"
-              className="rounded-xl w-[420px] object-cover"
-            />
-
-            {/* Rating Card */}
-            <div
-              className={`absolute -bottom-6 -right-6 rounded-xl shadow-lg p-4 ${
-                isDark ? "bg-[#141414]" : "bg-white"
-              }`}
-            >
-              <div className="flex gap-1 text-yellow-500">
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-              </div>
-
-              <p className="text-sm font-medium mt-1">
-                4.9/5 Rating
-              </p>
-
-              <p className="text-xs text-neutral-500">
-                500+ Reviews
-              </p>
-            </div>
+              <img
+                src={akhil}
+                
+                alt="artist"
+                className="rounded-xl w-[360px] h-[400px] md:w-[420px] object-cover shadow-lg"
+              />
 
           </div>
 
@@ -59,9 +44,9 @@ export default function About({ isDark }) {
 
             <h1
               className="text-4xl font-semibold mt-4"
-              style={{ fontFamily: "Playfair Display, serif" }}
+              style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
             >
-              Aryan Kapoor
+              Akhileswar Sahoo
             </h1>
 
             <p className="mt-2 text-lg">
@@ -82,36 +67,46 @@ export default function About({ isDark }) {
 
             {/* Buttons */}
             <div className="flex gap-4 mt-8">
-
+              
+              <Link to = "/order" style={{ textDecoration: "none" }}>
               <button
-                className={`px-6 py-3 rounded-full font-medium ${
+                className={`px-5 py-1.5 text-[14px] rounded-full transition cursor-pointer ${
                   isDark
                     ? "bg-white text-black"
-                    : "bg-black text-white"
+                    : "bg-black text-white hover:bg-neutral-900"
                 }`}
               >
                 Order a Sketch
               </button>
+              </Link>
 
+              <Link to="/contact" style={{ textDecoration: "none" }}>
               <button
-                className={`px-6 py-3 rounded-full border ${
+                className={`px-5 py-1.5 text-[14px] rounded-full border transition cursor-pointer ${
                   isDark
-                    ? "border-neutral-700"
-                    : "border-neutral-300"
+                    ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                    : "border-neutral-300 text-black shadow-md "
                 }`}
               >
-                Get in Touch
+                Contact Me
               </button>
+              </Link> 
+              
 
             </div>
 
           </div>
           
 
-        </div>
+        </motion.div>
         {/* My Philosophy */}
-<div className="mt-24">
-
+<motion.div
+  initial={{ opacity: 0, y: 80 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.7 }}
+  className="mt-24"
+>
   <h2
     className="text-center text-4xl font-semibold mb-16"
     style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
@@ -205,10 +200,11 @@ export default function About({ isDark }) {
         This is the guiding principle of my work.
       </p>
     </div>
-
-  </div>
-
+    
 </div>
+  </motion.div>
+
+
 
       </div>
     </div>
