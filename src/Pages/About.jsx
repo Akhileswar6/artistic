@@ -14,20 +14,19 @@ export default function About({ isDark }) {
       <div className="max-w-7xl mx-auto px-6 py-15">
 
 <motion.div
-  initial={{ opacity: 0, y: 80 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true }}
-  transition={{ duration: 0.7 }}
+  initial={{ opacity: 0, y: 60 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6 }}
   className="grid md:grid-cols-[420px_1fr] gap-14 items-center"
 >
           <div className="relative flex justify-center md:justify-start">
 
               <img
-                src={akhil}
-                
-                alt="artist"
-                className="rounded-xl w-[360px] h-[400px] md:w-[420px] object-cover shadow-lg"
-              />
+  src={akhil}
+  alt="artist"
+  loading="eager"
+  className="rounded-xl w-[360px] h-[400px] md:w-[420px] object-cover shadow-lg"
+/>
 
           </div>
 
