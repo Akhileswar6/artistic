@@ -228,7 +228,7 @@ export default function Contact({ isDark }) {
       </div>
 
       {/* Divider */}
-      <div className="border-t border-neutral-800 pt-4">
+      <div className={`border-t ${isDark ? "border-neutral-700" : "border-neutral-300"} pt-4`}>
         <p className="text-sm text-neutral-400">
           Follow on Social
         </p>
@@ -258,11 +258,11 @@ export default function Contact({ isDark }) {
     className={`rounded-2xl border p-6 ${
       isDark
         ? "border-orange-600/40 bg-[#1a0d05]"
-        : "border-yellow-400/40 bg-yellow-100"
+        : "border-yellow-400/40 text-yellow-700 shadow-lg"
     }`}
   >
     <h4
-      className="mb-3 flex items-center gap-2 text-[16px] text-yellow-700"
+      className="mb-3 font-semibold flex items-center gap-2 text-[16px] text-yellow-700" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
     >
       <Clock size={16} />
       Working Hours

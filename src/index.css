@@ -2,6 +2,22 @@
 
 
 
+
+::view-transition-new(root) {
+  clip-path: circle(0% at var(--x) var(--y));
+  animation: reveal 0.9s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+}
+
+@keyframes reveal {
+  from {
+    clip-path: circle(0% at var(--x) var(--y));
+  }
+  to {
+    clip-path: circle(160% at var(--x) var(--y));
+  }
+}
+
+
 .scroll-row {
   display: flex;
   gap: 24px;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./Layout/Layout";
 import PolicyNavbar from "./Components/PolicyNavbar";
+import AdminLogin from "./Pages/Admin/AdminLogin";
 
 // Main Pages
 import Home from "./Pages/Home";
@@ -39,6 +40,10 @@ export default function App() {
     >
       <Routes>
 
+<Route
+  path="/admin"
+  element={<AdminLogin isDark={isDark} setIsDark={setIsDark} />}
+/>
         {/* ========================= */}
         {/* MAIN WEBSITE ROUTES */}
         {/* ========================= */}

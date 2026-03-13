@@ -45,7 +45,7 @@ export default function About({ isDark }) {
               className="text-4xl font-semibold mt-4"
               style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
             >
-              Akhileswar Sahoo
+              Akhileswar Kamale
             </h1>
 
             <p className="mt-2 text-lg">

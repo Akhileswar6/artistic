@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import {
-  Sparkles,
   Palette,
   Search,
   CheckCircle,
@@ -9,8 +8,7 @@ import {
   Star,
   Upload,
   Package,
-  Pencil,
-  Smile, 
+ 
   Heart,
   Zap
 } from "lucide-react";
@@ -25,7 +23,7 @@ export default function Home({ isDark }) {
         isDark ? "bg-black text-white" : "bg-white text-black"
       }`} style={{ fontFamily: "Inter, serif" }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-20">
+      <div className="max-w-7xl mx-auto px-6 py-10">
 
         <div className="grid md:grid-cols-2 gap-14 items-center">
 
@@ -33,17 +31,16 @@ export default function Home({ isDark }) {
           <div>
 
             <span
-              className={`flex items-center gap-2 text-sm px-4 py-2 rounded-full border w-fit ${
-                isDark ? "border-neutral-700" : "border-neutral-300"
-              }`}
-            >
-              <Sparkles size={16} />
-              Hand-crafted with love
-            </span>
+            className={`text-xs px-3 py-1 rounded-full border ${
+              isDark ? "border-neutral-700 text-white" : "border-neutral-300 text-neutral-600"
+            }`}
+          >
+            Handcrafted with Love
+          </span>
 
             {/* Heading */}
             <h1
-              className="text-5xl md:text-6xl mt-6 font-semibold leading-tight"
+              className="text-3xl md:text-4xl mt-7 font-semibold leading-tight"
               style={{ fontFamily: "Playfair Display, serif" }}
             >
               Turn Your Photos <br />
@@ -69,7 +66,7 @@ export default function Home({ isDark }) {
             </h1>
 
             <p
-              className={`mt-6 text-lg leading-7 ${
+              className={`mt-6 text-[15px] leading-7 ${
                 isDark ? "text-neutral-400" : "text-neutral-600"
               }`}
             >
@@ -81,17 +78,16 @@ export default function Home({ isDark }) {
             {/* Buttons */}
             <div className="flex gap-4 mt-8">
 
-              <Link to="/order">
-                <button
-                  className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium ${
-                    isDark
-                      ? "bg-white text-black"
-                      : "bg-black text-white"
-                  }`}
-                >
-                  <Palette size={18} />
-                  Order Your Sketch
-                </button>
+              <Link to = "/order" style={{ textDecoration: "none" }}>
+              <button
+                className={`px-5 py-1.5 text-[14px] rounded-full transition cursor-pointer ${
+                  isDark
+                    ? "bg-white text-black"
+                    : "bg-black text-white hover:bg-neutral-900"
+                }`}
+              >
+                <Palette size={18} className="inline-block" /> Order Your Sketch
+              </button>
               </Link>
 
               <Link to="/samples">
