@@ -65,14 +65,14 @@ export default function Contact({ isDark }) {
         </div>
 
         {/* Contact Section */}
-<div className="grid md:grid-cols-3 gap-10">
+<div className="grid md:grid-cols-5 gap-10">
           {/* Form */}
   <motion.div
   initial={{ opacity: 0, x: -80 }}
   whileInView={{ opacity: 1, x: 0 }}
   viewport={{ once: true, amount: 0.2 }}
   transition={{ duration: 0.6 }}
-  className={`md:col-span-2 rounded-2xl border p-8 shadow-lg ${
+  className={`md:col-span-3 rounded-2xl border p-8 shadow-lg ${
     isDark
       ? "bg-[#141414] border-neutral-800"
       : "bg-white border-neutral-200"
@@ -118,7 +118,7 @@ export default function Contact({ isDark }) {
   <div className="mt-4">
     <label className="text-sm block mb-1">Subject *</label>
     <input
-      placeholder="e.g. Question about my order, Custom commission..."
+      placeholder="e.g. Question about my order..."
       className={`w-full p-2 rounded-md border text-sm focus:outline-none  ${
         isDark
           ? "bg-[#1c1c1c] border-neutral-700 placeholder:text-neutral-400   focus:ring-1 focus:ring-white"
@@ -159,7 +159,7 @@ export default function Contact({ isDark }) {
   whileInView={{ opacity: 1, x: 0 }}
   viewport={{ once: true, amount: 0.2 }}
   transition={{ duration: 0.6, delay: 0.2 }}
-  className="space-y-6"
+  className="md:col-span-2 space-y-6"
 >
 
   {/* Contact Details Card */}
