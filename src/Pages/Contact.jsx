@@ -36,7 +36,7 @@ export default function Contact({ isDark }) {
         isDark ? "bg-black text-white" : "bg-[#f6f2ef] text-black"
       }`} style={{ fontFamily: "Inter, sans-serif" }}
     >
-      <div className="max-w-7xl mx-auto px-20 py-16">
+      <div className="max-w-7xl mx-auto px-6 py-20">
 
         {/* Header */}
         <div className="text-center mb-14">
