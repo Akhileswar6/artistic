@@ -74,7 +74,7 @@ export default function ArtStyles({ isDark }) {
               {style.icon}
             </div>
 
-            <h3 className="text-lg font-semibold mb-2">
+            <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
               {style.title}
             </h3>
 

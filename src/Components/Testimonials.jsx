@@ -77,7 +77,7 @@ const testimonials = [
 
 
   return (
-    <div className="mt-32 overflow-hidden">
+    <div className="mt-32 overflow-hidden relative">
 
       {/* Title */}
       <div className="text-center mb-16">
@@ -94,25 +94,39 @@ const testimonials = [
       </div>
 
       {/* TOP ROW */}
+<div
+  className={`pointer-events-none absolute left-0 top-0 h-full w-40 z-10 ${
+    isDark
+      ? "bg-gradient-to-r from-black to-transparent"
+      : "bg-gradient-to-r from-white to-transparent"
+  }`}
+/>
+<div
+  className={`pointer-events-none absolute right-0 top-0 h-full w-40 z-10 ${
+    isDark
+      ? "bg-gradient-to-l from-black to-transparent"
+      : "bg-gradient-to-l from-white to-transparent"
+  }`}
+/>
       <div className="scroll-row scroll-left">
 
         {[...testimonials, ...testimonials].map((t, i) => (
 
-          <div
-            key={i}
-            className={`card ${
-              isDark
-                ? "bg-[#111] border-neutral-800"
-                : "bg-white border-neutral-200 shadow-md"
-            }`}
-          >
+  <div
+  key={i}
+  className={`min-w-[320px] max-w-[320px] border rounded-2xl p-6 flex-shrink-0 transition duration-300 hover:-translate-y-2 ${
+    isDark
+      ? "bg-[#111] border-neutral-700"
+      : "bg-white border-neutral-200 shadow-md"
+  }`}
+>
 
             <div className="flex items-center gap-3 mb-3">
 
               <img src={t.img} className="w-10 h-10 rounded-full" />
 
               <div>
-                <p className="font-semibold">{t.name}</p>
+                <p className="font-semibold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{t.name}</p>
                 <p className="text-sm text-neutral-500">
                   {t.city} · {t.style}
                 </p>
@@ -133,6 +147,7 @@ const testimonials = [
         ))}
 
       </div>
+      
 
       {/* BOTTOM ROW */}
       <div className="scroll-row scroll-right mt-6">
@@ -140,13 +155,13 @@ const testimonials = [
         {[...testimonials, ...testimonials].map((t, i) => (
 
           <div
-            key={i}
-            className={`card ${
-              isDark
-                ? "bg-[#111] border-neutral-800"
-                : "bg-white border-neutral-200 shadow-md"
-            }`}
-          >
+  key={i}
+  className={`min-w-[320px] max-w-[320px] border rounded-2xl p-6 flex-shrink-0 transition duration-300 hover:-translate-y-2 ${
+    isDark
+      ? "bg-[#111] border-neutral-700"
+      : "bg-white border-neutral-200 shadow-md"
+  }`}
+>
 
             <div className="flex items-center gap-3 mb-3">
 

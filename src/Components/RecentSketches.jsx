@@ -85,16 +85,17 @@ export default function RecentSketches({ isDark }) {
       <div className="flex justify-center mt-10">
 
         <Link to="/samples">
-          <button
-            className={`px-5 py-2.5 rounded-full text-sm border ${
-              isDark
-                ? "border-neutral-700 text-white"
-                : "border-neutral-300 text-black"
-            }`}
-          >
-            View Full Gallery
-          </button>
-        </Link>
+                <button
+                  className={`px-6 py-2 text-[13px] rounded-full border bg-[#1c1c1c] transition cursor-pointer ${
+                isDark
+                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                  : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100"
+              }`}
+                >
+                  
+                  View Full Gallery
+                </button>
+              </Link>
 
       </div>
 

@@ -65,12 +65,11 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
             {/* LOGO */}
             <NavLink
               to="/"
-              className={`text-[22px] ${
-                isDark ? "text-white" : "text-black"
-              }`}
-              style={{ fontFamily: "Playfair Display, serif" }}
-            >
-              artistic
+                className={`text-[25px] font-semibold ${
+                  isDark ? "text-white" : "text-black"
+                }`} style={{fontFamily: "Bricolage Grotesque, sans-serif"}}
+              >
+                artistic
             </NavLink>
           </div>
 
