@@ -68,3 +68,23 @@
     transform: translateX(0);
   }
 }
+
+
+
+@keyframes flow {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+@keyframes stepGlow {
+  0%, 100% {
+    box-shadow: 0 0 0px rgba(251,146,60,0);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(226, 226, 225, 0.4);
+  }
+}
