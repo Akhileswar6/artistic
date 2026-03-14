@@ -23,7 +23,7 @@ export default function Home({ isDark }) {
         isDark ? "bg-black text-white" : "bg-white text-black"
       }`} style={{ fontFamily: "Inter, serif" }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-6 py-4">
 
         <div className="grid md:grid-cols-2 gap-14 items-center">
 
@@ -80,25 +80,25 @@ export default function Home({ isDark }) {
 
               <Link to = "/order" style={{ textDecoration: "none" }}>
               <button
-                className={`px-5 py-1.5 text-[14px] rounded-full transition cursor-pointer ${
+                className={`px-6 py-2 text-[14px] rounded-full transition cursor-pointer ${
                   isDark
                     ? "bg-white text-black"
                     : "bg-black text-white hover:bg-neutral-900"
                 }`}
               >
-                <Palette size={18} className="inline-block" /> Order Your Sketch
+                 Order Your Sketch
               </button>
               </Link>
 
               <Link to="/samples">
                 <button
-                  className={`flex items-center gap-2 px-6 py-3 rounded-full border text-sm ${
-                    isDark
-                      ? "border-neutral-700"
-                      : "border-neutral-300"
-                  }`}
+                  className={`px-6 py-2 text-[13px] rounded-full border bg-[#1c1c1c] transition cursor-pointer ${
+                isDark
+                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                  : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100"
+              }`}
                 >
-                  <Search size={18} />
+                  
                   View Samples
                 </button>
               </Link>
@@ -132,23 +132,23 @@ export default function Home({ isDark }) {
 
             <img
               src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-              className="rounded-xl h-64 w-full object-cover"
+              className="rounded-xl h-64 w-full object-cover shadow-lg"
             />
 
             <img
               src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-              className="rounded-xl h-40 w-full object-cover"
+              className="rounded-xl h-40 w-full object-cover shadow-lg"
             />
 
             <img
               src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-              className="rounded-xl h-40 w-full object-cover"
+              className="rounded-xl h-40 w-full object-cover shadow-lg"
             />
 
-            <img
-              src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-              className="rounded-xl h-64 w-full object-cover"
-            />
+           <img
+  src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
+  className="rounded-xl h-74 w-full object-cover -mt-24 shadow-lg"
+/>
 
             {/* Rating Card */}
             <div
@@ -215,16 +215,25 @@ export default function Home({ isDark }) {
 
   </div>
 
-  {/* Steps */}
-  <div className="grid md:grid-cols-4 gap-6">
 
+  {/* Steps */}
+<div className="relative grid md:grid-cols-4 gap-16">
+      {/* Flow Line */}
+<div
+  className={`hidden md:block absolute top-1/2 left-[8%] right-[8%] h-[2px] -translate-y-1/2 ${
+    isDark ? "bg-neutral-800" : "bg-neutral-300"
+  }`}
+/>
+
+    {/* Animated Moving Line */}
+<div className="hidden md:block absolute top-1/2 left-[8%] h-[2px] w-[18%] -translate-y-1/2 bg-orange-400 animate-[flow_4s_linear_infinite]" />
     {/* Step 1 */}
     <div
-      className={`relative border rounded-2xl p-8 ${
+      className={`relative z-10 border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
         isDark
           ? "border-neutral-800 bg-[#141414]"
-          : "border-neutral-200 bg-white shadow-md"
-      }`}
+          : "border-neutral-300 bg-white shadow-lg"
+      } animate-[stepGlow_6s_infinite]`}
     >
 
       <div className="flex items-center justify-between mb-6">
@@ -241,7 +250,7 @@ export default function Home({ isDark }) {
 
       </div>
 
-      <h3 className="text-lg font-semibold mb-2">
+      <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
         Upload Your Photo
       </h3>
 
@@ -254,11 +263,11 @@ export default function Home({ isDark }) {
 
     {/* Step 2 */}
     <div
-      className={`relative border rounded-2xl p-8 ${
+      className={`relative z-10 border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
         isDark
           ? "border-neutral-800 bg-[#141414]"
-          : "border-neutral-200 bg-white shadow-md"
-      }`}
+          : "border-neutral-300 bg-white shadow-lg"
+      } animate-[stepGlow_6s_infinite_1.5s]`}
     >
 
       <div className="flex items-center justify-between mb-6">
@@ -275,7 +284,7 @@ export default function Home({ isDark }) {
 
       </div>
 
-      <h3 className="text-lg font-semibold mb-2">
+      <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
         Artist Reviews
       </h3>
 
@@ -288,11 +297,11 @@ export default function Home({ isDark }) {
 
     {/* Step 3 */}
     <div
-      className={`relative border rounded-2xl p-8 ${
+      className={`relative z-10  border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
         isDark
           ? "border-neutral-800 bg-[#141414]"
-          : "border-neutral-200 bg-white shadow-md"
-      }`}
+          : "border-neutral-300 bg-white shadow-lg"
+      } animate-[stepGlow_6s_infinite_3s]`}
     >
 
       <div className="flex items-center justify-between mb-6">
@@ -309,7 +318,7 @@ export default function Home({ isDark }) {
 
       </div>
 
-      <h3 className="text-lg font-semibold mb-2">
+      <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
         Sketch Created
       </h3>
 
@@ -322,11 +331,11 @@ export default function Home({ isDark }) {
 
     {/* Step 4 */}
     <div
-      className={`relative border rounded-2xl p-8 ${
+      className={`relative z-10 border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
         isDark
           ? "border-neutral-800 bg-[#141414]"
-          : "border-neutral-200 bg-white shadow-md"
-      }`}
+          : "border-neutral-300 bg-white shadow-lg"
+      } animate-[stepGlow_6s_infinite_4.5s]`}
     >
 
       <div className="flex items-center justify-between mb-6">
@@ -343,7 +352,7 @@ export default function Home({ isDark }) {
 
       </div>
 
-      <h3 className="text-lg font-semibold mb-2">
+      <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
         Delivered to You
       </h3>
 
@@ -356,6 +365,10 @@ export default function Home({ isDark }) {
   </div>
 
 </div>
+
+
+  
+  
        <Testimonials isDark={isDark} />
 
        <RecentSketches isDark={isDark} />
@@ -403,37 +416,37 @@ export default function Home({ isDark }) {
     </p>
 
     {/* Artist */}
-    <p className="mt-6 font-semibold text-lg">
-      — Aryan Kapoor, Artist
+    <p className="mt-6 font-semibold text-[20px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+      — Akhileswar Kamale, Artist
     </p>
 
     {/* Buttons */}
     <div className="flex justify-center gap-4 mt-10">
 
-      <Link to="/order">
-        <button
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium ${
-            isDark
-              ? "bg-white text-black"
-              : "bg-black text-white"
-          }`}
-        >
-          <Zap size={16} />
-          Start Your Order
-        </button>
-      </Link>
+      <Link to = "/order" style={{ textDecoration: "none" }}>
+              <button
+                className={`px-6 py-2 text-[14px] rounded-xl transition cursor-pointer ${
+                  isDark
+                    ? "bg-white text-black"
+                    : "bg-black text-white hover:bg-neutral-900"
+                }`}
+              >
+                Start your Order
+              </button>
+              </Link>
 
       <Link to="/about">
-        <button
-          className={`px-6 py-3 rounded-xl border text-sm ${
-            isDark
-              ? "border-neutral-700 text-white"
-              : "border-neutral-300 text-black"
-          }`}
-        >
-          Meet the Artist
-        </button>
-      </Link>
+                <button
+                  className={`px-6 py-2 text-[13px] rounded-xl border bg-[#1c1c1c] transition cursor-pointer ${
+                isDark
+                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                  : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100"
+              }`}
+                >
+                  
+                  Meet Artist
+                </button>
+              </Link>
 
     </div>
 
