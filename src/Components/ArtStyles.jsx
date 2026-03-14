@@ -1,27 +1,31 @@
-import { Pencil, Palette, Smile } from "lucide-react";
+import pencil from "../assets/Pencil.webp";
+import charcoal from "../assets/Charcoal.jpg";
+import sketching from "../assets/Sketch.webp";
+import caricature from "../assets/Caricature.jpg";
+
 
 export default function ArtStyles({ isDark }) {
 
   const styles = [
     {
-      icon: "✏️",
-      title: "Pencil",
-      desc: "Classic fine-line pencil portraits"
+      icon: pencil,
+      title: "Realistic Pencil Portraits",
+      desc: "Realistic portraits created with fine graphite pencil strokes capturing detailed expressions and textures."
     },
     {
-      icon: "🖤",
-      title: "Charcoal",
-      desc: "Rich, dramatic charcoal artwork"
+      icon: charcoal,
+      title: "Charcoal Art",
+      desc: "Bold and dramatic artwork using charcoal to create deep shadows and striking contrast."
     },
     {
-      icon: "🎨",
-      title: "Color",
-      desc: "Vibrant watercolor & color pencil"
+      icon: sketching,
+      title: "Sketching",
+      desc: "Quick and expressive sketches that capture the subject with minimal strokes and natural flow."
     },
     {
-      icon: "😄",
+      icon: caricature,
       title: "Caricature",
-      desc: "Fun exaggerated caricatures"
+      desc: "Fun and exaggerated portraits highlighting unique facial features in a playful artistic style."
     }
   ];
 
@@ -63,16 +67,20 @@ export default function ArtStyles({ isDark }) {
 
           <div
             key={i}
-            className={`rounded-2xl border p-8 text-center transition hover:-translate-y-2 ${
+            className={`rounded-2xl border p-5 text-center transition hover:-translate-y-2 ${
               isDark
                 ? "bg-[#111] border-neutral-800"
                 : "bg-white border-neutral-200 shadow-md"
             }`}
           >
 
-            <div className="text-4xl mb-4">
-              {style.icon}
-            </div>
+<div className="mb-4 overflow-hidden rounded-xl">
+  <img
+    src={style.icon}
+    alt={style.title}
+    className="w-full h-70 object-cover"
+  />
+</div>
 
             <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
               {style.title}

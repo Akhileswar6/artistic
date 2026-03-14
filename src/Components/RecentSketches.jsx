@@ -1,14 +1,18 @@
 import { Link } from "react-router-dom";
+import pencil from "../assets/Pencil.webp";
+import charcoal from "../assets/Charcoal.jpg";
+import sketching from "../assets/Sketch.webp";
 
 export default function RecentSketches({ isDark }) {
 
   const sketches = [
-    { img: "https://picsum.photos/500/500?1", title: "Pencil Portrait" },
-    { img: "https://picsum.photos/500/500?2", title: "Charcoal Artwork" },
-    { img: "https://picsum.photos/500/500?3", title: "Color Portrait" },
-    { img: "https://picsum.photos/500/500?4", title: "Realistic Pencil Sketch" },
-    { img: "https://picsum.photos/500/500?5", title: "Couple Portrait" },
-    { img: "https://picsum.photos/500/500?6", title: "Charcoal Portrait" }
+    { img: pencil, title: "Pencil Portrait" },
+    { img: charcoal, title: "Charcoal Artwork" },
+    { img: sketching, title: "Sketch" },
+    { img: pencil, title: "Caricature" },
+    { img: charcoal, title: "Charcoal Artwork" },
+    { img: sketching, title: "Sketch" },
+
   ];
 
   return (
