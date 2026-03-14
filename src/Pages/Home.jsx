@@ -378,21 +378,21 @@ export default function Home({ isDark }) {
 
 
 {/* OUR PROMISE */}
-<div className="mt-32 flex justify-center">
+<div className="mt-32 flex justify-center mb-20">
 
   <div
     className={`max-w-4xl w-full rounded-3xl border px-12 py-16 text-center ${
       isDark
-        ? "bg-black border-neutral-800"
+        ? "bg-[#111] border-neutral-800"
         : "bg-white border-neutral-300 shadow-md"
     }`}
   >
 
     {/* Icon */}
     <div className="flex justify-center mb-6">
-      <Heart
+      <Heart 
         size={36}
-        className={isDark ? "text-white" : "text-black"}
+        className={isDark ? "text-pink-500" : "text-red-500"}
       />
     </div>
 
@@ -406,7 +406,7 @@ export default function Home({ isDark }) {
 
     {/* Quote */}
     <p
-      className={`max-w-2xl mx-auto text-lg italic leading-8 ${
+      className={`max-w-2xl mx-auto text-[18px] italic leading-8 ${
         isDark ? "text-neutral-300" : "text-neutral-700"
       }`}
     >
