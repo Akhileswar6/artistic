@@ -91,13 +91,12 @@ export default function Footer({ isDark }) {
               <li><Link to="/gallery" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Gallery</Link></li>
               <li><Link to="/order" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Order Now</Link></li>
               <li><Link to="/about" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>About Artist</Link></li>
-              <li><Link to="/contact" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Contact Us</Link></li>
             </ul>
           </div>
 
 
           <div>
-            <h4 className="font-medium mb-3 text-[17px]" style={{fontFamily: "Bricolage Grotesque, sans-serif"}} >
+            <h4 className="font-medium mb-3 text-[17px]"  style={{fontFamily: "Bricolage Grotesque, sans-serif"}} >
               Policies
             </h4>
             <ul className={`space-y-3 text-[13px] ${
