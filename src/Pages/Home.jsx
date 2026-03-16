@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import {
   Palette,
   Search,
@@ -16,19 +17,107 @@ import Testimonials from "../Components/Testimonials";
 import ArtStyles from "../Components/ArtStyles";
 import RecentSketches from "../Components/RecentSketches";
 
+
+
+
+
+
+const customers = [
+{
+id:1,
+name:"Rahul",
+style:"Charcoal Portrait",
+image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+review:"Amazing artwork! The portrait looks exactly like the photo."
+},
+{
+id:2,
+name:"Priya",
+style:"Pencil Portrait",
+image:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
+review:"Beautiful drawing and great detailing."
+},
+{
+id:3,
+name:"Arjun",
+style:"Color Portrait",
+image:"https://images.unsplash.com/photo-1544725176-7c40e5a71c5e",
+review:"Loved the colors and shading!"
+}
+]
+
 export default function Home({ isDark }) {
+
+
+
+
+
+const heroRef = useRef(null);
+const [showHero, setShowHero] = useState(false);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setShowHero(true);
+      }
+    },
+    { threshold: 0.3 }
+  );
+
+  if (heroRef.current) {
+    observer.observe(heroRef.current);
+  }
+
+  return () => observer.disconnect();
+}, []);
+
+
+
+
+
+
+
+
+const stepsRef = useRef(null);
+const [visibleSteps, setVisibleSteps] = useState(false);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setVisibleSteps(true);
+      }
+    },
+    { threshold: 0.3 }
+  );
+
+  if (stepsRef.current) {
+    observer.observe(stepsRef.current);
+  }
+
+  return () => observer.disconnect();
+}, []);
+
+
+
+
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${
         isDark ? "bg-black text-white" : "bg-white text-black"
       }`} style={{ fontFamily: "Inter, serif" }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <div className="max-w-7xl mx-auto px-5 py-4">
 
-        <div className="grid md:grid-cols-2 gap-14 items-center">
+        <div ref={heroRef} className="grid md:grid-cols-2 gap-14 items-center">
 
           {/* LEFT SIDE */}
-          <div>
+          <div
+className={`transition-all duration-1000
+${showHero ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-20"}
+`}
+>
 
             <span
             className={`text-xs px-3 py-1 rounded-full border ${
@@ -40,7 +129,7 @@ export default function Home({ isDark }) {
 
             {/* Heading */}
             <h1
-              className="text-3xl md:text-4xl mt-7 font-semibold leading-tight"
+              className=" md:text-4xl mt-4 font-semibold leading-tight"
               style={{ fontFamily: "Playfair Display, serif" }}
             >
               Turn Your Photos <br />
@@ -66,7 +155,7 @@ export default function Home({ isDark }) {
             </h1>
 
             <p
-              className={`mt-6 text-[15px] leading-7 ${
+              className={`mt-4 text-[14px] leading-6 ${
                 isDark ? "text-neutral-400" : "text-neutral-600"
               }`}
             >
@@ -109,17 +198,17 @@ export default function Home({ isDark }) {
             <div className="flex gap-6 mt-8 text-sm">
 
               <span className="flex items-center gap-2">
-                <CheckCircle size={18} className="text-green-500" />
+                <CheckCircle size={19} className="text-green-500" />
                 100% Hand-drawn
               </span>
 
               <span className="flex items-center gap-2">
-                <Shield size={18} className="text-blue-500" />
+                <Shield size={19} className="text-blue-500" />
                 Satisfaction Guarantee
               </span>
 
               <span className="flex items-center gap-2">
-                <Truck size={18} className="text-purple-500" />
+                <Truck size={19} className="text-purple-500" />
                 Pan-India Delivery
               </span>
 
@@ -127,65 +216,85 @@ export default function Home({ isDark }) {
 
           </div>
 
-          {/* RIGHT SIDE IMAGE GRID */}
-          <div className="grid grid-cols-2 gap-4 relative">
+<div className="grid grid-cols-2 gap-4 relative">
 
-            <img
-              src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-              className="rounded-xl h-64 w-full object-cover shadow-lg"
-            />
 
-            <img
-              src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-              className="rounded-xl h-40 w-full object-cover shadow-lg"
-            />
-
-            <img
-              src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-              className="rounded-xl h-40 w-full object-cover shadow-lg"
-            />
-
-           <img
+  {/* Image 1 — SCALE IN */}
+  <img
   src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-  className="rounded-xl h-74 w-full object-cover -mt-24 shadow-lg"
+  className={`rounded-xl h-64 w-full object-cover shadow-lg mt-5
+  transition-all duration-700 float-slow
+  ${showHero ? "scale-100 opacity-100" : "scale-75 opacity-0"}
+  `}
 />
 
-            {/* Rating Card */}
-            <div
-              className={`absolute bottom-8 left-8 p-4 rounded-xl border ${
-                isDark
-                  ? "bg-black border-neutral-700"
-                  : "bg-white border-neutral-300 shadow-lg"
-              }`}
-            >
-              <div className="flex gap-1 text-yellow-400">
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-                <Star size={16} fill="currentColor" />
-              </div>
+  {/* Image 2 — FADE IN */}
+  <img
+  src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
+  className={`rounded-xl h-40 w-full object-cover shadow-lg mt-5
+  transition-all duration-700 delay-200 float-slow
+  ${showHero ? "opacity-100" : "opacity-0"}
+  `}
+/>
 
-              <p className="text-sm font-medium mt-1">
-                100+ Happy Customers
-              </p>
+  {/* Image 3 — SLIDE UP */}
+  <img
+  src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
+  className={`rounded-xl h-40 w-full object-cover shadow-lg
+  transition-all duration-700 delay-300 float-slow
+  ${showHero ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}
+  `}
+/>
 
-              <p className="text-xs opacity-70">
-                4.9/5 average rating
-              </p>
-            </div>
+  {/* Image 4 — ZOOM */}
+  <img
+  src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
+  className={`rounded-xl h-72 w-full object-cover -mt-24 shadow-lg
+  transition-all duration-700 delay-500 float-slow
+  ${showHero ? "scale-100 opacity-100" : "scale-125 opacity-0"}
+  `}
+/>
 
-          </div>
+  {/* Rating Card */}
+  <div
+    className={`absolute bottom-1 left-8 p-4 rounded-xl border mt-4
+    transition-all duration-700 delay-700
+    ${showHero ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}
+    ${
+      isDark
+        ? "bg-black border-neutral-700"
+        : "bg-white border-neutral-300 shadow-lg"
+    }`}
+  >
+    <div className="flex gap-1 text-yellow-400">
+      <Star size={16} fill="currentColor" />
+      <Star size={16} fill="currentColor" />
+      <Star size={16} fill="currentColor" />
+      <Star size={16} fill="currentColor" />
+      <Star size={16} fill="currentColor" />
+    </div>
 
+    <p className="text-sm font-medium mt-1">
+      100+ Happy Customers
+    </p>
 
+    <p className="text-xs opacity-70">
+      4.9/5 average rating
+    </p>
+  </div>
 
-          
-
+</div>
         </div>
 
 
+    
+
+
+
+
+
 {/* HOW IT WORKS */}
-<div className="mt-32">
+<div ref={stepsRef} className="mt-32">
 
   {/* Title */}
   <div className="text-center mb-16">
@@ -217,23 +326,16 @@ export default function Home({ isDark }) {
 
 
   {/* Steps */}
-<div className="relative grid md:grid-cols-4 gap-16">
-      {/* Flow Line */}
-<div
-  className={`hidden md:block absolute top-1/2 left-[8%] right-[8%] h-[2px] -translate-y-1/2 ${
-    isDark ? "bg-neutral-800" : "bg-neutral-300"
-  }`}
-/>
+  <div className="grid md:grid-cols-4 gap-10">
 
-    {/* Animated Moving Line */}
-<div className="hidden md:block absolute top-1/2 left-[8%] h-[2px] w-[18%] -translate-y-1/2 bg-orange-400 animate-[flow_4s_linear_infinite]" />
     {/* Step 1 */}
     <div
-      className={`relative z-10 border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
-        isDark
-          ? "border-neutral-800 bg-[#141414]"
-          : "border-neutral-300 bg-white shadow-lg"
-      } animate-[stepGlow_6s_infinite]`}
+      className={`border rounded-2xl p-8 transition-all duration-700
+      ${visibleSteps ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-20"}
+      ${isDark
+        ? "border-neutral-800 bg-[#141414]"
+        : "border-neutral-300 bg-white shadow-lg"
+      }`}
     >
 
       <div className="flex items-center justify-between mb-6">
@@ -250,7 +352,10 @@ export default function Home({ isDark }) {
 
       </div>
 
-      <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+      <h3
+        className="text-lg font-semibold mb-2"
+        style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+      >
         Upload Your Photo
       </h3>
 
@@ -263,11 +368,12 @@ export default function Home({ isDark }) {
 
     {/* Step 2 */}
     <div
-      className={`relative z-10 border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
-        isDark
-          ? "border-neutral-800 bg-[#141414]"
-          : "border-neutral-300 bg-white shadow-lg"
-      } animate-[stepGlow_6s_infinite_1.5s]`}
+      className={`border rounded-2xl p-8 transition-all duration-700 delay-200
+      ${visibleSteps ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-20"}
+      ${isDark
+        ? "border-neutral-800 bg-[#141414]"
+        : "border-neutral-300 bg-white shadow-lg"
+      }`}
     >
 
       <div className="flex items-center justify-between mb-6">
@@ -284,7 +390,10 @@ export default function Home({ isDark }) {
 
       </div>
 
-      <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+      <h3
+        className="text-lg font-semibold mb-2"
+        style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+      >
         Artist Reviews
       </h3>
 
@@ -297,11 +406,12 @@ export default function Home({ isDark }) {
 
     {/* Step 3 */}
     <div
-      className={`relative z-10  border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
-        isDark
-          ? "border-neutral-800 bg-[#141414]"
-          : "border-neutral-300 bg-white shadow-lg"
-      } animate-[stepGlow_6s_infinite_3s]`}
+      className={`border rounded-2xl p-8 transition-all duration-700 delay-300
+      ${visibleSteps ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-20"}
+      ${isDark
+        ? "border-neutral-800 bg-[#141414]"
+        : "border-neutral-300 bg-white shadow-lg"
+      }`}
     >
 
       <div className="flex items-center justify-between mb-6">
@@ -318,7 +428,10 @@ export default function Home({ isDark }) {
 
       </div>
 
-      <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+      <h3
+        className="text-lg font-semibold mb-2"
+        style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+      >
         Sketch Created
       </h3>
 
@@ -331,11 +444,12 @@ export default function Home({ isDark }) {
 
     {/* Step 4 */}
     <div
-      className={`relative z-10 border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl ${
-        isDark
-          ? "border-neutral-800 bg-[#141414]"
-          : "border-neutral-300 bg-white shadow-lg"
-      } animate-[stepGlow_6s_infinite_4.5s]`}
+      className={`border rounded-2xl p-8 transition-all duration-700 delay-500
+      ${visibleSteps ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-20"}
+      ${isDark
+        ? "border-neutral-800 bg-[#141414]"
+        : "border-neutral-300 bg-white shadow-lg"
+      }`}
     >
 
       <div className="flex items-center justify-between mb-6">
@@ -352,7 +466,10 @@ export default function Home({ isDark }) {
 
       </div>
 
-      <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+      <h3
+        className="text-lg font-semibold mb-2"
+        style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+      >
         Delivered to You
       </h3>
 
@@ -367,11 +484,103 @@ export default function Home({ isDark }) {
 </div>
 
 
+
   
-  
+  <RecentSketches isDark={isDark} />
+
+
+
+
+
+{/* Customer Showcase */}
+<section className={`mt-32 ${isDark ? "text-white" : "text-black"}`}>
+
+<div className="text-center mb-12">
+
+<span
+className={`text-xs px-3 py-1 rounded-full border ${
+isDark
+? "border-neutral-700 text-white"
+: "border-neutral-300 text-neutral-600"
+}`}
+>
+Customer Showcase
+</span>
+
+<h2
+className="text-4xl mt-4 font-semibold"
+style={{ fontFamily: "Playfair Display, serif" }}
+>
+Happy Customers & Their Portraits
+</h2>
+
+<p className="text-gray-500 max-w-xl mx-auto mt-3 text-[15px]">
+Real portraits created for our amazing customers.
+See how reference photos turn into beautiful artworks.
+</p>
+
+</div>
+
+{/* Showcase Grid */}
+
+<div className="grid md:grid-cols-3 gap-10">
+
+{customers.map((c)=> (
+
+<div
+key={c.id}
+className={`rounded-xl overflow-hidden shadow-lg transition hover:scale-[1.02] cursor-pointer
+${isDark ? "bg-[#111]" : "bg-white"}`}
+>
+
+<img
+src={c.image}
+className="w-full h-[260px] object-cover"
+/>
+
+<div className="p-5">
+
+<h3 className="font-semibold text-lg">
+{c.name}
+</h3>
+
+<p className="text-sm text-gray-500">
+{c.style}
+</p>
+
+<p className="text-sm mt-3 text-gray-400">
+"{c.review}"
+</p>
+
+</div>
+
+</div>
+
+))}
+
+</div>
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        <Testimonials isDark={isDark} />
 
-       <RecentSketches isDark={isDark} />
+       
 
 
 <ArtStyles isDark={isDark} />

@@ -43,29 +43,6 @@ const artworks = [
 
 
 
-const customers = [
-{
-id:1,
-name:"Rahul",
-style:"Charcoal Portrait",
-image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
-review:"Amazing artwork! The portrait looks exactly like the photo."
-},
-{
-id:2,
-name:"Priya",
-style:"Pencil Portrait",
-image:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
-review:"Beautiful drawing and great detailing."
-},
-{
-id:3,
-name:"Arjun",
-style:"Color Portrait",
-image:"https://images.unsplash.com/photo-1544725176-7c40e5a71c5e",
-review:"Loved the colors and shading!"
-}
-]
 
 export default function Gallery({ isDark }) {
   const [selected, setSelected] = useState(null);
@@ -171,75 +148,6 @@ className="w-full object-cover transition duration-500 group-hover:scale-105"
 </div>
 
 
-{/* Customer Showcase */}
-<section className={`mt-32 ${isDark ? "text-white" : "text-black"}`}>
-
-<div className="text-center mb-12">
-
-<span
-className={`text-xs px-3 py-1 rounded-full border ${
-isDark
-? "border-neutral-700 text-white"
-: "border-neutral-300 text-neutral-600"
-}`}
->
-Customer Showcase
-</span>
-
-<h2
-className="text-4xl mt-4 font-semibold"
-style={{ fontFamily: "Playfair Display, serif" }}
->
-Happy Customers & Their Portraits
-</h2>
-
-<p className="text-gray-500 max-w-xl mx-auto mt-3 text-[15px]">
-Real portraits created for our amazing customers.
-See how reference photos turn into beautiful artworks.
-</p>
-
-</div>
-
-{/* Showcase Grid */}
-
-<div className="grid md:grid-cols-3 gap-10">
-
-{customers.map((c)=> (
-
-<div
-key={c.id}
-className={`rounded-xl overflow-hidden shadow-lg transition hover:scale-[1.02] cursor-pointer
-${isDark ? "bg-[#111]" : "bg-white"}`}
->
-
-<img
-src={c.image}
-className="w-full h-[260px] object-cover"
-/>
-
-<div className="p-5">
-
-<h3 className="font-semibold text-lg">
-{c.name}
-</h3>
-
-<p className="text-sm text-gray-500">
-{c.style}
-</p>
-
-<p className="text-sm mt-3 text-gray-400">
-"{c.review}"
-</p>
-
-</div>
-
-</div>
-
-))}
-
-</div>
-
-</section>
 
 
   {/* Modal */}
