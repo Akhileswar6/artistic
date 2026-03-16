@@ -10,6 +10,7 @@ import Gallery from "./Pages/Gallery";
 import Order from "./Pages/Order";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
+import CustomerShowcase from "./Pages/CustomerShowcase";
 
 // Policy Pages
 import Terms from "./Pages/Policies/TermsOfService";
@@ -53,6 +54,7 @@ export default function App() {
           <Route path="/order" element={<Order isDark={isDark} />} />
           <Route path="/about" element={<About isDark={isDark} />} />
           <Route path="/contact" element={<Contact isDark={isDark} />} />
+          <Route path="/showcase" element={<CustomerShowcase isDark={isDark} />} />
         </Route>
 
         {/* ========================= */}
