@@ -88,3 +88,29 @@
     box-shadow: 0 0 10px rgba(226, 226, 225, 0.4);
   }
 }
+
+
+
+
+
+@keyframes floatSlow {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+
+.float-slow:nth-child(1) { animation-delay: 1s; }
+.float-slow:nth-child(2) { animation-delay: 1s; }
+.float-slow:nth-child(3) { animation-delay: 2s; }
+.float-slow:nth-child(4) { animation-delay: 2s; }
