@@ -96,6 +96,9 @@ useEffect(() => {
 }, []);
 
 
+
+
+
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${
@@ -173,7 +176,7 @@ ${showHero ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-20"}
               </button>
               </Link>
 
-              <Link to="/samples">
+              <Link to="/gallery">
                 <button
                   className={`px-6 py-2 text-[13px] rounded-full border bg-[#1c1c1c] transition cursor-pointer ${
                 isDark
@@ -492,7 +495,7 @@ ${showHero ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-20"}
 
 
 
-<CustomerShowcase isDark={isDark}/>
+<CustomerShowcase isDark={isDark}  limit={4}/>
 
 
 

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Heart, X } from "lucide-react";
 import LikeButton from "../Components/LikeButton";
 
+import { customers } from "../Data/CustomerData";
+
 const artworks = [
   {
     id: 1,
@@ -62,6 +64,9 @@ export default function Gallery({ isDark }) {
       [id]: !prev[id],
     }));
   };
+
+
+  const galleryCustomers = customers.slice(0, 7);
 
   return (
     <section
@@ -148,6 +153,35 @@ className="w-full object-cover transition duration-500 group-hover:scale-105"
 </div>
 
 
+<h2 className="text-3xl font-semibold text-center mt-20 mb-10">
+  Customer Showcase
+</h2>
+
+<div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+
+  {galleryCustomers.map((c) => (
+
+   <div
+  key={c.id}
+  className={`rounded-xl overflow-hidden shadow-lg
+  ${isDark ? "bg-[#111]" : "bg-white"}`}
+>
+      <img
+  src={c.image}
+  alt={c.name}
+  className="w-full h-[250px] object-cover"
+/>
+
+      <div className="p-4">
+        <h3 className="font-semibold">{c.name}</h3>
+        <p className="text-xs opacity-70">{c.style}</p>
+      </div>
+
+    </div>
+
+  ))}
+
+</div>
 
 
   {/* Modal */}
