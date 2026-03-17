@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export default function CustomerShowcase({ isDark }) {
+import { customers } from "../Data/CustomerData";
 
+export default function CustomerShowcase({ isDark, limit = 4 }) {
 
   const gridRef = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -26,37 +27,7 @@ export default function CustomerShowcase({ isDark }) {
 
 
 
-  const customers = [
-    {
-      id: 1,
-      name: "Rahul",
-      style: "Charcoal Portrait",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
-      review: "Amazing artwork! The portrait looks exactly like the photo."
-    },
-    {
-      id: 2,
-      name: "Priya",
-      style: "Pencil Portrait",
-      image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
-      review: "Beautiful drawing and great detailing."
-    },
-    {
-      id: 3,
-      name: "Arjun",
-      style: "Color Portrait",
-      image: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e",
-      review: "Loved the colors and shading!"
-    },
-    {
-      id: 4,
-      name: "Sneha",
-      style: "Realistic Sketch",
-      image: "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7",
-      review: "Super realistic! I was impressed with every detail."
-    }
-  ];
-
+const previewCustomers = customers.slice(0, limit);
 
   return (
 
@@ -77,7 +48,7 @@ export default function CustomerShowcase({ isDark }) {
         </h2>
 
         <Link
-          to="/samples"
+          to="/gallery"
           className={`absolute right-0 bottom-0 hidden sm:flex items-center gap-1 text-[13px] transition hover:translate-x-1 ${
             isDark
               ? "text-neutral-400 hover:text-neutral-200"
@@ -92,7 +63,7 @@ export default function CustomerShowcase({ isDark }) {
       {/* Grid */}
       <div ref={gridRef} className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
 
-        {customers.map((c) => (
+        {previewCustomers.map((c) => (
 
           <div
   key={c.id}
