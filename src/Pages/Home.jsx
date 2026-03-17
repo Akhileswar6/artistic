@@ -16,35 +16,11 @@ import {
 import Testimonials from "../Components/Testimonials";
 import ArtStyles from "../Components/ArtStyles";
 import RecentSketches from "../Components/RecentSketches";
+import CustomerShowcase from "../Components/CustomerShowcase";
 
 
 
 
-
-
-const customers = [
-{
-id:1,
-name:"Rahul",
-style:"Charcoal Portrait",
-image:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
-review:"Amazing artwork! The portrait looks exactly like the photo."
-},
-{
-id:2,
-name:"Priya",
-style:"Pencil Portrait",
-image:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
-review:"Beautiful drawing and great detailing."
-},
-{
-id:3,
-name:"Arjun",
-style:"Color Portrait",
-image:"https://images.unsplash.com/photo-1544725176-7c40e5a71c5e",
-review:"Loved the colors and shading!"
-}
-]
 
 export default function Home({ isDark }) {
 
@@ -100,6 +76,24 @@ useEffect(() => {
 }, []);
 
 
+
+const promiseRef = useRef(null);
+const [visible, setVisible] = useState(false);
+
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setVisible(true);
+      }
+    },
+    { threshold: 0.2 }
+  );
+
+  if (promiseRef.current) observer.observe(promiseRef.current);
+
+  return () => observer.disconnect();
+}, []);
 
 
   return (
@@ -492,84 +486,13 @@ ${showHero ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-20"}
 
 
 
-{/* Customer Showcase */}
-<section className={`mt-32 ${isDark ? "text-white" : "text-black"}`}>
-
-<div className="text-center mb-12">
-
-<span
-className={`text-xs px-3 py-1 rounded-full border ${
-isDark
-? "border-neutral-700 text-white"
-: "border-neutral-300 text-neutral-600"
-}`}
->
-Customer Showcase
-</span>
-
-<h2
-className="text-4xl mt-4 font-semibold"
-style={{ fontFamily: "Playfair Display, serif" }}
->
-Happy Customers & Their Portraits
-</h2>
-
-<p className="text-gray-500 max-w-xl mx-auto mt-3 text-[15px]">
-Real portraits created for our amazing customers.
-See how reference photos turn into beautiful artworks.
-</p>
-
-</div>
-
-{/* Showcase Grid */}
-
-<div className="grid md:grid-cols-3 gap-10">
-
-{customers.map((c)=> (
-
-<div
-key={c.id}
-className={`rounded-xl overflow-hidden shadow-lg transition hover:scale-[1.02] cursor-pointer
-${isDark ? "bg-[#111]" : "bg-white"}`}
->
-
-<img
-src={c.image}
-className="w-full h-[260px] object-cover"
-/>
-
-<div className="p-5">
-
-<h3 className="font-semibold text-lg">
-{c.name}
-</h3>
-
-<p className="text-sm text-gray-500">
-{c.style}
-</p>
-
-<p className="text-sm mt-3 text-gray-400">
-"{c.review}"
-</p>
-
-</div>
-
-</div>
-
-))}
-
-</div>
-
-</section>
 
 
 
 
 
 
-
-
-
+<CustomerShowcase isDark={isDark}/>
 
 
 
@@ -587,8 +510,13 @@ className="w-full h-[260px] object-cover"
 
 
 {/* OUR PROMISE */}
-<div className="mt-32 flex justify-center mb-20">
-
+<div
+  ref={promiseRef}
+  className={`mt-32 flex justify-center mb-20
+  transition-all duration-1000 transform
+  ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}
+`}
+>
   <div
     className={`max-w-4xl w-full rounded-3xl border px-12 py-16 text-center ${
       isDark
