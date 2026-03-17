@@ -66,7 +66,7 @@ export default function RecentSketches({ isDark }) {
         {/* Desktop Button */}
         <Link
           to="/samples"
-           className={`absolute right-0 bottom-0 hidden sm:flex items-center gap-1 text-[13px] transition hover:translate-x-1 ${
+           className={`absolute right-6 bottom-0 hidden sm:flex items-center gap-1 text-[13px] transition hover:translate-x-1 ${
               isDark
                 ? "text-neutral-400 hover:text-neutral-200"
                 : "text-black hover:text-gray-700"
@@ -101,7 +101,7 @@ export default function RecentSketches({ isDark }) {
       {/* Sketch Grid */}
       <div
         ref={gridRef}
-className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-7xl mx-auto"      >
+className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto"      >
 
         {sketches.map((sketch, i) => (
 
@@ -119,7 +119,7 @@ className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-7xl mx-aut
           >
 
             {/* Image */}
-            <div className="overflow-hidden h-70">
+            <div className="overflow-hidden h-80">
 
               <img
                 src={sketch.img}
