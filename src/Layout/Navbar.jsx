@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { NavLink, useLocation, Link } from "react-router-dom";
+import { NavLink, useLocation, Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "../Components/ThemeToggle";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X, ChevronDown, LogOut, Bell, User } from "lucide-react";
 import SignIn from "../Pages/SignIn";
+import toast from "react-hot-toast";
+
+
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -12,12 +15,64 @@ const navLinks = [
   { label: "Contact", path: "/contact" },
 ];
 
-export default function Navbar({ isDark, setIsDark }) {
+export default function Navbar({ isDark, setIsDark, setUser }) {
   const location = useLocation();
   const [activeStyle, setActiveStyle] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
   const linkRefs = useRef([]);
+  const [localuser, setLocalUser ] = useState(null);
+  const [ showDropdown, setShowDropdown ] = useState(false);
+  const dropdownRef = useRef();
+  const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+useEffect(() => {
+  const fetchUnread = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (!user) return;
+
+      const res = await fetch(
+        `http://localhost:5000/api/notifications/${user._id}`
+      );
+
+      const data = await res.json();
+
+      const unread = data.filter((n) => !n.read).length;
+      setUnreadCount(unread);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchUnread();
+}, [location.pathname]);
+
+
+
+  useEffect(() => {
+  function handleClickOutside(e) {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      setShowDropdown(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+
+  useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+  setLocalUser(JSON.parse(storedUser));
+}
+}, []);
+
 
   const activeIndex = navLinks.findIndex(
     (link) => link.path === location.pathname
@@ -108,28 +163,133 @@ export default function Navbar({ isDark, setIsDark }) {
           <div className="flex items-center gap-6">
             <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
 
-            <button
-              onClick={() => setShowSignIn(true)}
-              className={`px-4 py-1.5 text-[13px] rounded-lg border bg-[#1c1c1c] transition cursor-pointer ${
-                isDark
-                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
-                  : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100"
-              }`}
-            >
-              Sign In
-            </button>
+{localuser ? (
+  <div className="relative" ref={dropdownRef}>
+    
+    {/* Avatar */}
+    <div
+  onClick={() => setShowDropdown(!showDropdown)}
+  className="flex items-center gap-1 cursor-pointer"
+>
+  {localuser.profilePic ? (
+    <img
+      src={localuser.profilePic}
+      alt="profile"
+      className="w-9 h-9 rounded-full object-cover border"
+    />
+  ) : (
+    <div className={`w-9 h-9 border rounded-full bg-black text-white flex items-center justify-center ${isDark ? "bg-neutral-800 text-white border-neutral-700 hover:bg-neutral-900" : "border-neutral-300"}`}>
+      {localuser.fullName?.charAt(0).toUpperCase()}
+    </div>
+  )}
 
-            <Link
-              to="/order"
-              className={`px-4 py-1.5 flex gap-2 rounded-lg text-[13px] border transition-all duration-200 ${
-                isDark
-                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
-                  : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100 "
-              }`}
-            >
-              <ShoppingBag size={18} />
-              Order Now
-            </Link>
+  {/* 🔽 Down Arrow */}
+  <ChevronDown
+    size={18}
+    className={`transition-transform duration-200 ${
+      showDropdown ? "rotate-180" : "rotate-0"
+    } ${isDark ? "text-white" : "text-black"}`}
+  />
+</div>
+
+    {/* Dropdown */}
+    {showDropdown && (
+      <div
+        className={`absolute right-0 mt-4 w-50 rounded-xl shadow-lg border z-50 ${
+          isDark
+            ? "bg-[#1c1c1c] border-neutral-700 text-white"
+            : "bg-white border-neutral-200 text-black"
+        }`}
+      >
+        <ul className="text-sm">
+          <li onClick = {() => {
+            navigate("/account");
+            setShowDropdown(false);
+          }}
+          className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white " : "hover:bg-neutral-200"}`}>
+            <User size={18} />
+            Account
+          </li>
+          <li onClick = {() => {
+            navigate("/orders");
+            setShowDropdown(false);
+          }}
+          className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white " : "hover:bg-neutral-200"}`}>
+            <ShoppingBag size={18} />
+            Orders
+          </li>
+
+          <li
+  onClick={() => {
+    navigate("/notifications");
+    setShowDropdown(false);
+  }}
+  className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${
+    isDark ? "text-white" : "text-black hover:bg-neutral-200"
+  }`}
+>
+  {/* 🔔 Icon + Red Dot */}
+  <div className="relative">
+    <Bell size={18} />
+
+    {unreadCount > 0 && (
+      <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+    )}
+  </div>
+
+  Notifications
+</li>
+
+          <hr className={`my-1 border-neutral-300 ${isDark ? "dark:border-neutral-700" : ""}`} />
+
+          <li
+            onClick={() => {
+              localStorage.removeItem("user");
+              setLocalUser(null);
+              setShowDropdown(false);
+              setUser(null);
+              toast.success("Logged out successfully");
+
+setTimeout(() => {
+  navigate("/");
+}, 800);
+          
+            }}
+           className={`px-5 py-2 flex gap-4 rounded-xl text-red-500 cursor-pointer ${isDark ? "text-red-500 " : "text-red-500 dark:hover:bg-neutral-200 hover:text-red-500"}`}>
+          
+               <LogOut size={18} />
+               Logout
+          </li>
+        </ul>
+      </div>
+    )}
+  </div>
+) : ( 
+  <button
+    onClick={() => setShowSignIn(true)}
+    className={`px-4 py-1.5 text-[13px] rounded-lg border transition cursor-pointer ${
+      isDark
+        ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+        : "bg-white text-black border-neutral-300 shadow-lg hover:bg-gray-100"
+    }`}
+  >
+    Sign In
+  </button>
+)}
+
+            {!localuser && (
+  <Link
+    to="/order"
+    className={`px-4 py-1.5 flex gap-2 rounded-lg text-[13px] border transition-all duration-200 ${
+      isDark
+        ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+        : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100"
+    }`}
+  >
+    <ShoppingBag size={18} />
+    Order Now
+  </Link>
+)}
           </div>
         </div>
 
@@ -245,12 +405,13 @@ export default function Navbar({ isDark, setIsDark }) {
 
 
       {/* ================= SIGN IN MODAL ================= */}
-      {showSignIn && (
-        <SignIn
-          onClose={() => setShowSignIn(false)}
-          isDark={isDark}
-        />
-      )}
+        {showSignIn && (
+  <SignIn
+    onClose={() => setShowSignIn(false)}
+    isDark={isDark}
+    setUser={setLocalUser}
+  />
+)}
     </>
   );
 }
