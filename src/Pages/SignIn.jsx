@@ -94,7 +94,7 @@ const handleVerify = async () => {
 const storedType = localStorage.getItem("authType");
 const isSignup = storedType === "signup";
 
-    const res = await fetch("https://artistic-cjd8.onrender.com/api/auth/verify-otp", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/verify-otp`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -148,7 +148,7 @@ const handleGoogleSignIn = async () => {
     const token = await user.getIdToken();
 
     // Send token to backend
-    const res = await fetch("https://artistic-cjd8.onrender.com/api/auth/google", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -414,7 +414,7 @@ const handleGoogleSignIn = async () => {
           setLoading(true);
 
           try {
-            const res = await fetch("https://artistic-cjd8.onrender.com/api/auth/send-otp", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/send-otp`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
@@ -592,7 +592,7 @@ if (res.ok) {
         setLoading(true);
 
         try {
-          const res = await fetch("https://artistic-cjd8.onrender.com/api/auth/send-otp", {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/send-otp`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
