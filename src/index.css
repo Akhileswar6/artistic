@@ -3,20 +3,6 @@
 
 
 
-::view-transition-new(root) {
-  clip-path: circle(0% at var(--x) var(--y));
-  animation: reveal 0.9s cubic-bezier(0.2, 0, 0.2, 1) forwards;
-}
-
-@keyframes reveal {
-  from {
-    clip-path: circle(0% at var(--x) var(--y));
-  }
-  to {
-    clip-path: circle(160% at var(--x) var(--y));
-  }
-}
-
 
 .scroll-row {
   display: flex;
@@ -113,7 +99,60 @@
 .float-slow:nth-child(1) { animation-delay: 1s; }
 .float-slow:nth-child(2) { animation-delay: 1s; }
 .float-slow:nth-child(3) { animation-delay: 2s; }
+
 .float-slow:nth-child(4) { animation-delay: 2s; }
+
+/* CUSTOM SCROLLBAR */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a; 
+  border-left: 1px solid #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262626; 
+  border-radius: 10px;
+  border: 2px solid #0a0a0a; /* Creates padding effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #404040; 
+}
+
+/* Scrollbar Buttons (Arrows) */
+::-webkit-scrollbar-button:vertical:decrement {
+  background: #1c1c1c url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 12 12' fill='%23404040'%3E%3Cpath d='M6 3l4 5H2z'/%3E%3C/svg%3E") no-repeat center;
+  height: 12px;
+  border-left: 1px solid #1a1a1a;
+}
+::-webkit-scrollbar-button:vertical:increment {
+  background: #212121 url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 12 12' fill='%23404040'%3E%3Cpath d='M6 9L2 4h8z'/%3E%3C/svg%3E") no-repeat center;
+  height: 12px;
+  border-left: 1px solid #1a1a1a;
+}
+::-webkit-scrollbar-button:vertical:decrement:hover,
+::-webkit-scrollbar-button:vertical:increment:hover {
+  background-color: #1a1a1a;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #373636 #0a0a0a;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
 
 
 
