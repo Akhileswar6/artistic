@@ -1,7 +1,43 @@
 import { Mail, Phone, MapPin, Clock, Instagram, Twitter, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Contact({ isDark }) {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.fullName || !formData.email || !formData.message) {
+      return toast.error("Please fill in all required fields");
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(data.message);
+        setFormData({ fullName: "", email: "", subject: "", message: "" });
+      } else {
+        toast.error(data.message);
+      }
+    } catch (err) {
+      toast.error("Failed to send message");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const faq = [
     {
@@ -39,8 +75,12 @@ export default function Contact({ isDark }) {
       <div className="max-w-7xl mx-auto px-6 py-20">
 
         {/* Header */}
-        <div className="text-center mb-14">
-
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
+        >
           <span
             className={`text-xs px-3 py-1 rounded-full border ${
               isDark ? "border-neutral-700 text-white" : "border-neutral-300 text-neutral-600"
@@ -62,105 +102,111 @@ export default function Contact({ isDark }) {
             Have a question about an order or want to discuss a custom sketch?
             We're here to help.
           </p>
-        </div>
+        </motion.div>
 
         {/* Contact Section */}
-<div className="grid md:grid-cols-5 gap-10">
+        <div className="grid md:grid-cols-5 gap-10">
           {/* Form */}
-  <motion.div
-  initial={{ opacity: 0, x: -80 }}
-  whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: true, amount: 0.2 }}
-  transition={{ duration: 0.6 }}
-  className={`md:col-span-3 rounded-2xl border p-8 shadow-lg ${
-    isDark
-      ? "bg-[#141414] border-neutral-800"
-      : "bg-white border-neutral-200"
-  }`}
->
-  <h3
-    className="text-[20px] mb-6 font-medium"
-    style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-  >
-    Send a Message
-  </h3>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="md:col-span-3"
+          >
+            <form onSubmit={handleSubmit} className={`rounded-2xl border p-8 shadow-lg h-full ${
+              isDark
+                ? "bg-[#141414] border-neutral-800"
+                : "bg-white border-neutral-200"
+            }`}>
+              <h3
+                className="text-[20px] mb-6 font-medium"
+                style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+              >
+                Send a Message
+              </h3>
 
-  {/* Name + Email */}
-  <div className="grid md:grid-cols-2 gap-5">
+              {/* Name + Email */}
+              <div className="grid md:grid-cols-2 gap-5">
+                <div>
+                  <label className="text-sm block mb-1">Name *</label>
+                  <input
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    placeholder="Your name"
+                    className={`w-full p-2 rounded-md border text-sm focus:outline-none ${
+                      isDark
+                        ? "bg-[#1c1c1c] border-neutral-700 placeholder:text-neutral-400 focus:ring-1 focus:ring-white"
+                        : "bg-white border-gray-300 shadow-md placeholder:text-neutral-500 focus:ring-1 focus:ring-black"
+                    }`}
+                  />
+                </div>
 
-    <div>
-      <label className="text-sm block mb-1">Name *</label>
-      <input
-        placeholder="Your name"
-        className={`w-full p-2 rounded-md border text-sm focus:outline-none ${
-          isDark
-            ? "bg-[#1c1c1c] border-neutral-700 placeholder:text-neutral-400   focus:ring-1 focus:ring-white"
-            : "bg-white border-gray-300 shadow-md placeholder:text-neutral-500 focus:ring-1 focus:ring-black"
-        }`}
-      />
-    </div>
+                <div>
+                  <label className="text-sm block mb-1">Email *</label>
+                  <input
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="you@example.com"
+                    className={`w-full p-2 rounded-md border text-sm focus:outline-none ${
+                      isDark
+                        ? "bg-[#1c1c1c] border-neutral-700 placeholder:text-neutral-400 focus:ring-1 focus:ring-white"
+                        : "bg-white border-gray-300 shadow-md placeholder:text-neutral-500 focus:ring-1 focus:ring-black"
+                    }`}
+                  />
+                </div>
+              </div>
 
-    <div>
-      <label className="text-sm block mb-1">Email *</label>
-      <input
-        placeholder="you@example.com"
-        className={`w-full p-2 rounded-md border text-sm focus:outline-none ${
-          isDark
-            ? "bg-[#1c1c1c] border-neutral-700 placeholder:text-neutral-400   focus:ring-1 focus:ring-white"
-            : "bg-white border-gray-300 shadow-md placeholder:text-neutral-500 focus:ring-1 focus:ring-black"
-        }`}
-      />
-    </div>
+              {/* Subject */}
+              <div className="mt-4">
+                <label className="text-sm block mb-1">Subject *</label>
+                <input
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  placeholder="e.g. Question about my order..."
+                  className={`w-full p-2 rounded-md border text-sm focus:outline-none  ${
+                    isDark
+                      ? "bg-[#1c1c1c] border-neutral-700 placeholder:text-neutral-400 focus:ring-1 focus:ring-white"
+                      : "bg-white border-gray-300 shadow-md placeholder:text-neutral-500 focus:ring-1 focus:ring-black"
+                  }`}
+                />
+              </div>
 
-  </div>
+              {/* Message */}
+              <div className="mt-4">
+                <label className="text-sm block mb-1">Message *</label>
+                <textarea
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  rows="4"
+                  placeholder="Tell us how we can help..."
+                  className={`w-full p-2 rounded-md border text-sm focus:outline-none ${
+                    isDark
+                      ? "bg-[#1c1c1c] border-neutral-700 placeholder:text-neutral-400 focus:ring-1 focus:ring-white"
+                      : "bg-white border-gray-300 shadow-md placeholder:text-neutral-500 focus:ring-1 focus:ring-black"
+                  }`}
+                />
+              </div>
 
-  {/* Subject */}
-  <div className="mt-4">
-    <label className="text-sm block mb-1">Subject *</label>
-    <input
-      placeholder="e.g. Question about my order..."
-      className={`w-full p-2 rounded-md border text-sm focus:outline-none  ${
-        isDark
-          ? "bg-[#1c1c1c] border-neutral-700 placeholder:text-neutral-400   focus:ring-1 focus:ring-white"
-          : "bg-white border-gray-300 shadow-md placeholder:text-neutral-500 focus:ring-1 focus:ring-black"
-      }`}
-    />
-  </div>
+              <button
+                disabled={loading}
+                className={`mt-6 w-full py-2.5 rounded-md text-sm font-medium transition-all duration-300 ${
+                  isDark
+                    ? "bg-white text-black hover:bg-neutral-200"
+                    : "bg-black text-white shadow-md hover:bg-neutral-800"
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                {loading ? "Sending..." : "Send Message"}
+              </button>
+            </form>
+          </motion.div>
 
-  {/* Message */}
-  <div className="mt-4">
-    <label className="text-sm block mb-1">Message *</label>
-    <textarea
-      rows="4"
-      placeholder="Tell us how we can help..."
-      className={`w-full p-2 rounded-md border text-sm focus:outline-none ${
-        isDark
-          ? "bg-[#1c1c1c] border-neutral-700 placeholder:text-neutral-400 focus:ring-1 focus:ring-white"
-          : "bg-white border-gray-300 shadow-md placeholder:text-neutral-500 focus:ring-1 focus:ring-black"
-      }`}
-    />
-  </div>
-
-  <button
-    className={`mt-6 w-full py-2.5 rounded-md text-sm font-medium ${
-      isDark
-        ? "bg-white text-black"
-        : "bg-black text-white shadow-md"
-    }`}
-  >
-    Send Message
-  </button>
-</motion.div>
-
-
-{/* Contact Details */}
-<motion.div
-  initial={{ opacity: 0, x: 80 }}
-  whileInView={{ opacity: 1, x: 0 }}
-  viewport={{ once: true, amount: 0.2 }}
-  transition={{ duration: 0.6, delay: 0.2 }}
-  className="md:col-span-2 space-y-6"
->
+          {/* Contact Details */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="md:col-span-2 space-y-6"
+          >
 
   {/* Contact Details Card */}
   <div
