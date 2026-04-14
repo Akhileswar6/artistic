@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Heart, X } from "lucide-react";
-import LikeButton from "../Components/LikeButton";
+import { Heart, X, Download, Share2 } from "lucide-react";
 
 import { customers } from "../Data/CustomerData";
 
@@ -9,10 +8,8 @@ const artworks = [
     id: 1,
     title: "Charcoal Face",
     category: "Charcoal",
-    image:
-      "https://images.unsplash.com/photo-1549880338-65ddcdfd017b",
-    description:
-      "A detailed charcoal portrait capturing calm emotion and soft expressions.",
+    image: "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?auto=format&fit=crop&w=600&q=80",
+    description: "A detailed charcoal portrait capturing calm emotion and soft expressions.",
     medium: "Charcoal on Paper",
     size: "A3",
     time: "6 days",
@@ -21,10 +18,8 @@ const artworks = [
     id: 2,
     title: "Pencil Portrait",
     category: "Pencil",
-    image:
-      "https://images.unsplash.com/photo-1549880338-65ddcdfd017b",
-    description:
-      "Fine pencil portrait focusing on facial realism and depth.",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+    description: "Fine pencil portrait focusing on facial realism and depth.",
     medium: "Graphite Pencil",
     size: "A4",
     time: "4 days",
@@ -33,23 +28,100 @@ const artworks = [
     id: 3,
     title: "Color Portrait",
     category: "Color",
-    image:
-      "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620",
-    description:
-      "Hand colored portrait with vibrant tones and realistic shading.",
+    image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=600&q=80",
+    description: "Hand colored portrait with vibrant tones and realistic shading.",
     medium: "Color Pencil",
     size: "A3",
     time: "7 days",
   },
+  {
+    id: 4,
+    title: "Expressive Caricature",
+    category: "Caricature",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80",
+    description: "A fun, exaggerated caricature bringing out the subject's unique features.",
+    medium: "Digital & Ink",
+    size: "A4",
+    time: "2 days",
+  },
+  {
+    id: 5,
+    title: "Vintage Charcoal",
+    category: "Charcoal",
+    image: "https://images.unsplash.com/photo-1616874535244-73aea5daadb4?auto=format&fit=crop&w=600&q=80",
+    description: "Classic vintage style charcoal sketch with heavy contrast.",
+    medium: "Charcoal on Canvas",
+    size: "A2",
+    time: "8 days",
+  },
+  {
+    id: 6,
+    title: "Vibrant Color Spread",
+    category: "Color",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+    description: "A vivid splash of colored pencils blending realism and abstract.",
+    medium: "Color Pencil",
+    size: "A3",
+    time: "5 days",
+  },
+  {
+    id: 7,
+    title: "Monochrome Pencil",
+    category: "Pencil",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80",
+    description: "Subtle grading and soft blending on this graphite masterpiece.",
+    medium: "Graphite Pencil",
+    size: "A5",
+    time: "3 days",
+  },
+  {
+    id: 8,
+    title: "Playful Caricature",
+    title: "Old Man Winter",
+    category: "Charcoal",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d", 
+    description: "Deep shadows on an expressive face.",
+    medium: "Charcoal",
+    size: "A3",
+    time: "8 days",
+    aspect: "aspect-[3/4]",
+  },
+  {
+    id: 9,
+    title: "Sunset Boulevard",
+    category: "Color",
+    image: "https://images.unsplash.com/photo-1502224562085-6dfe2fdeadad", 
+    description: "Vibrant color palette displaying urban sunset.",
+    medium: "Color Pencil",
+    size: "A3",
+    time: "5 days",
+    aspect: "aspect-square",
+  },
+  {
+    id: 10,
+    title: "Gentle Smile",
+    category: "Pencil",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb", 
+    description: "Soft focus portrait sketch.",
+    medium: "Graphite Pencil",
+    size: "A4",
+    time: "3 days",
+    aspect: "aspect-[4/5]",
+  }
 ];
-
-
-
 
 export default function Gallery({ isDark }) {
   const [selected, setSelected] = useState(null);
-  const [likes, setLikes] = useState({});
   const [filter, setFilter] = useState("All");
+  const [likes, setLikes] = useState({});
+
+  const toggleLike = (e, id) => {
+    e.stopPropagation();
+    setLikes((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   const categories = ["All", "Pencil", "Charcoal", "Color", "Caricature"];
 
@@ -58,53 +130,66 @@ export default function Gallery({ isDark }) {
       ? artworks
       : artworks.filter((art) => art.category === filter);
 
-  const toggleLike = (id) => {
-    setLikes((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  const galleryCustomers = customers.slice(0, 8);
+
+  const handleDownload = (e, imageUrl, title) => {
+    e.stopPropagation();
+    // Simulate Download
+    const link = document.createElement("a");
+    link.href = imageUrl;
+    link.download = `${title.replace(/\s+/g, "_")}_Artistic.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
-
-  const galleryCustomers = customers.slice(0, 7);
+  const handleShare = (e) => {
+    e.stopPropagation();
+    if (navigator.share) {
+      navigator.share({
+        title: "Artistic Gallery",
+        text: "Check out this amazing artwork!",
+        url: window.location.href,
+      }).catch((err) => console.log("Error sharing:", err));
+    }
+  };
 
   return (
     <section
-      className={`py-20 px-10 transition  ${
-        isDark ? "bg-[#0b0b0b] text-white" : "bg-[#f6f3ef] text-black"
-      }`} style={{ fontFamily: "Inter, sans-serif" }}
+      className={`py-20 px-6 sm:px-10 min-h-screen transition duration-500 ${
+        isDark ? "bg-[#0a0a0a] text-white" : "bg-[#f9f8f6] text-black"
+      }`} 
+      style={{ fontFamily: "Inter, sans-serif" }}
     >
-      {/* Title */}
-      <div className="text-center mb-12 flex flex-col items-center gap-4">
-
+      {/* Title Section */}
+      <div className="text-center mb-14 flex flex-col items-center gap-4">
         <span
-            className={`text-xs px-3 py-1 text-center rounded-full border ${
-              isDark ? "border-neutral-700 text-white" : "border-neutral-300 text-neutral-600"
-            }`}
-          >
-            Our Gallery
-          </span>
+          className={`text-xs px-4 py-1.5 font-medium tracking-wide rounded-full border ${
+            isDark ? "border-neutral-700 text-neutral-300 bg-neutral-800/50" : "border-neutral-300 text-neutral-600 bg-white"
+          }`}
+        >
+          Curated Collection
+        </span>
 
-        <h1 className="text-4xl font-semibold mb-3" style={{ fontFamily: "Playfair Display, serif" }}>  
-          Artist Gallery & Customer Showcase
+        <h1 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight" style={{ fontFamily: "Playfair Display, serif" }}>  
+          Artist Gallery
         </h1>
 
-        <p className="text-gray-500 max-w-xl mx-auto text-[15px]">
-          Browse our collection of hand-drawn artworks. Every piece is
-          unique, crafted with care and skill.
+        <p className={`max-w-xl mx-auto text-[16px] ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+          Discover our rich collection of hand-drawn artworks. Each piece is crafted with distinct styles, ensuring every detail is perfectly captured.
         </p>
       </div>
 
-      {/* Filter Buttons */}
-      <div className="flex flex-wrap gap-3 justify-center mb-12">
+      {/* Modern Filter Pills */}
+      <div className="flex flex-wrap gap-3 justify-center mb-14">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setFilter(cat)}
-            className={`px-3.5 py-1.5 rounded-lg border transition text-sm cursor-pointer ${
+            className={`px-5 py-2.5 rounded-full border transition-all duration-300 text-sm font-medium cursor-pointer shadow-sm ${
               filter === cat
-                ? "bg-neutral-600 text-white border-neutral-600 transition hover:bg-neutral-700"
-                : "border-gray-400 hover:bg-neutral-300 hover:text-black transition hover:border-gray-500"
+                ? (isDark ? "bg-white text-black border-white" : "bg-black text-white border-black")
+                : (isDark ? "border-neutral-700 text-neutral-300 hover:bg-neutral-800" : "border-neutral-300 text-neutral-600 hover:bg-neutral-100")
             }`}
           >
             {cat}
@@ -112,210 +197,184 @@ export default function Gallery({ isDark }) {
         ))}
       </div>
 
- {/* Masonry Gallery */}
-<div className="columns-1 sm:columns-2 md:columns-3 lg:columns-3 gap-8">
-
-{filtered.map((art) => (
-
-<div
-key={art.id}
-onClick={() => setSelected(art)}
-className={`mb-8 break-inside-avoid cursor-pointer group rounded-xl overflow-hidden shadow-lg transition
-${isDark ? "bg-[#111] text-white" : "bg-white text-black"}`}
->
-
-{/* Image */}
-<div className="overflow-hidden">
-<img
-src={art.image}
-alt={art.title}
-className="w-full object-cover transition duration-500 group-hover:scale-105"
-/>
-</div>
-
-{/* Content */}
-<div className="flex justify-between items-center p-4">
-
-<p className="font-medium text-[15px]">
-{art.title}
-</p>
-
-<div onClick={(e)=>e.stopPropagation()}>
-<LikeButton id={art.id}/>
-</div>
-
-</div>
-
-</div>
-
-))}
-
-</div>
-
-
-<h2 className="text-3xl font-semibold text-center mt-20 mb-10">
-  Customer Showcase
-</h2>
-
-<div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
-
-  {galleryCustomers.map((c) => (
-
-   <div
-  key={c.id}
-  className={`rounded-xl overflow-hidden shadow-lg
-  ${isDark ? "bg-[#111]" : "bg-white"}`}
->
-      <img
-  src={c.image}
-  alt={c.name}
-  className="w-full h-[250px] object-cover"
-/>
-
-      <div className="p-4">
-        <h3 className="font-semibold">{c.name}</h3>
-        <p className="text-xs opacity-70">{c.style}</p>
-      </div>
-
-    </div>
-
-  ))}
-
-</div>
-
-
-  {/* Modal */}
-{selected && (
-  <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6 z-50">
-
-
-    <div
-      className={`rounded-2xl max-w-6xl w-full grid md:grid-cols-2 overflow-hidden shadow-2xl transition
-      ${isDark ? "bg-[#000] text-white" : "bg-white text-black"}`}
-    >
-
-      {/* Artwork Image */}
-      <div className="relative">
-        <img
-          src={selected.image}
-          className="w-full h-full object-cover"
-          alt={selected.title}
-        />
-      </div>
-
-      {/* Artwork Details */}
-      <div className="p-10 relative flex flex-col justify-between">
-
-        {/* Close Button */}
-        <button
-          onClick={() => setSelected(null)}
-          className={`absolute top-5 right-5 transition 
-          ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-black"}`}
-        >
-          <X size={24} />
-        </button>
-
-        <div>
-
-          {/* Title */}
-          <h2 className="text-3xl font-bold mb-1">
-            {selected.title}
-          </h2>
-
-          {/* Category */}
-          <p
-            className={`mb-4 ${
-              isDark ? "text-gray-400" : "text-gray-500"
-            }`}
+      {/* Pinterest-Style Masonry Layout */}
+      <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4 max-w-[1400px] mx-auto">
+        {filtered.map((art) => (
+          <div
+            key={art.id}
+            onClick={() => setSelected(art)}
+            className={`relative break-inside-avoid cursor-pointer group rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 w-full ${art.aspect} ${isDark ? "bg-neutral-900" : "bg-neutral-200"}`}
           >
-            {selected.category} Artwork
-          </p>
+            {/* Image */}
+            <img
+              src={art.image}
+              alt={art.title}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
 
-          {/* Description */}
-          <p
-            className={`mb-6 leading-relaxed ${
-              isDark ? "text-gray-300" : "text-gray-600"
-            }`}
-          >
-            {selected.description}
-          </p>
+            {/* Immersive Hover Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+              
+              {/* Top Bar Actions */}
+              <div className="flex justify-between items-start">
+                <button 
+                  onClick={handleShare}
+                  className="bg-white/20 backdrop-blur-md hover:bg-white/40 text-white p-2 rounded-full transition-colors"
+                  title="Share"
+                >
+                  <Share2 size={16} />
+                </button>
+                <button 
+                  onClick={(e) => toggleLike(e, art.id)} 
+                  className="bg-white/20 backdrop-blur-md rounded-full p-2 hover:bg-white/40 transition-colors group/like"
+                  title="Like"
+                >
+                  <Heart size={18} className={`transition-all duration-300 transform ${likes[art.id] ? "fill-red-500 text-red-500 scale-110" : "fill-transparent text-white group-hover/like:scale-110"}`} />
+                </button>
+              </div>
 
-          {/* Artwork Info */}
-          <div className="grid grid-cols-2 gap-6 mb-6">
-
-            <div>
-              <p className={`${isDark ? "text-gray-500" : "text-gray-400"} text-sm`}>
-                Medium
-              </p>
-              <p className="font-semibold">
-                {selected.medium}
-              </p>
+              {/* Bottom Content (Title & Download) */}
+              <div className="flex justify-between items-end transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                <div>
+                  <p className="text-white font-bold text-lg drop-shadow-md leading-tight">{art.title}</p>
+                  <p className="text-white/80 text-xs font-medium tracking-wide mt-1 uppercase">{art.category}</p>
+                </div>
+                
+                <button 
+                  onClick={(e) => handleDownload(e, art.image, art.title)}
+                  className="bg-white/90 hover:bg-white text-black p-2.5 rounded-full transition shadow-lg hover:scale-105"
+                  title="Download Image"
+                >
+                  <Download size={18} strokeWidth={2.5} />
+                </button>
+              </div>
             </div>
-
-            <div>
-              <p className={`${isDark ? "text-gray-500" : "text-gray-400"} text-sm`}>
-                Size
-              </p>
-              <p className="font-semibold">
-                {selected.size}
-              </p>
-            </div>
-
-            <div>
-              <p className={`${isDark ? "text-gray-500" : "text-gray-400"} text-sm`}>
-                Time Taken
-              </p>
-              <p className="font-semibold">
-                {selected.time}
-              </p>
-            </div>
-
-            <div>
-              <p className={`${isDark ? "text-gray-500" : "text-gray-400"} text-sm`}>
-                Artist
-              </p>
-              <p className="font-semibold">
-                Akhileswar Kamale
-              </p>
-            </div>
-
           </div>
-
-        </div>
-
-        {/* Buttons */}
-        <div className="flex gap-4 flex-wrap">
-
-          {/* Instagram */}
-          <a
-            href="https://instagram.com/linesbyakhileswar"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded-lg font-medium transition"
-          >
-            View on Instagram
-          </a>
-
-          {/* Order Button */}
-          <button
-            className={`px-6 py-3 rounded-lg font-medium transition border
-            ${
-              isDark
-                ? "border-gray-600 hover:bg-gray-800"
-                : "border-gray-300 hover:bg-gray-100"
-            }`}
-          >
-            Order Similar Artwork
-          </button>
-
-        </div>
-
+        ))}
       </div>
 
-    </div>
+      {/* Customer Showcase */}
+      <div className="mt-32 max-w-[1400px] mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 tracking-tight" style={{ fontFamily: "Playfair Display, serif" }}>
+          Loved by Customers
+        </h2>
 
-  </div>
-)}
+        <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+          {galleryCustomers.map((c) => (
+            <div
+              key={c.id}
+              className={`break-inside-avoid rounded-2xl overflow-hidden shadow-sm group
+              ${isDark ? "bg-[#111] border border-neutral-800" : "bg-white border border-neutral-100"}`}
+            >
+              <img
+                src={c.image}
+                alt={c.name}
+                className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="p-5">
+                <h3 className="font-bold text-lg mb-1">{c.name}</h3>
+                <p className={`text-sm mb-3 ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>{c.style} Style</p>
+                <p className={`text-sm italic ${isDark ? "text-neutral-300" : "text-neutral-600"}`}>"{c.review}"</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Premium Detailed Modal */}
+      {selected && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 opacity-100 animate-in fade-in duration-300">
+          <div
+            className={`rounded-3xl max-w-6xl w-full max-h-[90vh] overflow-y-auto flex flex-col md:flex-row shadow-2xl relative
+            ${isDark ? "bg-[#0d0d0d] text-white" : "bg-white text-black"}`}
+          >
+            {/* Close Button Mobile/Global */}
+            <button
+              onClick={() => setSelected(null)}
+              className="absolute top-4 right-4 z-10 bg-black/20 backdrop-blur-md hover:bg-black/40 text-white p-2 rounded-full transition"
+            >
+              <X size={20} />
+            </button>
+
+            {/* Artwork Image View */}
+            <div className="md:w-3/5 bg-neutral-900 relative min-h-[40vh] md:min-h-[70vh] flex items-center justify-center">
+              <img
+                src={selected.image}
+                className="max-w-full max-h-[90vh] object-contain"
+                alt={selected.title}
+              />
+            </div>
+
+            {/* Details Panel */}
+            <div className="md:w-2/5 p-8 sm:p-10 flex flex-col justify-between">
+              <div>
+                <div className="flex justify-between items-start mb-2">
+                  <h2 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ fontFamily: "Playfair Display, serif" }}>
+                    {selected.title}
+                  </h2>
+                </div>
+                
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-6 ${isDark ? "bg-neutral-800 text-neutral-300" : "bg-neutral-100 text-neutral-600"}`}>
+                  {selected.category} Artwork
+                </span>
+
+                <p className={`text-lg leading-relaxed mb-8 ${isDark ? "text-neutral-300" : "text-neutral-600"}`}>
+                  {selected.description}
+                </p>
+
+                {/* Info Grid */}
+                <div className="grid grid-cols-2 gap-y-6 gap-x-4 mb-10">
+                  <div>
+                    <p className={`text-xs uppercase tracking-wider font-semibold mb-1 ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>Medium</p>
+                    <p className="font-medium">{selected.medium}</p>
+                  </div>
+                  <div>
+                    <p className={`text-xs uppercase tracking-wider font-semibold mb-1 ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>Size</p>
+                    <p className="font-medium">{selected.size}</p>
+                  </div>
+                  <div>
+                    <p className={`text-xs uppercase tracking-wider font-semibold mb-1 ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>Time Crafted</p>
+                    <p className="font-medium">{selected.time}</p>
+                  </div>
+                  <div>
+                    <p className={`text-xs uppercase tracking-wider font-semibold mb-1 ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>Artist</p>
+                    <p className="font-medium">Akhileswar Kamale</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                <button
+                  className={`flex-1 py-4 px-6 rounded-xl font-semibold transition text-center shadow-sm
+                  ${isDark ? "bg-white text-black hover:bg-neutral-200" : "bg-black text-white hover:bg-neutral-800"}`}
+                >
+                  Order Similar Artwork
+                </button>
+                
+                <button
+                  onClick={(e) => handleDownload(e, selected.image, selected.title)}
+                  className={`flex justify-center items-center py-4 px-6 rounded-xl font-semibold transition border
+                  ${isDark ? "border-neutral-700 hover:bg-neutral-800" : "border-neutral-300 hover:bg-neutral-100"}`}
+                  title="Download Image"
+                >
+                  <Download size={20} />
+                </button>
+              </div>
+              
+              <a
+                href="https://instagram.com/linesbyakhileswar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`mt-4 text-center text-sm font-medium hover:underline transition ${isDark ? "text-neutral-400 hover:text-white" : "text-neutral-500 hover:text-black"}`}
+              >
+                View more on Instagram →
+              </a>
+              
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
