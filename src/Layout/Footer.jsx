@@ -121,7 +121,7 @@ export default function Footer({ isDark }) {
 
     <div className="flex items-center gap-3">
       <Mail size={16} />
-      <span>akhilkamale@gmail.com</span>
+      <span>artistic.official12@gmail.com</span>
     </div>
 
     <div className="flex items-center gap-3">
