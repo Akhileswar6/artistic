@@ -2,21 +2,8 @@ import { Sun, Moon } from "lucide-react";
 
 export default function ThemeToggle({ isDark, setIsDark }) {
 
-  const handleMode = (e) => {
-
-    const { clientX, clientY } = e;
-
-    document.documentElement.style.setProperty("--x", `${clientX}px`);
-    document.documentElement.style.setProperty("--y", `${clientY}px`);
-
-    if (!document.startViewTransition) {
-      setIsDark(!isDark);
-      return;
-    }
-
-    document.startViewTransition(() => {
-      setIsDark(!isDark);
-    });
+  const handleMode = () => {
+    setIsDark(!isDark);
   };
 
   return (
