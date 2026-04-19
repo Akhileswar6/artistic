@@ -22,11 +22,8 @@ export default function AdminLayout({ children }) {
   }, [isDark, isCollapsed]);
 
   return (
-    <div
-      className={`flex min-h-screen transition-all duration-500 relative overflow-hidden ${isDark ? "bg-black text-white" : "bg-[#f4f6f8] text-black"
-        }`}
-    >
-
+    <div className={`flex min-h-screen transition-all duration-500 relative overflow-hidden
+       ${isDark ? "bg-black text-white" : "bg-[#f4f6f8] text-black"}`}>
 
       {/* Sidebar */}
       <AdminSidebar isDark={isDark} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
@@ -36,11 +33,7 @@ export default function AdminLayout({ children }) {
         {/* Top Bar */}
         <div
           className={`sticky top-0 z-20 flex justify-between items-center px-8 py-4 border-b transition-colors duration-300 
-            ${isDark
-              ? "bg-black border-white/10"
-              : "bg-white/70 backdrop-blur-md border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]"
-            }
-          `}
+            ${isDark ? "bg-black border-white/10" : "bg-white/70 backdrop-blur-md border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]"}`}
         >
           <h1
             className="text-[22px] font-semibold tracking-tight"
