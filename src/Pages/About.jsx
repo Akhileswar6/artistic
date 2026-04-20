@@ -52,12 +52,6 @@ export default function About({ isDark }) {
 
           {/* Artist Content */}
           <motion.div variants={itemVariants} className="flex flex-col">
-            <div className="flex items-center gap-3 mb-5">
-              <span className="w-10 h-[1px] bg-orange-500" />
-              <span className={`text-[12px] uppercase tracking-widest ${isDark ? "text-orange-500" : "text-orange-600"}`}>
-                The Artist Behind the Canvas
-              </span>
-            </div>
 
             <h1
               className="text-3xl md:text-4xl font-bold leading-[1.1] mb-6"
