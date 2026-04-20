@@ -62,7 +62,7 @@ export default function About({ isDark }) {
             </h1>
 
             <div className={`text-[15px] mb-8 font-medium ${isDark ? "text-white/80" : "text-black/80"}`}>
-              Founder & Master Sketch Artist · <span className="text-orange-500">6+ Years</span> Professional Excellence
+              Founder & Master Sketch Artist · 6+ Years Professional Excellence
             </div>
 
             <div className={`space-y-6 text-[15px] leading-relaxed mb-10 ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
@@ -79,7 +79,7 @@ export default function About({ isDark }) {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`px-5 py-2.5 rounded-lg text-sm transition-all ${isDark
+                  className={`px-5 py-2.5 rounded-lg text-sm transition-all cursor-pointer ${isDark
                     ? "bg-white text-black hover:bg-neutral-200"
                     : "bg-black text-white hover:bg-neutral-800"
                     }`}
@@ -91,9 +91,9 @@ export default function About({ isDark }) {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`px-5 py-2.5 rounded-lg text-sm  border transition-all ${isDark
+                  className={`px-5 py-2.5 rounded-lg text-sm  border transition-all cursor-pointer ${isDark
                     ? "border-white/10 text-white hover:bg-white/5"
-                    : "border-black/10 text-black hover:bg-black/5"
+                    : "border-black/10 text-black hover:bg-black/5 shadow-lg"
                     }`}
                 >
                   View My Portfolio
@@ -114,10 +114,10 @@ export default function About({ isDark }) {
             className="text-center mb-12"
           >
             <h2
-              className="text-3xl md:text-4xl text-neutral-400 font-bold mb-4"
+              className=  {isDark ? "text-3xl md:text-3xl font-bold mb-4" : "text-3xl md:text-3xl font-bold mb-4"}
               style={{ fontFamily: "Bricolage Grotesque" }}
             >
-              Our Philosophy of <span className="text-white">Excellence</span>
+              Our Philosophy of <span className={isDark ? "text-neutral-400" : "text-neutral-600"}>Excellence</span>
             </h2>
             <p className={`max-w-2xl mx-auto text-[14px] ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
               We don't just sketch, we breathe life into paper. Our core principles ensure that every client receives a piece of art that they can cherish for generations.
@@ -152,9 +152,9 @@ export default function About({ isDark }) {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
                 whileHover={{ y: -5 }}
-                className={`p-8 rounded-xl border transition-all duration-500 ${isDark
-                  ? "bg-[#141416] border-white/5 hover:border-white/20"
-                  : "bg-white border-black/5 shadow-lg shadow-black/[0.03] hover:shadow-black/[0.1]"
+                className={`p-6 rounded-xl border border-transparent transition-all duration-500 group relative overflow-hidden  ${isDark
+                  ? "bg-[#141416]/80 hover:bg-[#18181b] hover:border-white/10"
+                  : "bg-white hover:border-black/10 shadow-lg shadow-black/[0.09] hover:shadow-black/[0.2]"
                   }`}
               >
                 <div className={`mb-5 p-3 rounded-lg inline-block ${isDark ? "bg-white/5" : "bg-black/5"}`}>
