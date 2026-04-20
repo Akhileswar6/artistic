@@ -217,8 +217,7 @@ export default function Contact() {
           >
             <motion.div variants={itemVariants} className={`p-5 md:p-6 rounded-xl border ${isDark ? "bg-[#141416] border-white/5" : "bg-white border-black/10 shadow-2xl shadow-black/20"
               }`}>
-              <h3 className="text-lg font-semibold mb-5 flex items-center gap-2" style={{ fontFamily: "Bricolage Grotesque" }}>
-                <span className="w-1 h-5 bg-orange-500 rounded-full" />
+              <h3 className="text-xl mb-5 flex items-center gap-2" style={{ fontFamily: "Bricolage Grotesque" }}>
                 Contact Info
               </h3>
 
@@ -272,8 +271,8 @@ export default function Contact() {
             <motion.div variants={itemVariants} className={`p-5 md:p-6 rounded-xl overflow-hidden relative ${isDark ? "bg-[#0b1221] border border-blue-500/10 shadow-2xl shadow-black/40" : "bg-blue-50/30 border border-blue-200/50 shadow-2xl shadow-blue-900/10"
               }`}>
               <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2 font-semibold text-blue-500" style={{ fontFamily: "Bricolage Grotesque" }}>
-                  <Clock size={15} />
+                <div className="flex items-center gap-2 mb-2 text-blue-500" style={{ fontFamily: "Bricolage Grotesque" }}>
+                  <Clock size={14} />
                   <span>Business Hours</span>
                 </div>
                 <p className={`text-[11px] md:text-[13px] leading-relaxed ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
@@ -293,7 +292,7 @@ export default function Contact() {
             <div className={`p-5 md:p-8 rounded-xl border ${isDark ? "bg-[#141416] border-white/5" : "bg-white border-black/5 shadow-2xl shadow-black/20"
               }`}>
               <div className="mb-8 text-center md:text-left">
-                <h3 className="text-xl font-bold mb-1" style={{ fontFamily: "Bricolage Grotesque" }}>Send a Message</h3>
+                <h3 className="text-xl mb-1" style={{ fontFamily: "Bricolage Grotesque" }}>Send a Message</h3>
                 <p className={`text-[12px] ${isDark ? "text-white/40" : "text-black/40"}`}>
                   Fill out the form below and we'll get back to you within 24 hours.
                 </p>
