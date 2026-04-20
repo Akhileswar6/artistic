@@ -1,5 +1,5 @@
 ﻿import { Mail, Phone, MapPin, Clock, MessageCircle, Send, Lock, User, AtSign, Tag, MessageSquare } from "lucide-react";
-import { Instagram, Facebook, Linkedin } from "griddy-icons";
+import { Instagram, Facebook, Linkedin, ChatCircle } from "griddy-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
@@ -215,12 +215,13 @@ export default function Contact() {
             viewport={{ once: true }}
             className="lg:col-span-4 space-y-4 order-2 lg:order-1"
           >
-            <motion.div variants={itemVariants} className={`p-5 md:p-6 rounded-xl border ${isDark ? "bg-[#141416] border-white/5" : "bg-white border-black/5 shadow-lg shadow-black/5"
+            <motion.div variants={itemVariants} className={`p-5 md:p-6 rounded-xl border ${isDark ? "bg-[#141416] border-white/5" : "bg-white border-black/10 shadow-2xl shadow-black/20"
               }`}>
               <h3 className="text-lg font-semibold mb-5 flex items-center gap-2" style={{ fontFamily: "Bricolage Grotesque" }}>
                 <span className="w-1 h-5 bg-orange-500 rounded-full" />
                 Contact Info
               </h3>
+
 
               <div className="space-y-6">
                 {[
@@ -249,19 +250,18 @@ export default function Contact() {
                     { Icon: Instagram, dark: instagramImg },
                     { Icon: Facebook, dark: facebookImg },
                     { Icon: Linkedin, dark: linkedinImg },
-                    { Icon: MessageCircle }
                   ].map((item, i) => (
                     <motion.button
                       key={i}
                       whileHover={{ scale: 1.1, y: -2 }}
                       whileTap={{ scale: 0.9 }}
-                      className={`w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition-colors ${isDark ? "bg-white/5 hover:bg-white/10" : "bg-black/5 hover:bg-black/10"
+                      className={`w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${isDark ? "bg-white/5 hover:bg-white/10" : "bg-black/5 hover:bg-black/10"
                         }`}
                     >
                       {isDark && item.dark ? (
-                        <img src={item.dark} alt="social" className="w-[18px] h-[18px]" />
+                        <img src={item.dark} alt="social" className="w-[20px] h-[20px]" />
                       ) : (
-                        <item.Icon size={18} className={isDark ? "text-white" : "text-black"} />
+                        <item.Icon size={22} className={isDark ? "text-white" : "text-black"} />
                       )}
                     </motion.button>
                   ))}
@@ -269,10 +269,10 @@ export default function Contact() {
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className={`p-5 md:p-6 rounded-xl overflow-hidden relative ${isDark ? "bg-[#1a120b] border border-orange-500/10" : "bg-orange-50/50 border border-orange-200"
+            <motion.div variants={itemVariants} className={`p-5 md:p-6 rounded-xl overflow-hidden relative ${isDark ? "bg-[#0b1221] border border-blue-500/10 shadow-2xl shadow-black/40" : "bg-blue-50/30 border border-blue-200/50 shadow-2xl shadow-blue-900/10"
               }`}>
               <div className="relative z-10">
-                <div className="flex items-center gap-2 text-orange-500 mb-2 font-semibold " style={{ fontFamily: "Bricolage Grotesque" }}>
+                <div className="flex items-center gap-2 mb-2 font-semibold text-blue-500" style={{ fontFamily: "Bricolage Grotesque" }}>
                   <Clock size={15} />
                   <span>Business Hours</span>
                 </div>
@@ -290,7 +290,7 @@ export default function Contact() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-8 order-1 lg:order-2"
           >
-            <div className={`p-5 md:p-8 rounded-xl border ${isDark ? "bg-[#141416] border-white/5" : "bg-white border-black/5 shadow-lg shadow-black/5"
+            <div className={`p-5 md:p-8 rounded-xl border ${isDark ? "bg-[#141416] border-white/5" : "bg-white border-black/5 shadow-2xl shadow-black/20"
               }`}>
               <div className="mb-8 text-center md:text-left">
                 <h3 className="text-xl font-bold mb-1" style={{ fontFamily: "Bricolage Grotesque" }}>Send a Message</h3>
@@ -303,11 +303,11 @@ export default function Contact() {
                 <div className="grid md:grid-cols-2 gap-5">
                   {/* Name */}
                   <div className="space-y-1.5">
-                    <label className={`text-[11px] uppercase tracking-wider ml-1 ${isDark ? "text-white/30" : "text-black/40"}`}>
+                    <label className={`text-[11px] uppercase tracking-wider ml-1 ${isDark ? "text-white/40" : "text-black/40"}`}>
                       Full Name
                     </label>
                     <div className="relative group">
-                      <User size={15} className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${focused === "fullName" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-white/10" : "text-black/10")
+                      <User size={15} className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${focused === "fullName" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-white/40" : "text-black/40")
                         }`} />
                       <input
                         onFocus={(e) => {
@@ -324,8 +324,8 @@ export default function Contact() {
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                         placeholder="e.g. John Doe"
                         className={`w-full pl-11 pr-4 py-2.5 rounded-lg border transition-all text-[14px] focus:outline-none capitalize ${isDark
-                          ? "bg-white/[0.02] border-white/5 focus:border-white/30 focus:bg-white/[0.05]"
-                          : "bg-black/[0.02] border-black/5 focus:border-black/30 focus:bg-white focus:shadow-sm"
+                          ? "bg-white/[0.02] border-white/5 focus:border-white/30 focus:bg-white/[0.05] placeholder:text-white/20"
+                          : "bg-black/[0.02] border-black/5 focus:border-black/30 focus:bg-black/5 shadow-md focus:shadow-none placeholder:text-black/30"
                           }`}
                       />
                     </div>
@@ -333,11 +333,11 @@ export default function Contact() {
 
                   {/* Email */}
                   <div className="space-y-1.5">
-                    <label className={`text-[11px] uppercase tracking-wider ml-1 ${isDark ? "text-white/30" : "text-black/40"}`}>
+                    <label className={`text-[11px] uppercase tracking-wider ml-1 ${isDark ? "text-white/40" : "text-black/40"}`}>
                       Email Address
                     </label>
                     <div className="relative group">
-                      <AtSign size={15} className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${focused === "email" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-white/10" : "text-black/10")
+                      <AtSign size={15} className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${focused === "email" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-white/40" : "text-black/  40")
                         }`} />
                       <input
                         onFocus={(e) => {
@@ -354,8 +354,8 @@ export default function Contact() {
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="e.g. john@example.com"
                         className={`w-full pl-11 pr-4 py-2.5 rounded-lg border transition-all text-[14px] focus:outline-none ${isDark
-                          ? "bg-white/[0.02] border-white/5 focus:border-white/30 focus:bg-white/[0.05]"
-                          : "bg-black/[0.02] border-black/5 focus:border-black/30 focus:bg-white focus:shadow-sm"
+                          ? "bg-white/[0.02] border-white/5 focus:border-white/30 focus:bg-white/[0.05] placeholder:text-white/20"
+                          : "bg-black/[0.02] border-black/5 focus:border-black/30 focus:bg-black/5 shadow-md focus:shadow-none placeholder:text-black/30"
                           }`}
                       />
                     </div>
@@ -364,11 +364,11 @@ export default function Contact() {
 
                 {/* Subject */}
                 <div className="space-y-1.5">
-                  <label className={`text-[11px] uppercase tracking-wider ml-1 ${isDark ? "text-white/30" : "text-black/40"}`}>
+                  <label className={`text-[11px] uppercase tracking-wider ml-1 ${isDark ? "text-white/40" : "text-black/40"}`}>
                     Subject
                   </label>
                   <div className="relative group">
-                    <Tag size={15} className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${focused === "subject" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-white/10" : "text-black/10")
+                    <Tag size={15} className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${focused === "subject" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-white/40" : "text-black/40")
                       }`} />
                     <input
                       onFocus={(e) => {
@@ -384,8 +384,8 @@ export default function Contact() {
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                       placeholder="How can we help?"
                       className={`w-full pl-11 pr-4 py-2.5 rounded-lg border transition-all text-[14px] focus:outline-none ${isDark
-                        ? "bg-white/[0.02] border-white/5 focus:border-white/30 focus:bg-white/[0.05]"
-                        : "bg-black/[0.02] border-black/5 focus:border-black/30 focus:bg-white focus:shadow-sm"
+                        ? "bg-white/[0.02] border-white/5 focus:border-white/30 focus:bg-white/[0.05] placeholder:text-white/20"
+                        : "bg-black/[0.02] border-black/5 focus:border-black/30 focus:bg-black/5 shadow-md focus:shadow-none placeholder:text-black/30"
                         }`}
                     />
                   </div>
@@ -393,11 +393,11 @@ export default function Contact() {
 
                 {/* Message */}
                 <div className="space-y-1.5">
-                  <label className={`text-[11px] uppercase tracking-wider ml-1 ${isDark ? "text-white/30" : "text-black/40"}`}>
+                  <label className={`text-[11px] uppercase tracking-wider ml-1 ${isDark ? "text-white/40" : "text-black/40"}`}>
                     Your Message
                   </label>
                   <div className="relative group">
-                    <MessageSquare size={15} className={`absolute left-4 top-4 transition-colors ${focused === "message" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-white/10" : "text-black/10")
+                    <MessageSquare size={15} className={`absolute left-4 top-4 transition-colors ${focused === "message" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-white/40" : "text-black/40")
                       }`} />
                     <textarea
                       onFocus={(e) => {
@@ -414,8 +414,8 @@ export default function Contact() {
                       rows="4"
                       placeholder="Write your message here..."
                       className={`w-full pl-11 pr-4 py-3 rounded-lg border transition-all text-[14px] focus:outline-none resize-none ${isDark
-                        ? "bg-white/[0.02] border-white/5 focus:border-white/30 focus:bg-white/[0.05]"
-                        : "bg-black/[0.02] border-black/5 focus:border-black/30 focus:bg-white focus:shadow-sm"
+                        ? "bg-white/[0.02] border-white/5 focus:border-white/30 focus:bg-white/[0.05] placeholder:text-white/20"
+                        : "bg-black/[0.02] border-black/5 focus:border-black/30 focus:bg-black/5 shadow-md focus:shadow-none placeholder:text-black/30"
                         }`}
                     />
                   </div>
@@ -436,7 +436,7 @@ export default function Contact() {
                     },
                     tap: { scale: 0.98 }
                   }}
-                  className={`w-full py-3 rounded-lg text-sm flex items-center justify-center gap-2 transition-all duration-300 ${isDark
+                  className={`w-full py-3 rounded-lg text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer ${isDark
                     ? "bg-white text-black disabled:opacity-50"
                     : "bg-black text-white disabled:opacity-50"
                     }`}
@@ -482,7 +482,7 @@ export default function Contact() {
                 transition={{ delay: i * 0.05 }}
                 className={`p-6 rounded-xl border border-transparent transition-all duration-500 group relative overflow-hidden  ${isDark
                   ? "bg-[#141416]/80 hover:bg-[#18181b] hover:border-white/10"
-                  : "bg-white hover:border-black/10 shadow-lg shadow-black/[0.03] hover:shadow-black/[0.06]"
+                  : "bg-white hover:border-black/10 shadow-lg shadow-black/[0.09] hover:shadow-black/[0.2]"
                   }`}
               >
                 {/* Liquid Glass Glow Effects (Background Layer) */}
