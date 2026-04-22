@@ -5,7 +5,19 @@ import { Toaster } from "react-hot-toast";
 
 import Layout from "./Layout/Layout";
 import PolicyNavbar from "./Components/PolicyNavbar";
+import AdminLayout from "./Layout/AdminLayout";
+
+// Admin Pages
+import AdminRoute from "./Components/AdminRoute";
+import Dashboard from "./Pages/Admin/Dashboard";
 import AdminLogin from "./Pages/Admin/AdminLogin";
+import Users from "./Pages/Admin/Users";
+import UserOrders from "./Pages/Admin/UserOrders";
+import Messages from "./Pages/Admin/Messages";
+import Settings from "./Pages/Admin/Settings";
+import ActivityLog from "./Pages/Admin/ActivityLog";
+
+
 
 // Main Pages
 import Home from "./Pages/Home";
@@ -28,7 +40,14 @@ import Notifications from "./Pages/User/Notifications";
 
 
 export default function App() {
-    const [user, setUser] = useState(null); // ✅ MOVE HERE
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    }, []);
  
 
   const [isDark, setIsDark] = useState(
@@ -60,7 +79,6 @@ export default function App() {
 
 
 
-      // 🔥 Dynamic styles
       background: isDark ? "#1c1c1c" : "#ffffff",
       color: isDark ? "#ffffff" : "#000000",
       border: isDark
@@ -88,10 +106,66 @@ export default function App() {
   path="/admin"
   element={<AdminLogin isDark={isDark} setIsDark={setIsDark} />}
 />
+
+<Route path="/admin/dashboard" element={<AdminRoute ><AdminLayout><Dashboard /></AdminLayout></AdminRoute>} />
+<Route 
+  path="/admin/users" 
+  element={
+    <AdminRoute>
+      <AdminLayout>
+        <Users />
+      </AdminLayout>
+    </AdminRoute>
+  } 
+/>
+
+<Route 
+  path="/admin/messages" 
+  element={
+    <AdminRoute>
+      <AdminLayout>
+        <Messages />
+      </AdminLayout>
+    </AdminRoute>
+  } 
+/>
+<Route 
+  path="/admin/settings"
+  element={
+    <AdminRoute>
+      <AdminLayout>
+        <Settings />
+      </AdminLayout>
+    </AdminRoute>
+  }
+/>  
+
+<Route 
+  path="/admin/activities"
+  element={
+    <AdminRoute>
+      <AdminLayout>
+        <ActivityLog />
+      </AdminLayout>
+    </AdminRoute>
+  }
+/>  
+
+
+<Route
+  path="/admin/userOrders"
+  element={
+    <AdminRoute>
+      <AdminLayout>
+        <UserOrders />
+      </AdminLayout>
+    </AdminRoute>
+  }
+/>
         {/* ========================= */}
         {/* MAIN WEBSITE ROUTES */}
         {/* ========================= */}
-        <Route element={<Layout isDark={isDark} setIsDark={setIsDark} setUser={setUser} />}>
+        <Route element={<Layout isDark={isDark} setIsDark={setIsDark} user={user} setUser={setUser} />}>
           <Route path="/" element={<Home isDark={isDark} />} />
           <Route path="/gallery" element={<Gallery isDark={isDark} />} />
           <Route path="/order" element={<Order isDark={isDark} />} />
