@@ -349,6 +349,14 @@ export default function Dashboard({ isDark }) {
           </div>
         </div>
 
+
+
+
+
+
+
+
+
         {/* ACTIVITY LOG (SIDEBAR) */}
         <div className={`rounded-xl border ${isDark ? "bg-black/40 border-white/10 shadow-2xl" : "bg-white border-black/5 shadow-lg"}`}>
           <div className={`px-5 py-4 border-b flex items-center justify-between ${isDark ? "border-white/10" : "border-black/5"}`}>
