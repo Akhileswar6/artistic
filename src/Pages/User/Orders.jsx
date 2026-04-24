@@ -74,7 +74,7 @@ export default function Orders({ isDark }) {
       setSubmittingPayment(false);
     }
   };
-  
+
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
     if (rating === 0) {
@@ -166,11 +166,10 @@ export default function Orders({ isDark }) {
               return (
                 <div
                   key={order._id}
-                  className={`group rounded-lg p-4 border transition-all duration-500 hover:shadow-2xl  ${
-                    isDark 
-                      ? "bg-white/[0.02] border-white/10 hover:border-white/20 " 
+                  className={`group rounded-lg p-4 border transition-all duration-500 hover:shadow-2xl  ${isDark
+                      ? "bg-white/[0.02] border-white/10 hover:border-white/20 "
                       : "bg-white border-black/5 hover:border-black/10 "
-                  }`}
+                    }`}
                 >
                   <div className="flex flex-col md:flex-row gap-5 items-center">
                     {/* Compact Image Preview */}
@@ -186,20 +185,19 @@ export default function Orders({ isDark }) {
                             <h3 className="font-bold text-[17px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
                               {order.artStyle.charAt(0).toUpperCase() + order.artStyle.slice(1)} Portrait
                             </h3>
-                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                              statusInfo.color.replace('bg-', 'bg-opacity-10 border-').replace('/10', '/20')
-                            }`}>
+                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusInfo.color.replace('bg-', 'bg-opacity-10 border-').replace('/10', '/20')
+                              }`}>
                               {statusInfo.label}
                             </span>
                           </div>
                           <div className="flex items-center gap-4 opacity-40">
-                             <p className="text-[13px] flex items-center gap-1.5 ">
-                               <Clock size={12} /> {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                             </p>
-                             <div className="w-1 h-1 rounded-full bg-current opacity-30"></div>
-                             <p className="text-[13px] flex items-center gap-1.5 ">
-                               <Package size={12} /> #{order._id.slice(-6).toUpperCase()}
-                             </p>
+                            <p className="text-[13px] flex items-center gap-1.5 ">
+                              <Clock size={12} /> {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                            </p>
+                            <div className="w-1 h-1 rounded-full bg-current opacity-30"></div>
+                            <p className="text-[13px] flex items-center gap-1.5 ">
+                              <Package size={12} /> #{order._id.slice(-6).toUpperCase()}
+                            </p>
                           </div>
                         </div>
 
@@ -216,13 +214,12 @@ export default function Orders({ isDark }) {
                       <div className="flex items-center justify-end pt-2 border-t border-white/5">
                         <button
                           onClick={() => setSelectedOrder(order)}
-                          className={`group/btn flex items-center gap-2 text-[13px]  cursor-pointer transition-all px-3 py-1.5 rounded-lg ${
-                            isDark 
-                              ? "text-blue-400 hover:bg-blue-400/10" 
+                          className={`group/btn flex items-center gap-2 text-[13px]  cursor-pointer transition-all px-3 py-1.5 rounded-lg ${isDark
+                              ? "text-blue-400 hover:bg-blue-400/10"
                               : "text-blue-600 hover:bg-blue-50"
-                          }`}
+                            }`}
                         >
-                          View Details 
+                          View Details
                           <ChevronRight size={14} className="transition-transform group-hover/btn:translate-x-1" />
                         </button>
                       </div>
@@ -328,20 +325,20 @@ export default function Orders({ isDark }) {
                       return (
                         <div key={idx} className="flex flex-col items-center gap-3 w-0">
                           <div className={`w-5 h-5 rounded-full z-10 transition-all duration-500 flex items-center justify-center border-2 ${isCompleted
-                              ? "bg-emerald-500 border-emerald-500 text-white scale-110 shadow-lg shadow-emerald-500/30"
-                              : isCurrent
-                                ? "bg-emerald-500/20 border-emerald-500 text-emerald-500 ring-4 ring-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.4)]"
-                                : isDark ? "bg-[#0d0d0d] border-white/10" : "bg-white border-black/10"
+                            ? "bg-emerald-500 border-emerald-500 text-white scale-110 shadow-lg shadow-emerald-500/30"
+                            : isCurrent
+                              ? "bg-emerald-500/20 border-emerald-500 text-emerald-500 ring-4 ring-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.4)]"
+                              : isDark ? "bg-[#0d0d0d] border-white/10" : "bg-white border-black/10"
                             }`}>
                             {isCompleted && <Check size={10} strokeWidth={4} />}
                             {isCurrent && <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />}
                           </div>
 
                           <span className={`text-[12px] whitespace-nowrap transition-all duration-300 ${isCurrent
-                              ? "text-emerald-500 scale-110"
-                              : isCompleted
-                                ? "opacity-80"
-                                : "opacity-30"
+                            ? "text-emerald-500 scale-110"
+                            : isCompleted
+                              ? "opacity-80"
+                              : "opacity-30"
                             }`}>
                             {step.label}
                           </span>
@@ -386,18 +383,18 @@ export default function Orders({ isDark }) {
                   <div>
                     <h3 className="text-[15px] mb-3">Customer Profile</h3>
                     <div className={`p-4 rounded-lg border space-y-2 ${isDark ? "bg-white/5 border-white/5" : "bg-gray-50 border-black/5 shadow-sm"}`}>
-                       <div className="flex justify-between text-sm">
-                         <span className="opacity-50">Name</span>
-                         <span>{selectedOrder.name}</span>
-                       </div>
-                       <div className="flex justify-between text-sm">
-                         <span className="opacity-50">Email</span>
-                         <span>{selectedOrder.email}</span>
-                       </div>
-                       <div className="flex justify-between text-sm">
-                         <span className="opacity-50">Phone</span>
-                         <span>{selectedOrder.phone}</span>
-                       </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="opacity-50">Name</span>
+                        <span>{selectedOrder.name}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="opacity-50">Email</span>
+                        <span>{selectedOrder.email}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="opacity-50">Phone</span>
+                        <span>{selectedOrder.phone}</span>
+                      </div>
                     </div>
                   </div>
 
@@ -445,7 +442,7 @@ export default function Orders({ isDark }) {
               {(selectedOrder.status !== "pending" && selectedOrder.status !== "cancelled") && (
                 <div className={`p-6 rounded-lg border border-white/10 relative overflow-hidden transition-all shadow-xl animate-in slide-in-from-bottom-4 duration-500
                   ${isDark ? "bg-emerald-950/30" : "bg-emerald-50/80"} backdrop-blur-2xl`}>
-                  
+
                   {/* Decorative Liquid Orbs */}
                   <div className="absolute -top-16 -left-16 w-48 h-48 bg-emerald-500/10 blur-[80px] rounded-full animate-pulse"></div>
                   <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-emerald-400/10 blur-[80px] rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
@@ -498,10 +495,10 @@ export default function Orders({ isDark }) {
                       <div className="flex-1 w-full space-y-4">
                         {/* Stage 1: Advance */}
                         <div className={`p-4 rounded-lg border transition-all duration-500 relative overflow-hidden group
-                          ${selectedOrder.isAdvancePaid 
-                            ? (isDark ? "bg-emerald-500/10 border-emerald-500/30 opacity-60" : "bg-emerald-50 border-emerald-200 opacity-80") 
+                          ${selectedOrder.isAdvancePaid
+                            ? (isDark ? "bg-emerald-500/10 border-emerald-500/30 opacity-60" : "bg-emerald-50 border-emerald-200 opacity-80")
                             : (isDark ? "bg-white/5 border-white/10" : "bg-white border-black/5 shadow-sm")}`}>
-                          
+
                           <div className="relative z-10 flex justify-between items-center mb-3">
                             <div className="space-y-0.5">
                               <h5 className=" text-[13px] flex items-center gap-1.5">
@@ -543,11 +540,11 @@ export default function Orders({ isDark }) {
 
                         {/* Stage 2: Balance */}
                         <div className={`p-4 rounded-lg border transition-all duration-500 relative overflow-hidden group
-                          ${selectedOrder.isFullPaid 
-                             ? (isDark ? "bg-emerald-500/10 border-emerald-500/40" : "bg-emerald-50 border-emerald-500/30") 
-                             : (isDark ? "bg-white/5 border-white/10" : "bg-white border-black/5 shadow-sm")} 
+                          ${selectedOrder.isFullPaid
+                            ? (isDark ? "bg-emerald-500/10 border-emerald-500/40" : "bg-emerald-50 border-emerald-500/30")
+                            : (isDark ? "bg-white/5 border-white/10" : "bg-white border-black/5 shadow-sm")} 
                           ${!selectedOrder.isAdvancePaid ? "opacity-20 pointer-events-none grayscale" : ""}`}>
-                          
+
                           <div className="relative z-10 flex justify-between items-center mb-3">
                             <div className="space-y-0.5">
                               <h5 className=" text-[13px]  flex items-center gap-1.5">
@@ -622,7 +619,7 @@ export default function Orders({ isDark }) {
               {selectedOrder.status === "delivered" && (
                 <div className={`p-6 rounded-[32px] border relative overflow-hidden transition-all shadow-xl animate-in slide-in-from-bottom-4 duration-500
                   ${isDark ? "bg-amber-950/20 border-amber-500/20" : "bg-amber-50/80 border-amber-200"} backdrop-blur-2xl`}>
-                  
+
                   {/* Decorative Amber Orb */}
                   <div className="absolute -top-16 -right-16 w-32 h-32 bg-amber-500/10 blur-[60px] rounded-full animate-pulse"></div>
 
@@ -644,10 +641,10 @@ export default function Orders({ isDark }) {
                       <div className="space-y-4">
                         <div className="flex gap-1.5">
                           {[1, 2, 3, 4, 5].map((star) => (
-                            <Star 
-                              key={star} 
-                              size={20} 
-                              className={`${star <= selectedOrder.rating ? "text-amber-500 fill-amber-500" : "text-gray-300 opacity-20"}`} 
+                            <Star
+                              key={star}
+                              size={20}
+                              className={`${star <= selectedOrder.rating ? "text-amber-500 fill-amber-500" : "text-gray-300 opacity-20"}`}
                             />
                           ))}
                         </div>
@@ -670,9 +667,9 @@ export default function Orders({ isDark }) {
                                 onMouseEnter={() => setRating(star)}
                                 className="transition-all transform hover:scale-125 active:scale-90"
                               >
-                                <Star 
-                                  size={28} 
-                                  className={`${star <= rating ? "text-amber-500 fill-amber-500 shadow-lg shadow-amber-500/20" : "text-gray-400 opacity-30"} transition-colors`} 
+                                <Star
+                                  size={28}
+                                  className={`${star <= rating ? "text-amber-500 fill-amber-500 shadow-lg shadow-amber-500/20" : "text-gray-400 opacity-30"} transition-colors`}
                                 />
                               </button>
                             ))}
