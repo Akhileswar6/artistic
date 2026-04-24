@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 
 import Layout from "./Layout/Layout";
@@ -43,10 +43,29 @@ export default function App() {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
+      const checkSession = () => {
+        const storedUser = localStorage.getItem("user");
+        const loginTimestamp = localStorage.getItem("loginTimestamp");
+
+        if (storedUser && loginTimestamp) {
+          const now = Date.now();
+          const twoMinutes = 2 * 60 * 1000;
+
+          if (now - parseInt(loginTimestamp) > twoMinutes) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            localStorage.removeItem("loginTimestamp");
+            setUser(null);
+            toast.error("Session expired, please login again");
+          } else {
+            setUser(JSON.parse(storedUser));
+          }
+        }
+      };
+
+      checkSession();
+      const interval = setInterval(checkSession, 10000);
+      return () => clearInterval(interval);
     }, []);
  
 
