@@ -176,7 +176,7 @@ export default function Home({ isDark }) {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: showHero ? 1 : 0, scale: showHero ? 1 : 0.95 }}
             transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-            className="text-xl md:text-5xl font-bold tracking-tight"
+            className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight"
             style={{ fontFamily: "Bricolage Grotesque, serif" }}
           >
             Turn Your Photos Into <br className="hidden md:block" />
@@ -224,7 +224,7 @@ export default function Home({ isDark }) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: showHero ? 1 : 0, y: showHero ? 0 : 30 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className={`mt-8 md:mt-10 text-[13px] md:text-[15px] max-w-2xl leading-relaxed ${isDark ? "text-neutral-300" : "text-neutral-700 font-medium"
+            className={`mt-6 sm:mt-8 md:mt-10 text-[14px] sm:text-[15px] leading-relaxed ${isDark ? "text-neutral-300" : "text-neutral-700 font-medium"
               }`}
           >
             Professional pencil, charcoal, color, digital, and caricature
@@ -237,21 +237,22 @@ export default function Home({ isDark }) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: showHero ? 1 : 0, y: showHero ? 0 : 30 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row gap-4 mt-10 md:mt-12 w-full sm:w-auto"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-10 md:mt-12 w-full max-w-md sm:max-w-none sm:w-auto px-4 sm:px-0"
           >
             <Link to="/order" className="w-full sm:w-auto" style={{ textDecoration: 'none' }}>
               <button
-                className={`w-full sm:w-auto px-5 py-2 text-[14px] font-medium rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 ${isDark
+                className={`w-full sm:w-auto px-5 py-2.5 sm:py-2 text-[14px] font-medium rounded-lg shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 ${isDark
                   ? "bg-white text-black hover:bg-neutral-200"
                   : "bg-black text-white hover:bg-neutral-900 shadow-black/20"
                   }`}
               >
                 Order Your Sketch
+
               </button>
             </Link>
             <Link to="/gallery" className="w-full sm:w-auto" style={{ textDecoration: 'none' }}>
               <button
-                className={`w-full sm:w-auto px-5 py-2 text-[14px] font-medium rounded-full border backdrop-blur-md transition-all transform hover:-translate-y-1 active:scale-95 ${isDark
+                className={`w-full sm:w-auto px-5 py-2.5 sm:py-2 text-[14px] font-medium rounded-lg shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 ${isDark
                   ? "bg-white/5 text-white border-white/20 hover:bg-white/10"
                   : "bg-white/50 text-black border-black/20 hover:bg-black/5 shadow-sm"
                   }`}
@@ -266,7 +267,7 @@ export default function Home({ isDark }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: showHero ? 1 : 0, y: showHero ? 0 : 20 }}
             transition={{ duration: 1, delay: 1 }}
-            className="flex flex-wrap justify-center gap-x-8 gap-y-4 mt-12 md:mt-16 text-[14px] font-medium"
+            className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-x-8 gap-y-4 mt-8 md:mt-10 text-[14px] sm:text-[15px] font-medium"
           >
             <span className={`flex items-center gap-2 ${isDark ? "text-neutral-400" : "text-neutral-700"}`}>
               <CheckCircle size={18} className="text-green-500" />
@@ -295,14 +296,14 @@ export default function Home({ isDark }) {
 
 
             <h2
-              className={`text-3xl md:text-4xl mt-6 font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`}
+              className={`text-3xl sm:text-4xl md:text-5xl mt-6 font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`}
               style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
             >
               From photo to <span className="text-neutral-500">masterpiece</span>
             </h2>
 
             <p
-              className={`mt-4 text-[13px] md:text-[15px] leading-relaxed ${isDark ? "text-neutral-400" : "text-neutral-600"
+              className={`mt-4 text-[14px] sm:text-[15px] md:text-base leading-relaxed ${isDark ? "text-neutral-400" : "text-neutral-600"
                 }`}
             >
               It's simple, fast, and delightful. Four clear steps to get your personalized, hand-drawn sketch delivered straight to your door.
@@ -311,7 +312,7 @@ export default function Home({ isDark }) {
 
 
           {/* Steps */}
-          <div className="grid md:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
 
             {/* Step 1 */}
             <div
