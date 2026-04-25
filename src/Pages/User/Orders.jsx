@@ -19,7 +19,7 @@ export default function Orders({ isDark }) {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        navigate("/signin");
+        navigate("/");
         return;
       }
       const response = await axios.get("http://localhost:5000/api/orders/my-orders", {
