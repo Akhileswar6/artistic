@@ -22,6 +22,7 @@ import ActivityLog from "./Pages/Admin/ActivityLog";
 // Main Pages
 import Home from "./Pages/Home";
 import Gallery from "./Pages/Gallery";
+import Process from "./Pages/Process";
 import Order from "./Pages/Order";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
@@ -49,9 +50,9 @@ export default function App() {
 
         if (storedUser && loginTimestamp) {
           const now = Date.now();
-          const twoMinutes = 2 * 60 * 1000;
+          const twoHours = 2 * 60 * 60 * 1000;
 
-          if (now - parseInt(loginTimestamp) > twoMinutes) {
+          if (now - parseInt(loginTimestamp) > twoHours) {
             localStorage.removeItem("user");
             localStorage.removeItem("token");
             localStorage.removeItem("loginTimestamp");
@@ -187,6 +188,7 @@ export default function App() {
         <Route element={<Layout isDark={isDark} setIsDark={setIsDark} user={user} setUser={setUser} />}>
           <Route path="/" element={<Home isDark={isDark} />} />
           <Route path="/gallery" element={<Gallery isDark={isDark} />} />
+          <Route path="/process" element={<Process isDark={isDark} />} />
           <Route path="/order" element={<Order isDark={isDark} />} />
           <Route path="/about" element={<About isDark={isDark} />} />
           <Route path="/contact" element={<Contact isDark={isDark} />} />
