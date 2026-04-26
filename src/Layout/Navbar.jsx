@@ -22,7 +22,8 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
   const [showSignIn, setShowSignIn] = useState(false);
   const linkRefs = useRef([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef();
+  const desktopDropdownRef = useRef();
+  const mobileDropdownRef = useRef();
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -55,7 +56,10 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
 
   useEffect(() => {
     function handleClickOutside(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      const clickedOutsideDesktop = desktopDropdownRef.current && !desktopDropdownRef.current.contains(e.target);
+      const clickedOutsideMobile = mobileDropdownRef.current && !mobileDropdownRef.current.contains(e.target);
+      
+      if (clickedOutsideDesktop && clickedOutsideMobile) {
         setShowDropdown(false);
       }
     }
@@ -154,7 +158,7 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
             <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
 
             {user ? (
-              <div className="relative" ref={dropdownRef}>
+              <div className="relative" ref={desktopDropdownRef}>
 
                 {/* Avatar */}
                 <div
@@ -312,7 +316,7 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
             <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
             
             {user ? (
-              <div className="relative" ref={dropdownRef}>
+              <div className="relative" ref={mobileDropdownRef}>
                 <div
                   onClick={() => setShowDropdown(!showDropdown)}
                   className="flex items-center gap-1 cursor-pointer"
