@@ -237,7 +237,7 @@ const fetchUsers = async () => {
             </div>
 
             {/* Actions */}
-            <div className="ml-auto flex items-center gap-3">
+            <div className="md:ml-auto flex items-center justify-end w-full md:w-auto mt-2 md:mt-0">
 
 
               <button
@@ -256,8 +256,50 @@ const fetchUsers = async () => {
 
           </div>
 
-          {/* Table */}
-          <div className="overflow-x-auto">
+          {/* Mobile Card Layout */}
+          <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
+            {currentUsers.length > 0 ? (
+              currentUsers.map((user) => (
+                <div key={user._id} className={`p-4 rounded-xl border flex flex-col gap-3 transition-colors duration-200 ${isDark ? "bg-white/5 border-white/10" : "bg-gray-50 border-black/5"}`}>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className={`font-bold text-[15px] ${isDark ? "text-gray-100" : "text-gray-900"}`}>{user.fullName || "N/A"}</h3>
+                      <p className={`text-[12px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>{user.email}</p>
+                    </div>
+                    {user.isBlocked ? (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-red-500/10 text-red-500 border border-red-500/20">
+                        <span className="w-1 h-1 rounded-full bg-red-500"></span> Blocked
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-green-500/10 text-green-500 border border-green-500/20">
+                        <span className="w-1 h-1 rounded-full bg-green-500"></span> Active
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="flex justify-between items-center pt-3 border-t border-dashed border-gray-500/20">
+                    <p className={`text-[11px] font-medium uppercase tracking-wider ${isDark ? "text-gray-500" : "text-gray-500"}`}>
+                      Joined: {new Date(user.createdAt).toLocaleDateString()}
+                    </p>
+                    <button
+                      onClick={() => openUser(user)}
+                      className={`text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all ${isDark ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20" : "bg-blue-50 text-blue-600 hover:bg-blue-100"}`}
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className={`text-center py-10 ${isDark ? "text-gray-500" : "text-gray-400"}`}>
+                <ShieldAlert size={32} className="mx-auto mb-3 opacity-20" />
+                <p className="text-sm font-medium">No users found</p>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table Layout */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className={`${isDark ? "bg-[#0d0d0d] text-gray-400 border-b border-white/10" : "bg-gray-200 text-black border-b border-black/10"}`}>
@@ -390,9 +432,9 @@ const fetchUsers = async () => {
 
         {/* Modal Overlay */}
         {selectedUser && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-in fade-in duration-200">
-            <div className={`w-[400px] rounded-2xl p-6 shadow-2xl border relative overflow-hidden animate-in zoom-in-95 duration-200
-              ${isDark ? "bg-black border-white/10 text-white" : "bg-white border-black/10 text-black"}`}>
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+            <div className={`w-full max-w-[400px] rounded-2xl p-6 shadow-2xl border relative overflow-hidden animate-in zoom-in-95 duration-200
+              ${isDark ? "bg-[#0d0d0d] border-white/10 text-white" : "bg-white border-black/10 text-black"}`}>
 
 
               <h2 className="text-xl tracking-tight mb-4" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
