@@ -1,274 +1,396 @@
 import { useState } from "react";
-import { Clock, Package, Info, Check, X } from "lucide-react";
+import axios from "axios";
+import { Clock, Package, Info, Check, X, ShieldCheck } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Details from "../Components/Order/Details";
 import ArtPhoto from "../Components/Order/ArtPhoto";
 import Review from "../Components/Order/Review";
 
 export default function Order({ isDark }) {
+  const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  const [photo, setPhoto] = useState(null);
-  const [metadata, setMetadata] = useState(null);
+  // Form State
+  const [orderData, setOrderData] = useState({
+    name: user?.fullName || "",
+    email: user?.email || "",
+    phone: "",
+    address: "",
+    artStyle: "realistic",
+    frameOption: "noframe",
+    instructions: "",
+    photo: null,
+    rawFile: null,
+    metadata: null,
+  });
+
+  const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(false);
 
-  const handlePhoto = (e) => {
+  // Price Configuration
+  const stylePrices = {
+    realistic: 1500,
+    charcoal: 1500,
+    sketch: 2000,
+    caricature: 1800,
+  };
 
+  const styleLabels = {
+    realistic: "Realistic Pencil Drawing",
+    charcoal: "Charcoal Art",
+    sketch: "Pencil Sketch",
+    caricature: "Caricature",
+  };
+
+  const framePrices = {
+    noframe: 0,
+    standard8x10: 200,
+    standard12x16: 400,
+    custom: 600,
+  };
+
+  const frameLabels = {
+    noframe: "No Frame (Digital Delivery)",
+    standard8x10: "Standard Frame 8×10 inch",
+    standard12x16: "Standard Frame 12×16 inch",
+    custom: "Custom Frame Size",
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    // Only allow numbers for phone field (max 10 digits)
+    if (name === "phone") {
+      const numericValue = value.replace(/[^0-9]/g, "").slice(0, 10);
+      setOrderData((prev) => ({ ...prev, [name]: numericValue }));
+      return;
+    }
+
+    setOrderData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePhoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Photo size should be less than 5MB");
+      return;
+    }
 
     const img = new Image();
     const url = URL.createObjectURL(file);
 
     img.onload = () => {
-      setMetadata({
-        name: file.name,
-        size: (file.size / 1024 / 1024).toFixed(2) + " MB",
-        type: file.type,
-        width: img.width,
-        height: img.height,
-      });
-
-      setPhoto(url);
+      setOrderData((prev) => ({
+        ...prev,
+        photo: url,
+        rawFile: file,
+        metadata: {
+          name: file.name,
+          size: (file.size / 1024 / 1024).toFixed(2) + " MB",
+          type: file.type,
+          width: img.width,
+          height: img.height,
+        },
+      }));
     };
 
     img.src = url;
   };
 
   const removePhoto = () => {
-    setPhoto(null);
-    setMetadata(null);
+    setOrderData((prev) => ({ ...prev, photo: null, rawFile: null, metadata: null }));
   };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      // Use FormData to send the file to the backend
+      const formData = new FormData();
+      formData.append("name", orderData.name);
+      formData.append("email", orderData.email);
+      formData.append("phone", orderData.phone);
+      formData.append("address", orderData.address);
+      formData.append("artStyle", orderData.artStyle);
+      formData.append("frameOption", orderData.frameOption);
+      formData.append("instructions", orderData.instructions);
+      formData.append("price", basePrice + framePrice);
+
+      if (orderData.rawFile) {
+        formData.append("photo", orderData.rawFile);
+      } else {
+        return toast.error("Please upload a photo first");
+      }
+
+      const response = await axios.post(
+        "http://localhost:5000/api/orders/create",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            // Note: axios handles the Content-Type for FormData automatically
+          },
+        }
+      );
+
+      toast.success("Commission request submitted successfully");
+      navigate("/orders");
+
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Failed to submit request");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Calculations
+  const basePrice = stylePrices[orderData.artStyle] || 0;
+  const framePrice = framePrices[orderData.frameOption] || 0;
+  const totalPrice = basePrice + framePrice;
+  const advanceAmount = Math.round(totalPrice * 0.25);
 
   return (
     <div
-      className={`min-h-screen p-10 transition-colors duration-300 ${
-        isDark ? "bg-black text-white" : "bg-white text-black"
-      }`}
-      style={{ fontFamily: "Inter, serif" }}
+      className={`min-h-[calc(100vh-64px)] py-12 md:py-20 px-4 md:px-8 transition-colors duration-500 relative overflow-hidden ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"
+        }`}
+      style={{ fontFamily: "Inter, sans-serif" }}
     >
+      {/* Background Decor */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-[0.03]">
+        <div className={`absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]`} />
+      </div>
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto relative z-10">
 
         {/* HEADER */}
-        <div className="text-center mb-10">
-
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h1
-            className="text-4xl font-semibold"
-            style={{ fontFamily: "Playfair Display, serif" }}
+            className="text-3xl md:text-4xl font-bold tracking-tight mb-3"
+            style={{ fontFamily: "Bricolage Grotesque" }}
           >
-            Place Your Order
+            Start Your <span className="text-neutral-500 font-bold">Masterpiece</span>
           </h1>
-
-          <p
-            className={`mt-2 ${
-              isDark ? "text-neutral-400" : "text-neutral-600"
-            }`}
-          >
-            Fill in your details and we'll get started on your sketch.
+          <p className={`max-w-xl mx-auto text-[14px] leading-relaxed ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+            Order your custom portrait now and get it delivered to your doorstep
           </p>
+        </motion.div>
 
-        </div>
-
-        {/* STEPS */}
-        <div className="flex justify-center items-center gap-10 mb-10">
-
-          {/* STEP 1 */}
-          <div className="flex items-center gap-2">
-
-            {step > 1 ? (
-              <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-                <Check size={16} />
+        {/* STEPS INDICATOR */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="flex justify-center items-center gap-3 md:gap-8 mb-12"
+        >
+          {[
+            { num: 1, label: "Details" },
+            { num: 2, label: "Artwork" },
+            { num: 3, label: "Confirm" }
+          ].map((s, index) => (
+            <div key={s.num} className="flex items-center gap-3 md:gap-8">
+              <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 group cursor-pointer" onClick={() => step > s.num && setStep(s.num)}>
+                <div className={`w-7 h-7 md:w-8 md:h-8 text-[13px] md:text-[14px] rounded-full flex items-center justify-center transition-all duration-300 ${step > s.num
+                  ? "bg-green-500 text-white"
+                  : step === s.num
+                    ? "bg-neutral-700 text-white scale-110"
+                    : isDark ? "bg-[#141416] text-neutral-600 border border-white/5" : "bg-white text-neutral-400 border border-black/5 shadow-sm"
+                  }`}>
+                  {step > s.num ? <Check size={18} strokeWidth={3} /> : s.num}
+                </div>
+                <span className={`text-[11px] md:text-[13px] uppercase tracking-widest transition-colors ${step >= s.num ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-600" : "text-neutral-400")
+                  }`}>
+                  {s.label}
+                </span>
               </div>
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-[#6b3b1f] text-white flex items-center justify-center">
-                1
-              </div>
-            )}
-
-            <span className="text-[15px]">Your Details</span>
-
-          </div>
-
-          {/* STEP 2 */}
-          <div className="flex items-center gap-2 text-sm">
-
-            {step > 2 ? (
-              <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
-                <Check size={16} />
-              </div>
-            ) : (
-              <div
-                className={`w-8 h-8 rounded-full border flex items-center justify-center ${
-                  step === 2 ? "bg-[#6b3b1f] text-white border-[#6b3b1f]" : ""
-                }`}
-              >
-                2
-              </div>
-            )}
-
-            <span className="text-[15px]">Art Style & Photo</span>
-
-          </div>
-
-          {/* STEP 3 */}
-          <div className="flex items-center gap-2">
-
-            <div
-              className={`w-8 h-8 rounded-full border flex items-center justify-center ${
-                step === 3 ? "bg-[#6b3b1f] text-white border-[#6b3b1f]" : ""
-              }`}
-            >
-              3
+              {index < 2 && (
+                <div className={`hidden md:block w-12 h-[1px] transition-colors duration-500 ${step > s.num ? "bg-green-500" : isDark ? "bg-neutral-800" : "bg-neutral-300"}`} />
+              )}
             </div>
-
-            <span className="text-[15px]">Review & Submit</span>
-
-          </div>
-
-        </div>
+          ))}
+        </motion.div>
 
         {/* MAIN GRID */}
-        <div className="grid md:grid-cols-3 gap-10">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* LEFT SIDE (Steps Content) */}
-          <div className="md:col-span-2">
+          <div className="lg:col-span-8">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                {step === 1 && (
+                  <Details
+                    isDark={isDark}
+                    setStep={setStep}
+                    orderData={orderData}
+                    handleInputChange={handleInputChange}
+                  />
+                )}
 
-            {step === 1 && (
-              <Details
-                isDark={isDark}
-                setStep={setStep}
-              />
-            )}
+                {step === 2 && (
+                  <ArtPhoto
+                    isDark={isDark}
+                    setStep={setStep}
+                    orderData={orderData}
+                    setOrderData={setOrderData}
+                    handlePhoto={handlePhoto}
+                    removePhoto={removePhoto}
+                    setZoom={setZoom}
+                  />
+                )}
 
-            {step === 2 && (
-              <ArtPhoto
-                isDark={isDark}
-                setStep={setStep}
-                photo={photo}
-                metadata={metadata}
-                handlePhoto={handlePhoto}
-                removePhoto={removePhoto}
-                setZoom={setZoom}
-              />
-            )}
-
-            {step === 3 && (
-              <Review
-                isDark={isDark}
-                setStep={setStep}
-                photo={photo}
-              />
-            )}
-
+                {step === 3 && (
+                  <Review
+                    isDark={isDark}
+                    setStep={setStep}
+                    orderData={orderData}
+                    handleSubmit={handleSubmit}
+                    loading={loading}
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          {/* RIGHT SIDE */}
-          <div className="flex flex-col gap-6">
 
+          {/* RIGHT SIDE (Dynamic Order Summary) */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-col gap-6 sticky top-28 self-start lg:col-span-4"
+          >
             {/* ORDER SUMMARY */}
             <div
-              className={`rounded-2xl border p-6 ${
-                isDark
-                  ? "bg-[#111] border-neutral-800 text-neutral-300"
-                  : "bg-white border-neutral-300 text-neutral-700 shadow-lg"
-              }`}
+              className={`rounded-2xl border p-6 transition-all duration-300 ${isDark
+                ? "bg-[#141416]/80 backdrop-blur-xl border-white/10 shadow-2xl shadow-black/40"
+                : "bg-white/80 backdrop-blur-xl border-black/5 shadow-2xl shadow-black/5"
+                }`}
             >
+              <h3 className="mb-6 text-xl" style={{ fontFamily: "Bricolage Grotesque" }}>
+                Commission Summary
+              </h3>
 
-              <h3 className={`font-semibold mb-4 text-lg ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Order Summary</h3>
+              <div className="space-y-5">
+                <div className="flex justify-between items-start text-sm">
+                  <div className="flex flex-col gap-1">
+                    <span className=" text-[15px]">{styleLabels[orderData.artStyle]}</span>
+                    <span className="text-[11px]  uppercase text-neutral-500">Art Style</span>
+                  </div>
+                  <span className="text-[15px]">₹{basePrice.toLocaleString()}</span>
+                </div>
 
-              <div className="flex justify-between mb-2 text-sm">
-                <span>Pencil Sketch</span>
-                <span>₹1,000</span>
+                {orderData.frameOption !== "noframe" && (
+                  <div className="flex justify-between items-start text-sm">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[14px]">{frameLabels[orderData.frameOption]}</span>
+                      <span className="text-[11px]  uppercase tracking-widest text-neutral-500">Frame</span>
+                    </div>
+                    <span className="text-orange-500">+₹{framePrice.toLocaleString()}</span>
+                  </div>
+                )}
+
+                <div className={`h-[1px] w-full ${isDark ? "bg-white/10" : "bg-black/10"}`} />
+
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-sm  uppercase ">Total Amount</span>
+                  <span className="text-xl" style={{ fontFamily: "Bricolage Grotesque" }}>₹{totalPrice.toLocaleString()}</span>
+                </div>
+
+                <div className={`p-4 rounded-xl flex flex-col gap-2 relative overflow-hidden ${isDark ? "bg-orange-500/10 border border-orange-500/20" : "bg-orange-50 border border-orange-200"}`}>
+                  <ShieldCheck className={`absolute -bottom-4 -right-4 w-20 h-20 opacity-10 ${isDark ? "text-orange-500" : "text-orange-600"}`} />
+                  <div className="flex justify-between items-center relative z-10">
+                    <span className={`text-[12px] uppercase ${isDark ? "text-orange-400" : "text-orange-600"}`} >Advance Payment (25%)</span>
+                    <span className={`text-lg  ${isDark ? "text-orange-400" : "text-orange-600"}`}>₹{advanceAmount.toLocaleString()}</span>
+                  </div>
+                  <p className={`text-[11px] font-medium leading-relaxed relative z-10 ${isDark ? "text-orange-400/70" : "text-orange-800/70"}`}>
+                    Advance payment is required to confirm your order, and the remaining amount will be collected after the final artwork is delivered.
+                  </p>
+                </div>
+
+                <div className="space-y-4 mt-6 pt-6 border-t border-dashed border-gray-500/30">
+                  <div className={`flex items-center gap-3 text-sm font-medium ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+                    <Clock size={16} className="text-neutral-500 shrink-0" />
+                    <span className="text-[12px]">Execution: 3-5 business days</span>
+                  </div>
+                  <div className={`flex items-center gap-3 text-sm font-medium ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+                    <Package size={16} className="text-neutral-500 shrink-0" />
+                    <span className="text-[12px]">Archival-grade packaging included</span>
+                  </div>
+                </div>
               </div>
-
-              <div className="flex justify-between mb-2 text-sm">
-                <span>Frame</span>
-                <span>+₹200</span>
-              </div>
-
-              <hr className="my-3 text-neutral-600 " />
-
-              <div className="flex justify-between font-semibold text-md">
-                <span>Total</span>
-                <span className="text-blue-400">₹1,200</span>
-              </div>
-
-              <div className={`flex justify-between mt-2 font-medium text-sm ${isDark ? "text-yellow-200" : "text-yellow-700"}`}>
-                <span> Advance (25%)</span>
-                <span>₹300</span>
-              </div>
-
-              <p className="text-sm text-neutral-500 mt-2">
-                + Delivery charges at actuals
-              </p>
-
-              <hr className="my-3 text-neutral-600 " />
-
-              <div className="flex items-center text-neutral-500 gap-2 text-sm mb-2">
-                <Clock size={16} />
-                ~3 business days
-              </div>
-
-              <div className="flex items-center text-neutral-500 gap-2 text-sm">
-                <Package size={16} />
-                Carefully packed & shipped
-              </div>
-
             </div>
 
             {/* PAYMENT INFO */}
             <div
-              className={`p-5 rounded-2xl border ${
-                isDark
-                  ? "bg-[#1E0900] border-orange-300 text-yellow-200"
-                  : "bg-[#f7f1e3] border-yellow-300 text-orange-700 shadow-lg"
-              }`}
+              className={`p-5 rounded-2xl border transition-all ${isDark
+                ? "bg-[#141416]/50 border-white/5"
+                : "bg-white/50 border-black/5"
+                }`}
             >
-
-              <div className={`flex items-center gap-2 font-md mb-2 ${isDark ? "text-yellow-200" : "text-yellow-700"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-                <Info size={18} />
-                About Payment
+              <div className="flex items-center gap-2 mb-3 text-[14px]">
+                <Info size={16} className={isDark ? "text-white" : "text-black"} />
+                Payment Information
               </div>
-
-              <p className="text-[13px]">
-                Payment details (UPI QR code) will be shared after the artist
-                reviews and accepts your order.
+              <p className={`text-[12px] leading-relaxed font-medium ${isDark ? "text-neutral-500" : "text-neutral-600"}`}>
+                Once Artist confirms the order, a secure UPI payment link for the advance amount will be sent to your dashboard.
               </p>
-
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
 
       </div>
 
       {/* IMAGE ZOOM MODAL */}
-      {zoom && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-
-          <div className="relative">
-
-            <img
-              src={photo}
-              alt="zoom"
-              className="max-h-[90vh] rounded-lg"
-            />
-
-            <button
-              onClick={() => setZoom(false)}
-              className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full"
-            >
-              <X size={18} />
-            </button>
-
-          </div>
-
-        </div>
-      )}
-
+      <AnimatePresence>
+        {zoom && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-[100] p-4"
+          >
+            <div className="relative max-w-5xl w-full flex justify-center">
+              <motion.img
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.9 }}
+                src={orderData.photo}
+                alt="zoom"
+                className="max-h-[85vh] rounded-2xl shadow-2xl ring-1 ring-white/10"
+              />
+              <button
+                onClick={() => setZoom(false)}
+                className="absolute -top-6 -right-6 md:-right-12 bg-white/10 text-white p-3 rounded-full hover:bg-white hover:text-black transition-all cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
