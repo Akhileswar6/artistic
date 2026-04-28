@@ -77,32 +77,32 @@ const testimonials = [
 
 
   return (
-    <div className="mt-32 overflow-hidden relative">
+    <div className="mt-20 md:mt-32 overflow-hidden relative">
 
       {/* Title */}
-      <div className="text-center mb-16">
+      <div className="text-center mb-12 md:mb-16 px-4">
         <h2
-          className="text-4xl font-semibold"
-          style={{ fontFamily: "Playfair Display, serif" }}
+          className="text-3xl sm:text-4xl font-semibold tracking-tight"
+          style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
         >
-          Loved by Customers
+          Loved by <span className="text-neutral-500 font-bold">Customers</span>
         </h2>
 
-        <p className={`mt-3 ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+        <p className={`mt-2 sm:mt-3 text-[13px] sm:text-sm ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
           Real reviews from happy clients
         </p>
       </div>
 
       {/* TOP ROW */}
 <div
-  className={`pointer-events-none absolute left-0 top-0 h-full w-40 z-10 ${
+  className={`pointer-events-none absolute left-0 top-0 h-full w-12 sm:w-20 md:w-40 z-10 ${
     isDark
       ? "bg-gradient-to-r from-black to-transparent"
       : "bg-gradient-to-r from-white to-transparent"
   }`}
 />
 <div
-  className={`pointer-events-none absolute right-0 top-0 h-full w-40 z-10 ${
+  className={`pointer-events-none absolute right-0 top-0 h-full w-12 sm:w-20 md:w-40 z-10 ${
     isDark
       ? "bg-gradient-to-l from-black to-transparent"
       : "bg-gradient-to-l from-white to-transparent"
@@ -114,7 +114,7 @@ const testimonials = [
 
   <div
   key={i}
-  className={`min-w-[320px] max-w-[320px] border rounded-2xl p-6 flex-shrink-0 transition duration-300 hover:-translate-y-2 ${
+  className={`min-w-[280px] max-w-[280px] sm:min-w-[320px] sm:max-w-[320px] border rounded-2xl p-5 sm:p-6 flex-shrink-0 transition duration-300 hover:-translate-y-2 ${
     isDark
       ? "bg-[#111] border-neutral-700"
       : "bg-white border-neutral-200 shadow-md"
@@ -123,11 +123,11 @@ const testimonials = [
 
             <div className="flex items-center gap-3 mb-3">
 
-              <img src={t.img} className="w-10 h-10 rounded-full" />
+              <img src={t.img} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full" />
 
               <div>
-                <p className="font-semibold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{t.name}</p>
-                <p className="text-sm text-neutral-500">
+                <p className="font-semibold text-[15px] sm:text-base" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{t.name}</p>
+                <p className="text-[12px] sm:text-sm text-neutral-500">
                   {t.city} · {t.style}
                 </p>
               </div>
@@ -136,11 +136,11 @@ const testimonials = [
 
             <div className="flex mb-2">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} size={14} fill="#facc15" color="#facc15" />
+                <Star key={i} size={13} className="sm:w-[14px] sm:h-[14px]" fill="#facc15" color="#facc15" />
               ))}
             </div>
 
-            <p className="text-sm opacity-90">{t.text}</p>
+            <p className="text-[13px] sm:text-sm opacity-90 leading-relaxed">{t.text}</p>
 
           </div>
 
@@ -156,7 +156,7 @@ const testimonials = [
 
           <div
   key={i}
-  className={`min-w-[320px] max-w-[320px] border rounded-2xl p-6 flex-shrink-0 transition duration-300 hover:-translate-y-2 ${
+  className={`min-w-[280px] max-w-[280px] sm:min-w-[320px] sm:max-w-[320px] border rounded-2xl p-5 sm:p-6 flex-shrink-0 transition duration-300 hover:-translate-y-2 ${
     isDark
       ? "bg-[#111] border-neutral-700"
       : "bg-white border-neutral-200 shadow-md"
@@ -165,11 +165,11 @@ const testimonials = [
 
             <div className="flex items-center gap-3 mb-3">
 
-              <img src={t.img} className="w-10 h-10 rounded-full" />
+              <img src={t.img} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full" />
 
               <div>
-                <p className="font-semibold">{t.name}</p>
-                <p className="text-sm text-neutral-500">
+                <p className="font-semibold text-[15px] sm:text-base" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{t.name}</p>
+                <p className="text-[12px] sm:text-sm text-neutral-500">
                   {t.city} · {t.style}
                 </p>
               </div>
@@ -178,11 +178,11 @@ const testimonials = [
 
             <div className="flex mb-2">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} size={14} fill="#facc15" color="#facc15" />
+                <Star key={i} size={13} className="sm:w-[14px] sm:h-[14px]" fill="#facc15" color="#facc15" />
               ))}
             </div>
 
-            <p className="text-sm opacity-90">{t.text}</p>
+            <p className="text-[13px] sm:text-sm opacity-90 leading-relaxed">{t.text}</p>
 
           </div>
 
