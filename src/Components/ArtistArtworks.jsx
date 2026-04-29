@@ -124,8 +124,8 @@ export default function ArtistArtworks({ isDark }) {
             <Link
               to="/gallery"
               className={`inline-flex items-center gap-2 text-[13px] sm:text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isDark
-                  ? "text-white border-white/20 hover:bg-white/10"
-                  : "text-black border-black/20 hover:bg-black/5"
+                ? "text-white border-white/20 hover:bg-white/10"
+                : "text-black border-black/20 hover:bg-black/5"
                 }`}
             >
               <span>Explore Full Gallery</span>
@@ -134,38 +134,55 @@ export default function ArtistArtworks({ isDark }) {
           </motion.div>
         </div>
 
-        {/* Art Grid - Masonry Style */}
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 sm:gap-6 space-y-4 sm:space-y-6">
-          {artworks.map((art, index) => (
+        {/* Art Grid - Masonry Layout */}
+        <motion.div
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1 }
+            }
+          }}
+          initial="hidden"
+          animate={isVisible ? "visible" : "hidden"}
+          className="columns-2 lg:columns-4 gap-4 sm:gap-6 px-2 sm:px-4 space-y-4 sm:space-y-6"
+        >
+          {artworks.map((art) => (
             <motion.div
               key={art.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isVisible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+              }}
+              whileHover={{ y: -5 }}
               onClick={() => setSelectedArt(art)}
-              className="break-inside-avoid relative group cursor-pointer"
+              className={`break-inside-avoid group relative rounded-xl overflow-hidden transition-all duration-500 cursor-pointer mb-4 sm:mb-6 ${isDark
+                ? "bg-neutral-900 border border-white/5 hover:border-white/10 shadow-2xl"
+                : "bg-white border border-black/5 shadow-lg hover:shadow-xl"
+                }`}
             >
-              <div className={`relative overflow-hidden rounded-xl transition-all duration-500 ${isDark ? "bg-neutral-900 border border-white/5" : "bg-neutral-100 border border-black/5"
-                }`}>
-                <img
+              {/* Image Container - Natural Aspect Ratio */}
+              <div className="relative overflow-hidden">
+                <motion.img
                   src={art.image}
                   alt={art.title}
-                  className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
+                  className="w-full h-auto"
                 />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full pointer-events-none" />
               </div>
 
-              <div className="mt-4 px-1">
-                <h4 className={`text-[15px]  ${isDark ? "text-white" : "text-neutral-900"}`}>
+              {/* Bottom Label */}
+              <div className="p-3">
+                <h3 className={`text-xs font-medium truncate ${isDark ? "text-neutral-300" : "text-neutral-800"}`}>
                   {art.title}
-                </h4>
-                <p className={`text-[10px] font-medium uppercase tracking-wider ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>
-                  {art.category}
-                </p>
+                </h3>
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Modal Backdrop & Content */}
         <AnimatePresence>
@@ -182,7 +199,7 @@ export default function ArtistArtworks({ isDark }) {
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className={`relative w-full max-w-5xl max-h-[85vh] overflow-hidden rounded-2xl shadow-2xl flex flex-col md:flex-row ${isDark ? "bg-[#111] border border-white/10" : "bg-white"
+                className={`relative w-full max-w-5xl max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl flex flex-col md:flex-row ${isDark ? "bg-[#111] border border-white/10" : "bg-white"
                   }`}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -209,7 +226,7 @@ export default function ArtistArtworks({ isDark }) {
                 <div className="w-full md:w-2/5 p-5 sm:p-6 md:p-8 overflow-y-auto">
                   <div className="flex flex-col h-full">
                     <div className="mb-5 md:mb-6">
-                    <span className="inline-block px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-500 text-[11px] sm:text-[12px] mb-3 font-medium">
+                      <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] sm:text-[12px] mb-3 font-semibold uppercase tracking-wider ${isDark ? "bg-white/10 text-white" : "bg-black/5 text-black"}`}>
                         {selectedArt.category}
                       </span>
                       <h2 className={`text-xl sm:text-2xl md:text-3xl mb-2 sm:mb-3 tracking-tight ${isDark ? "text-white" : "text-neutral-900"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
@@ -261,13 +278,13 @@ export default function ArtistArtworks({ isDark }) {
                       {selectedArt.instagramUrl && (
                         <a href={selectedArt.instagramUrl} target="_blank" rel="noopener noreferrer" className="w-full">
                           <button className={`w-full py-3 sm:py-2.5 rounded-lg text-[14px] sm:text-[13px] font-medium border flex items-center justify-center gap-2 transition-all transform active:scale-[0.98] ${isDark
-                          ? "bg-white/5 text-white border-white/10 hover:bg-white/10"
-                          : "bg-black/5 text-black border-black/10 hover:bg-black/10"
-                          }`}>
-                          <Instagram size={16} className="text-pink-500" />
-                          View on Instagram
-                          <ExternalLink size={14} className="opacity-50" />
-                        </button>
+                            ? "bg-white/5 text-white border-white/10 hover:bg-white/10"
+                            : "bg-black/5 text-black border-black/10 hover:bg-black/10"
+                            }`}>
+                            <Instagram size={16} className="text-pink-500" />
+                            View on Instagram
+                            <ExternalLink size={14} className="opacity-50" />
+                          </button>
                         </a>
                       )}
                     </div>
