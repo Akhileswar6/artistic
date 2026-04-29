@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { AnimatePresence, motion } from "framer-motion";
@@ -40,19 +40,19 @@ const Notifications = lazy(() => import("./Pages/User/Notifications"));
 // Loading Component
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center bg-transparent z-[100]">
-    <div className="w-10 h-10 border-4 border-neutral-200 border-t-orange-500 rounded-full animate-spin"></div>
+    <div className="w-10 h-10 border-4 border-neutral-200 dark:border-neutral-800 border-t-black dark:border-t-white rounded-full animate-spin"></div>
   </div>
 );
 
 // Transition Wrapper
-const PageTransition = ({ children }) => (
+const PageTransition = ({ children, ...props }) => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -10 }}
     transition={{ duration: 0.3, ease: "easeOut" }}
   >
-    {children}
+    {React.isValidElement(children) ? React.cloneElement(children, props) : children}
   </motion.div>
 );
 
