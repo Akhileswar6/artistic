@@ -47,6 +47,7 @@ import RecentSketches from "../Components/RecentSketches";
 import ArtistArtworks from "../Components/ArtistArtworks";
 import Features from "../Components/Features";
 import CustomerShowcase from "../Components/CustomerShowcase";
+import OptimizedImage from "../Components/OptimizedImage";
 
 export default function Home({ isDark }) {
   const { user } = useOutletContext();
@@ -59,57 +60,18 @@ export default function Home({ isDark }) {
     }
   }, [user]);
 
-
-
-
-
-  const heroRef = useRef(null);
-  const [showHero, setShowHero] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowHero(true);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  const stepsRef = useRef(null);
-  const [visibleSteps, setVisibleSteps] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisibleSteps(true);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (stepsRef.current) {
-      observer.observe(stepsRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div
       className={`min-h-screen transition-colors duration-300 ${isDark ? "bg-black text-white" : "bg-white text-black"
         }`} style={{ fontFamily: "Inter, serif" }}
     >
 
-      <div ref={heroRef} className={`relative w-full overflow-hidden min-h-[90vh] flex items-center justify-center`}>
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        className={`relative w-full overflow-hidden min-h-[90vh] flex items-center justify-center`}
+      >
 
         {/* BACKGROUND ANIMATION */}
         <div 
@@ -125,10 +87,10 @@ export default function Home({ isDark }) {
               >
                 {[...colImages, ...colImages].map((src, idx) => (
                   <div key={idx} className="relative w-full h-48 md:h-72">
-                    <img
+                    <OptimizedImage
                       src={`${src}?auto=format&fit=crop&q=80&w=600`}
                       className={`w-full h-full object-cover ${isDark ? "opacity-100" : "opacity-90"}`}
-                      alt=""
+                      alt="Artistic Sample"
                     />
                     <div className={`absolute inset-0 pointer-events-none shadow-[inset_0_0_100px_40px_${isDark ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)"}]`} />
                   </div>
@@ -152,8 +114,10 @@ export default function Home({ isDark }) {
           {/* Welcome Badge */}
           {user && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: showHero ? 1 : 0, y: showHero ? 0 : 20 }}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 }
+              }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className={`mb-8 px-5 py-2.5 rounded-full border flex items-center backdrop-blur-md
                 ${isDark
@@ -169,12 +133,12 @@ export default function Home({ isDark }) {
             </motion.div>
           )}
 
-
-
           {/* Header Text */}
           <motion.h1
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: showHero ? 1 : 0, scale: showHero ? 1 : 0.95 }}
+            variants={{
+              hidden: { opacity: 0, scale: 0.95 },
+              visible: { opacity: 1, scale: 1 }
+            }}
             transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
             className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight"
             style={{ fontFamily: "Bricolage Grotesque, serif" }}
@@ -182,7 +146,6 @@ export default function Home({ isDark }) {
             Turn Your Photos Into <br className="hidden md:block" />
             <span className="relative inline-block mt-2 md:mt-0 px-2 py-1">
               {/* Text Mask Gradient on "Beautiful" */}
-              {/* Animate on header text implemented with framer-motion background position */}
               <motion.span
                 animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
                 transition={{ duration: 6, ease: "linear", repeat: Infinity }}
@@ -199,8 +162,10 @@ export default function Home({ isDark }) {
                 fill="none"
               >
                 <motion.path
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: showHero ? 1 : 0 }}
+                  variants={{
+                    hidden: { pathLength: 0 },
+                    visible: { pathLength: 1 }
+                  }}
                   transition={{ duration: 1.5, delay: 1, ease: "easeInOut" }}
                   d="M5 15 C60 5, 160 25, 215 15"
                   stroke="url(#orange-gradient)"
@@ -221,8 +186,10 @@ export default function Home({ isDark }) {
 
           {/* Subtext */}
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: showHero ? 1 : 0, y: showHero ? 0 : 30 }}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
             transition={{ duration: 0.8, delay: 0.6 }}
             className={`mt-6 sm:mt-8 md:mt-10 text-[14px] sm:text-[15px] leading-relaxed ${isDark ? "text-neutral-300" : "text-neutral-700 font-medium"
               }`}
@@ -234,8 +201,10 @@ export default function Home({ isDark }) {
 
           {/* Actions */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: showHero ? 1 : 0, y: showHero ? 0 : 30 }}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
             transition={{ duration: 0.8, delay: 0.8 }}
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-10 md:mt-12 w-full max-w-md sm:max-w-none sm:w-auto px-4 sm:px-0"
           >
@@ -264,8 +233,10 @@ export default function Home({ isDark }) {
 
           {/* Features underneath */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: showHero ? 1 : 0, y: showHero ? 0 : 20 }}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}
             transition={{ duration: 1, delay: 1 }}
             className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-x-8 gap-y-4 mt-8 md:mt-10 text-[14px] sm:text-[15px] font-medium"
           >
@@ -284,17 +255,24 @@ export default function Home({ isDark }) {
           </motion.div>
 
         </div>
-      </div>
+      </motion.div>
 
       <div className="max-w-7xl mx-auto px-5 py-4">
 
         {/* HOW IT WORKS */}
-        <div ref={stepsRef} className="mt-32">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
+          }}
+          className="mt-32"
+        >
 
           {/* Title */}
           <div className="text-center mb-20 max-w-2xl mx-auto">
-
-
             <h2
               className={`text-3xl sm:text-4xl md:text-5xl mt-6 font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`}
               style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
@@ -315,9 +293,12 @@ export default function Home({ isDark }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
 
             {/* Step 1 */}
-            <div
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 }
+              }}
               className={`relative group overflow-hidden border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2
-      ${visibleSteps ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
       ${isDark
                   ? "border-neutral-800 bg-[#111]/80 backdrop-blur-xl hover:border-neutral-600 hover:bg-[#161616]"
                   : "border-neutral-200 bg-white/80 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:border-neutral-300 hover:bg-neutral-50"
@@ -349,12 +330,15 @@ export default function Home({ isDark }) {
               <p className={`text-[14px] leading-relaxed ${isDark ? "text-neutral-400 group-hover:text-neutral-300 transition-colors" : "text-neutral-600 group-hover:text-neutral-700 transition-colors"}`}>
                 Share the photo you want converted. Any clear image works great.
               </p>
-            </div>
+            </motion.div>
 
             {/* Step 2 */}
-            <div
-              className={`relative group overflow-hidden border rounded-2xl p-8 transition-all duration-500 delay-100 hover:-translate-y-2
-      ${visibleSteps ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              className={`relative group overflow-hidden border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2
       ${isDark
                   ? "border-neutral-800 bg-[#111]/80 backdrop-blur-xl hover:border-neutral-600 hover:bg-[#161616]"
                   : "border-neutral-200 bg-white/80 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:border-neutral-300 hover:bg-neutral-50"
@@ -386,12 +370,15 @@ export default function Home({ isDark }) {
               <p className={`text-[15px] leading-relaxed ${isDark ? "text-neutral-400 group-hover:text-neutral-300 transition-colors" : "text-neutral-600 group-hover:text-neutral-700 transition-colors"}`}>
                 Our artist carefully reviews your photo and confirms the details.
               </p>
-            </div>
+            </motion.div>
 
             {/* Step 3 */}
-            <div
-              className={`relative group overflow-hidden border rounded-2xl p-8 transition-all duration-500 delay-200 hover:-translate-y-2
-      ${visibleSteps ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              className={`relative group overflow-hidden border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2
       ${isDark
                   ? "border-neutral-800 bg-[#111]/80 backdrop-blur-xl hover:border-neutral-600 hover:bg-[#161616]"
                   : "border-neutral-200 bg-white/80 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:border-neutral-300 hover:bg-neutral-50"
@@ -423,12 +410,15 @@ export default function Home({ isDark }) {
               <p className={`text-[15px] leading-relaxed ${isDark ? "text-neutral-400 group-hover:text-neutral-300 transition-colors" : "text-neutral-600 group-hover:text-neutral-700 transition-colors"}`}>
                 Your hand-drawn sketch is crafted with love and attention to detail.
               </p>
-            </div>
+            </motion.div>
 
             {/* Step 4 */}
-            <div
-              className={`relative group overflow-hidden border rounded-2xl p-8 transition-all duration-500 delay-300 hover:-translate-y-2
-      ${visibleSteps ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              className={`relative group overflow-hidden border rounded-2xl p-8 transition-all duration-500 hover:-translate-y-2
       ${isDark
                   ? "border-neutral-800 bg-[#111]/80 backdrop-blur-xl hover:border-neutral-600 hover:bg-[#161616]"
                   : "border-neutral-200 bg-white/80 backdrop-blur-xl shadow-xl hover:shadow-2xl hover:border-neutral-300 hover:bg-neutral-50"
@@ -460,11 +450,11 @@ export default function Home({ isDark }) {
               <p className={`text-[15px] leading-relaxed ${isDark ? "text-neutral-400 group-hover:text-neutral-300 transition-colors" : "text-neutral-600 group-hover:text-neutral-700 transition-colors"}`}>
                 Framed and packed securely, shipped straight to your doorstep.
               </p>
-            </div>
+            </motion.div>
 
           </div>
 
-        </div>
+        </motion.div>
 
 
 
