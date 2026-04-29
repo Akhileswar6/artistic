@@ -322,59 +322,59 @@ export default function Gallery({ isDark }) {
           ) : (
             <div className="columns-2 md:columns-3 xl:columns-4 gap-3 sm:gap-6 space-y-3 sm:space-y-6">
               <AnimatePresence mode="popLayout">
-            {filtered.map((art, index) => (
-              <motion.div
-                layout
-                key={art.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                onClick={() => setSelected(art)}
-                className="break-inside-avoid relative group cursor-pointer"
-              >
-                <div className={`relative overflow-hidden rounded-2xl transition-all duration-500 ${isDark ? "bg-neutral-900 border border-white/5 shadow-2xl" : "bg-neutral-100 border border-black/5 shadow-lg"
-                  }`}>
-                  <OptimizedImage
-                    src={art.image}
-                    alt={art.title}
-                    className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
-                  />
+                {filtered.map((art, index) => (
+                  <motion.div
+                    layout
+                    key={art.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    onClick={() => setSelected(art)}
+                    className="break-inside-avoid relative group cursor-pointer"
+                  >
+                    <div className={`relative overflow-hidden rounded-2xl transition-all duration-500 ${isDark ? "bg-neutral-900 border border-white/5 shadow-2xl" : "bg-neutral-100 border border-black/5 shadow-lg"
+                      }`}>
+                      <OptimizedImage
+                        src={art.image}
+                        alt={art.title}
+                        className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
+                      />
 
-                  {/* Immersive Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 p-6 flex flex-col justify-end">
-                    <div className="flex justify-between items-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                      <div>
-                        <span className="text-[10px] text-yellow-300 uppercase tracking-widest mb-1 block">
-                          {art.category}
-                        </span>
-                        <h4 className="text-white text-md leading-tight">
-                          {art.title}
-                        </h4>
-                      </div>
-                      <div className="bg-white/20 backdrop-blur-md p-2 rounded-full border border-white/30 text-white">
-                        <ExternalLink size={14} />
+                      {/* Immersive Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 p-6 flex flex-col justify-end">
+                        <div className="flex justify-between items-end transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                          <div>
+                            <span className="text-[10px] text-yellow-300 uppercase tracking-widest mb-1 block">
+                              {art.category}
+                            </span>
+                            <h4 className="text-white text-md leading-tight">
+                              {art.title}
+                            </h4>
+                          </div>
+                          <div className="bg-white/20 backdrop-blur-md p-2 rounded-full border border-white/30 text-white">
+                            <ExternalLink size={14} />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="mt-4 px-1 flex justify-between items-start">
-                  <div>
-                    <h5 className={`text-[13px] ${isDark ? "text-white" : "text-neutral-900"}`}>
-                      {art.title}
-                    </h5>
+                    <div className="mt-4 px-1 flex justify-between items-start">
+                      <div>
+                        <h5 className={`text-[13px] ${isDark ? "text-white" : "text-neutral-900"}`}>
+                          {art.title}
+                        </h5>
 
-                  </div>
-                  <button
-                    onClick={(e) => toggleLike(e, art.id)}
-                    className={`transition-colors mt-0.5 ${likes[art.id] ? "text-red-500" : (isDark ? "text-neutral-700" : "text-neutral-300 hover:text-neutral-400")}`}
-                  >
-                    <Heart size={22} fill={likes[art.id] ? "currentColor" : "none"} />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                      </div>
+                      <button
+                        onClick={(e) => toggleLike(e, art.id)}
+                        className={`transition-colors mt-0.5 ${likes[art.id] ? "text-red-500" : (isDark ? "text-neutral-700" : "text-neutral-300 hover:text-neutral-400")}`}
+                      >
+                        <Heart size={22} fill={likes[art.id] ? "currentColor" : "none"} />
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
               </AnimatePresence>
             </div>
           )}
@@ -412,7 +412,7 @@ export default function Gallery({ isDark }) {
                 <X size={16} />
               </button>
 
-               {/* Image Side */}
+              {/* Image Side */}
               <div className="w-full md:w-3/5 bg-black/5 flex items-center justify-center p-4">
                 <OptimizedImage
                   src={selected.image}
