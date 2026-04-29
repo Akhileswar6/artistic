@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { OrderSkeleton } from "../../Components/Skeleton";
+import OptimizedImage from "../../Components/OptimizedImage";
 
 export default function Orders({ isDark }) {
   const navigate = useNavigate();
@@ -156,8 +158,10 @@ export default function Orders({ isDark }) {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="grid gap-6">
+            <OrderSkeleton />
+            <OrderSkeleton />
+            <OrderSkeleton />
           </div>
         ) : orders.length > 0 ? (
           <div className="grid gap-6">
@@ -174,7 +178,7 @@ export default function Orders({ isDark }) {
                   <div className="flex flex-col md:flex-row gap-5 items-center">
                     {/* Compact Image Preview */}
                     <div className="w-full md:w-32 h-32 rounded-lg overflow-hidden shrink-0 border border-white/5 shadow-xl relative group-hover:scale-105 transition-transform duration-500">
-                      <img src={order.photo} alt="Commission" className="w-full h-full object-cover" />
+                      <OptimizedImage src={order.photo} alt="Commission" className="w-full h-full object-cover" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>
 
@@ -417,7 +421,7 @@ export default function Orders({ isDark }) {
                   <div>
                     <h3 className="text-[15px] mb-3">Reference Photo</h3>
                     <div className={`aspect-square rounded-lg border overflow-hidden shadow-2xl ${isDark ? "border-white/10" : "border-black/5"}`}>
-                      <img src={selectedOrder.photo} alt="Reference" className="w-full h-full object-cover" />
+                      <OptimizedImage src={selectedOrder.photo} alt="Reference" className="w-full h-full object-cover" />
                     </div>
                   </div>
 
