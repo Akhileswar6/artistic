@@ -122,7 +122,7 @@ export default function Dashboard({ isDark }) {
   const stats = [
     { title: "Total Users", value: counts.users.toLocaleString(), icon: <Users size={22} />, color: "blue", gradient: "from-blue-500/20 to-blue-500/5", border: "border-blue-500/20", textColor: "text-blue-400", iconBg: "bg-blue-500/10" },
     { title: "Messages", value: counts.messages.toLocaleString(), icon: <MessageCircle size={22} />, color: "purple", gradient: "from-purple-500/20 to-purple-500/5", border: "border-purple-500/20", textColor: "text-purple-400", iconBg: "bg-purple-500/10" },
-    { title: "Total Orders", value: counts.orders.toLocaleString(), icon: <ShoppingBag size={22} />, color: "orange", gradient: "from-orange-500/20 to-orange-500/5", border: "border-orange-500/20", textColor: "text-orange-400", iconBg: "bg-orange-500/10" },
+    { title: "Total Orders", value: counts.orders.toLocaleString(), icon: <ShoppingBag size={22} />, color: "indigo", gradient: "from-indigo-500/20 to-indigo-500/5", border: "border-indigo-500/20", textColor: "text-indigo-400", iconBg: "bg-indigo-500/10" },
     { title: "Revenue", value: `₹${counts.revenue.toLocaleString()}`, icon: <IndianRupee size={22} />, color: "emerald", gradient: "from-emerald-500/20 to-emerald-500/5", border: "border-emerald-500/20", textColor: "text-emerald-400", iconBg: "bg-emerald-500/10" },
   ];
 
@@ -264,7 +264,7 @@ export default function Dashboard({ isDark }) {
         <div className={`p-6 rounded-xl border ${isDark ? "bg-black/40 border-white/10 shadow-xl" : "bg-white border-black/5 shadow-lg"}`}>
           <div className="flex items-center justify-between mb-6">
             <h3 className={`text-lg flex items-center gap-2 ${isDark ? "text-white" : "text-black"}`}>
-              <MessageCircle size={18} className="text-orange-500" /> Message Trends
+              <MessageCircle size={18} className="text-neutral-500" /> Message Trends
             </h3>
             <span className="text-xs text-gray-400 uppercase tracking-widest underline decoration-orange-500/20 underline-offset-4 decoration-2">Inbound Queries</span>
           </div>
@@ -288,7 +288,7 @@ export default function Dashboard({ isDark }) {
                   cursor={{ fill: isDark ? '#ffffff05' : '#00000005' }}
                   contentStyle={{ backgroundColor: isDark ? '#000' : '#fff', border: isDark ? '1px solid #ffffff1a' : '1px solid #0000001a', borderRadius: '12px', fontSize: '12px' }}
                 />
-                <Bar dataKey="count" fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={20} />
+                <Bar dataKey="count" fill="#737373" radius={[4, 4, 0, 0]} barSize={20} />
               </BarChart>
             </ResponsiveContainer>}
           </div>
