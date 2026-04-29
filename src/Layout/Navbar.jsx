@@ -1,11 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import { NavLink, useLocation, Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "../Components/ThemeToggle";
 import { ShoppingBag, Menu, X, ChevronDown, LogOut, Bell, User } from "lucide-react";
 import SignIn from "../Pages/SignIn";
 import toast from "react-hot-toast";
-
-
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -15,7 +13,7 @@ const navLinks = [
   { label: "Contact", path: "/contact" },
 ];
 
-export default function Navbar({ isDark, setIsDark, user, setUser }) {
+function Navbar({ isDark, setIsDark, user, setUser }) {
   const location = useLocation();
   const [activeStyle, setActiveStyle] = useState({});
   const [isOpen, setIsOpen] = useState(false);
@@ -27,50 +25,35 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
 
-
-
   useEffect(() => {
     const fetchUnread = async () => {
       try {
         const user = JSON.parse(localStorage.getItem("user"));
-
         if (!user) return;
-
         const res = await fetch(
           `http://localhost:5000/api/notifications/${user._id}`
         );
-
         const data = await res.json();
-
         const unread = data.filter((n) => !n.read).length;
         setUnreadCount(unread);
       } catch (err) {
         console.error(err);
       }
     };
-
     fetchUnread();
   }, [location.pathname]);
-
-
 
   useEffect(() => {
     function handleClickOutside(e) {
       const clickedOutsideDesktop = desktopDropdownRef.current && !desktopDropdownRef.current.contains(e.target);
       const clickedOutsideMobile = mobileDropdownRef.current && !mobileDropdownRef.current.contains(e.target);
-      
       if (clickedOutsideDesktop && clickedOutsideMobile) {
         setShowDropdown(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-
-
-
 
   const activeIndex = navLinks.findIndex(
     (link) => link.path === location.pathname
@@ -101,15 +84,13 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
       {/* ================= MAIN NAVBAR ================= */}
       <div
         className={`sticky top-0 z-50 w-full shadow-md border-b transition-colors duration-300 ${isDark
-            ? "bg-black border-neutral-800"
-            : "bg-white border-neutral-300"
+          ? "bg-black border-neutral-800"
+          : "bg-white border-neutral-300"
           }`}
         style={{ fontFamily: "Inter, serif" }}
       >
-
         {/* ===== DESKTOP NAVBAR ===== */}
         <div className="hidden md:flex items-center justify-between px-6 py-2">
-
           {/* Left */}
           <div className="flex items-center gap-12">
             <NavLink to="/">
@@ -120,7 +101,6 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
                 artistic
               </span>
             </NavLink>
-
             {/* Desktop Links */}
             <div className="relative flex items-center gap-8">
               {activeIndex !== -1 && (
@@ -130,7 +110,6 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
                   style={activeStyle}
                 />
               )}
-
               {navLinks.map((link, index) => (
                 <NavLink
                   key={link.path}
@@ -152,14 +131,11 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
               ))}
             </div>
           </div>
-
           {/* Right */}
           <div className="flex items-center gap-6">
             <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
-
             {user ? (
               <div className="relative" ref={desktopDropdownRef}>
-
                 {/* Avatar */}
                 <div
                   onClick={() => setShowDropdown(!showDropdown)}
@@ -176,21 +152,18 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
                       {user.fullName?.charAt(0).toUpperCase()}
                     </div>
                   )}
-
-                  {/* 🔽 Down Arrow */}
                   <ChevronDown
                     size={18}
                     className={`transition-transform duration-200 ${showDropdown ? "rotate-180" : "rotate-0"
                       } ${isDark ? "text-white" : "text-black"}`}
                   />
                 </div>
-
                 {/* Dropdown */}
                 {showDropdown && (
                   <div
                     className={`absolute right-0 mt-4 w-50 rounded-xl shadow-lg border z-50 ${isDark
-                        ? "bg-[#1c1c1c] border-neutral-700 text-white"
-                        : "bg-white border-neutral-200 text-black"
+                      ? "bg-[#1c1c1c] border-neutral-700 text-white"
+                      : "bg-white border-neutral-200 text-black"
                       }`}
                   >
                     <ul className="text-sm">
@@ -198,7 +171,7 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
                         navigate("/account");
                         setShowDropdown(false);
                       }}
-                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white " : "hover:bg-neutral-200"}`}>
+                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white hover:bg-neutral-800" : "hover:bg-neutral-200"}`}>
                         <User size={18} />
                         Account
                       </li>
@@ -206,47 +179,38 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
                         navigate("/orders");
                         setShowDropdown(false);
                       }}
-                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white " : "hover:bg-neutral-200"}`}>
+                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white hover:bg-neutral-800" : "hover:bg-neutral-200"}`}>
                         <ShoppingBag size={18} />
                         Orders
                       </li>
-
                       <li
                         onClick={() => {
                           navigate("/notifications");
                           setShowDropdown(false);
                         }}
-                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white" : "text-black hover:bg-neutral-200"
+                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white hover:bg-neutral-800" : "text-black hover:bg-neutral-200"
                           }`}
                       >
-                        {/* 🔔 Icon + Red Dot */}
                         <div className="relative">
                           <Bell size={18} />
-
                           {unreadCount > 0 && (
                             <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
                           )}
                         </div>
-
                         Notifications
                       </li>
-
                       <hr className={`my-1 border-neutral-300 ${isDark ? "dark:border-neutral-700" : ""}`} />
-
                       <li
                         onClick={() => {
                           localStorage.removeItem("user");
                           setShowDropdown(false);
                           setUser(null);
                           toast.success("Logged out successfully");
-
                           setTimeout(() => {
                             navigate("/");
                           }, 800);
-
                         }}
-                        className={`px-5 py-2 flex gap-4 rounded-xl text-red-500 cursor-pointer ${isDark ? "text-red-500 " : "text-red-500 dark:hover:bg-neutral-200 hover:text-red-500"}`}>
-
+                        className={`px-5 py-2 flex gap-4 rounded-xl text-red-500 cursor-pointer ${isDark ? "text-red-500 hover:bg-neutral-800" : "text-red-500 hover:bg-neutral-200"}`}>
                         <LogOut size={18} />
                         Logout
                       </li>
@@ -258,20 +222,19 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
               <button
                 onClick={() => setShowSignIn(true)}
                 className={`px-4 py-1.5 text-[13px] rounded-lg border transition cursor-pointer ${isDark
-                    ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
-                    : "bg-white text-black border-neutral-300 shadow-lg hover:bg-gray-100"
+                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                  : "bg-white text-black border-neutral-300 shadow-lg hover:bg-gray-100"
                   }`}
               >
                 Sign In
               </button>
             )}
-
             {!user && (
               <Link
                 to="/order"
                 className={`px-4 py-1.5 flex gap-2 rounded-lg text-[13px] border transition-all duration-200 ${isDark
-                    ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
-                    : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100"
+                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                  : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100"
                   }`}
               >
                 <ShoppingBag size={18} />
@@ -283,10 +246,9 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
 
         {/* ===== MOBILE NAVBAR ===== */}
         <div className="flex md:hidden items-center justify-between px-4 py-3">
-
           {/* Left: Hamburger + Logo */}
           <div className="flex items-center gap-4 ">
-            <button onClick={() => setIsOpen(!isOpen)}>
+            <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu">
               {isOpen ? (
                 <X
                   size={22}
@@ -299,7 +261,6 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
                 />
               )}
             </button>
-
             <NavLink to="/">
               <span
                 className={`text-[20px] font-semibold ${isDark ? "text-white" : "text-black"
@@ -310,11 +271,9 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
               </span>
             </NavLink>
           </div>
-
           {/* Right */}
           <div className="flex items-center gap-3">
             <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
-            
             {user ? (
               <div className="relative" ref={mobileDropdownRef}>
                 <div
@@ -333,12 +292,11 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
                     </div>
                   )}
                 </div>
-
                 {showDropdown && (
                   <div
                     className={`absolute right-0 mt-3 w-48 rounded-xl shadow-lg border z-50 ${isDark
-                        ? "bg-[#1c1c1c] border-neutral-700 text-white"
-                        : "bg-white border-neutral-200 text-black"
+                      ? "bg-[#1c1c1c] border-neutral-700 text-white"
+                      : "bg-white border-neutral-200 text-black"
                       }`}
                   >
                     <ul className="text-sm">
@@ -395,8 +353,8 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
               <button
                 onClick={() => setShowSignIn(true)}
                 className={`px-3 py-1.5 text-[11px] font-medium rounded-lg border transition cursor-pointer ${isDark
-                    ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
-                    : "bg-white text-black border-neutral-300 shadow-sm hover:bg-gray-100"
+                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                  : "bg-white text-black border-neutral-300 shadow-sm hover:bg-gray-100"
                   }`}
               >
                 Sign In
@@ -421,7 +379,6 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
           } border-r ${isDark ? "border-neutral-800" : "border-neutral-300"
           } flex flex-col`}
       >
-
         {/* 🔹 NAV LINKS */}
         <div className="flex flex-col text-[15px]" style={{ fontFamily: "Inter, serif" }}>
           {navLinks.map((link) => (
@@ -444,11 +401,7 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
             </NavLink>
           ))}
         </div>
-
-
-
       </div>
-
 
       {/* ================= SIGN IN MODAL ================= */}
       {showSignIn && (
@@ -461,3 +414,5 @@ export default function Navbar({ isDark, setIsDark, user, setUser }) {
     </>
   );
 }
+
+export default memo(Navbar);
