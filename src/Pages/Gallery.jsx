@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Heart, X, Download, Share2, User, Tag, Calendar, Instagram, ExternalLink, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
+import OptimizedImage from "../Components/OptimizedImage";
+import { GallerySkeleton } from "../Components/Skeleton";
 
 const artworks = [
   // ... (keep the artworks array as is, but ensure IDs and paths are correct)
@@ -204,6 +206,13 @@ export default function Gallery({ isDark }) {
   const [selected, setSelected] = useState(null);
   const [filter, setFilter] = useState("All");
   const [likes, setLikes] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading for demo purposes or if fetching from API
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (selected) {
@@ -260,22 +269,20 @@ export default function Gallery({ isDark }) {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-lg mx-auto mb-8 sm:mb-12">
               {/* Active Gallery Card */}
-              <div className={`flex-1 flex flex-col items-center justify-center w-full p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all cursor-default ${
-                isDark ? "bg-white/5 border-white text-white" : "bg-black/5 border-black text-black"
-              }`}>
-                <h3 className="text-base sm:text-lg font-bold mb-1" style={{fontFamily:"Bricolage Grotesque, sans-serif"}}>All Artworks</h3>
+              <div className={`flex-1 flex flex-col items-center justify-center w-full p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all cursor-default ${isDark ? "bg-white/5 border-white text-white" : "bg-black/5 border-black text-black"
+                }`}>
+                <h3 className="text-base sm:text-lg font-bold mb-1" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>All Artworks</h3>
                 <p className={`text-[11px] sm:text-xs ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>Main Collection</p>
               </div>
 
               {/* Inactive Carousel Card */}
               <Link to="/process" className="flex-1 w-full">
-                <div className={`flex flex-col items-center justify-center w-full p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all hover:-translate-y-1 hover:shadow-lg ${
-                  isDark ? "bg-transparent border-white/20 text-neutral-400 hover:border-white hover:text-white" : "bg-transparent border-black/20 text-neutral-500 hover:border-black hover:text-black"
-                }`}>
-                  <h3 className="text-base sm:text-lg font-bold mb-1" style={{fontFamily:"Bricolage Grotesque, sans-serif"}}>
+                <div className={`flex flex-col items-center justify-center w-full p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all hover:-translate-y-1 hover:shadow-lg ${isDark ? "bg-transparent border-white/20 text-neutral-400 hover:border-white hover:text-white" : "bg-transparent border-black/20 text-neutral-500 hover:border-black hover:text-black"
+                  }`}>
+                  <h3 className="text-base sm:text-lg font-bold mb-1" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
                     Process Carousel
                   </h3>
-                    <p className="text-[11px] sm:text-xs opacity-70">Swipeable Stories</p>
+                  <p className="text-[11px] sm:text-xs opacity-70">Swipeable Stories</p>
                 </div>
               </Link>
             </div>
@@ -296,8 +303,8 @@ export default function Gallery({ isDark }) {
                     key={cat}
                     onClick={() => setFilter(cat)}
                     className={`px-4 py-1.5 rounded-lg text-[12px] transition-all duration-300 border ${filter === cat
-                        ? (isDark ? "bg-white text-black border-white" : "bg-black text-white border-black")
-                        : (isDark ? "border-white/10 text-neutral-500 hover:border-white/30" : "border-black/10 text-neutral-400 hover:border-black/30")
+                      ? (isDark ? "bg-white text-black border-white" : "bg-black text-white border-black")
+                      : (isDark ? "border-white/10 text-neutral-500 hover:border-white/30" : "border-black/10 text-neutral-400 hover:border-black/30")
                       }`}
                   >
                     {cat}
@@ -309,8 +316,12 @@ export default function Gallery({ isDark }) {
         </div>
 
         {/* Masonry Grid */}
-        <div className="columns-2 md:columns-3 xl:columns-4 gap-3 sm:gap-6 space-y-3 sm:space-y-6 mb-16 md:mb-24">
-          <AnimatePresence mode="popLayout">
+        <div className="mb-16 md:mb-24">
+          {loading ? (
+            <GallerySkeleton />
+          ) : (
+            <div className="columns-2 md:columns-3 xl:columns-4 gap-3 sm:gap-6 space-y-3 sm:space-y-6">
+              <AnimatePresence mode="popLayout">
             {filtered.map((art, index) => (
               <motion.div
                 layout
@@ -324,7 +335,7 @@ export default function Gallery({ isDark }) {
               >
                 <div className={`relative overflow-hidden rounded-2xl transition-all duration-500 ${isDark ? "bg-neutral-900 border border-white/5 shadow-2xl" : "bg-neutral-100 border border-black/5 shadow-lg"
                   }`}>
-                  <img
+                  <OptimizedImage
                     src={art.image}
                     alt={art.title}
                     className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
@@ -353,7 +364,7 @@ export default function Gallery({ isDark }) {
                     <h5 className={`text-[13px] ${isDark ? "text-white" : "text-neutral-900"}`}>
                       {art.title}
                     </h5>
-                    
+
                   </div>
                   <button
                     onClick={(e) => toggleLike(e, art.id)}
@@ -364,7 +375,9 @@ export default function Gallery({ isDark }) {
                 </div>
               </motion.div>
             ))}
-          </AnimatePresence>
+              </AnimatePresence>
+            </div>
+          )}
         </div>
       </section>
 
@@ -399,9 +412,9 @@ export default function Gallery({ isDark }) {
                 <X size={16} />
               </button>
 
-              {/* Image Side */}
+               {/* Image Side */}
               <div className="w-full md:w-3/5 bg-black/5 flex items-center justify-center p-4">
-                <img
+                <OptimizedImage
                   src={selected.image}
                   alt={selected.title}
                   className="max-w-full max-h-[40vh] md:max-h-[80vh] object-contain rounded-lg shadow-2xl"
