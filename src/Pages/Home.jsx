@@ -274,7 +274,7 @@ export default function Home({ isDark }) {
           {/* Title */}
           <div className="text-center mb-20 max-w-2xl mx-auto">
             <h2
-              className={`text-3xl sm:text-4xl md:text-5xl mt-6 font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`}
+              className={`text-3xl sm:text-4xl  mt-6 font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`}
               style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
             >
               From photo to <span className="text-neutral-500">masterpiece</span>
@@ -310,7 +310,7 @@ export default function Home({ isDark }) {
 
               <div className="flex items-center gap-4 mb-8">
                 <div
-                  className={`p-4 rounded-lg flex items-center justify-center transition-colors duration-300 ${isDark ? "bg-white/5 text-neutral-300 group-hover:bg-orange-500/20 group-hover:text-orange-400" : "bg-neutral-100 text-neutral-600 group-hover:bg-orange-100 group-hover:text-orange-600"
+                  className={`p-4 rounded-lg flex items-center justify-center transition-colors duration-300 ${isDark ? "bg-white/5 text-neutral-300 group-hover:bg-white/10 group-hover:text-white" : "bg-neutral-100 text-neutral-600 group-hover:bg-neutral-200 group-hover:text-black"
                     }`}
                 >
                   <Upload size={24} strokeWidth={1.5} />
@@ -459,7 +459,9 @@ export default function Home({ isDark }) {
 
 
 
-        <RecentSketches isDark={isDark} />
+        <div className="mt-24 md:mt-40">
+          <RecentSketches isDark={isDark} />
+        </div>
 
 
 
@@ -471,7 +473,9 @@ export default function Home({ isDark }) {
 
 
 
-        <ArtistArtworks isDark={isDark} />
+        <div className="mt-24 md:mt-40">
+          <ArtistArtworks isDark={isDark} />
+        </div>
 
 
 
@@ -480,15 +484,21 @@ export default function Home({ isDark }) {
 
 
 
-        <Testimonials isDark={isDark} />
+        <div className="mt-24 md:mt-40">
+          <Testimonials isDark={isDark} />
+        </div>
 
 
 
 
-        <CustomerShowcase isDark={isDark} />
+        <div className="mt-24 md:mt-40">
+          <CustomerShowcase isDark={isDark} />
+        </div>
 
 
-        <Features isDark={isDark} />
+        <div className="mt-24 md:mt-40">
+          <Features isDark={isDark} />
+        </div>
 
 
       </div>
