@@ -141,7 +141,7 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
           <div className="space-y-6">
             {/* General */}
             <div>
-              <h3 className={`px-5 mb-4 text-[10px] font-semibold uppercase tracking-[0.2em] opacity-40 ${isDark ? "text-white" : "text-black"}`}>
+              <h3 className={`px-5 mb-4 text-[10px] font-semibold uppercase tracking-[0.2em]  ${isDark ? "text-white" : "text-black"}`}>
                 General
               </h3>
               <div className="space-y-1.5">
@@ -158,7 +158,7 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
 
             {/* Privacy & Safety */}
             <div>
-              <h3 className={`px-5 mb-4 text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 ${isDark ? "text-white" : "text-black"}`}>
+              <h3 className={`px-5 mb-4 text-[10px] font-bold uppercase tracking-[0.2em]  ${isDark ? "text-white" : "text-black"}`}>
                 Privacy & Safety
               </h3>
               <div className="space-y-1.5">
@@ -171,7 +171,7 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
 
             {/* Billing */}
             <div>
-              <h3 className={`px-5 mb-4 text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Inter, serif" }}>
+              <h3 className={`px-5 mb-4 text-[10px] font-bold uppercase tracking-[0.2em]  ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Inter, serif" }}>
                 Orders & Billing
               </h3>
               <div className="space-y-1.5">
