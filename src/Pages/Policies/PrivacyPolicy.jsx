@@ -27,26 +27,28 @@ export default function PrivacyPolicy({ isDark }) {
 
   return (
     <div
-      className={`relative w-full min-h-screen py-16 px-4 md:px-8 overflow-hidden transition-colors duration-500 ${
+      className={`relative w-full min-h-screen py-10 sm:py-16 px-6 sm:px-12 overflow-hidden transition-colors duration-500 ${
         isDark ? "bg-[#080808]" : "bg-[#faf9f6]"
       }`}
       style={{ fontFamily: "Inter, serif" }}
     >
+
+
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className={`relative z-10 max-w-5xl mx-auto shadow-2xl rounded-2xl p-8 md:p-12 backdrop-blur-xl border transition-all duration-300 ${
+        className={`relative z-10 max-w-6xl mx-auto shadow-2xl rounded-[1.5rem] p-6 sm:p-8 md:p-10 backdrop-blur-xl border transition-all duration-300 ${
           isDark ? "bg-[#0A0A0C]/80 border-white/5 shadow-black/50" : "bg-white/80 border-gray-200/50 shadow-xl"
         }`}
       >
         {/* HEADER */}
         <motion.div variants={itemVariants} className="flex items-center justify-between gap-3 mb-6">
           <h1
-            className={`text-[28px] font-semibold ${
+            className={`text-xl sm:text-2xl md:text-3xl font-medium tracking-tight ${
               isDark ? "text-[#f5f5f5]" : "text-black"
             }`}
-            style={{ fontFamily: "Playfair Display, serif" }}
+            style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
           >
             Privacy Policy
           </h1>
@@ -55,181 +57,189 @@ export default function PrivacyPolicy({ isDark }) {
         {/* INTRO */}
         <motion.p
           variants={itemVariants}
-          className={`text-sm mb-8 leading-relaxed ${
+          className={`text-xs sm:text-sm mb-8 leading-relaxed opacity-80 ${
             isDark ? "text-[#b5b5b5]" : "text-black"
           }`}
         >
           At <span className="font-bold">Artistic</span>, we value your privacy and are committed to protecting your personal information. 
           This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
-          <br />
+          <br /><br />
           By using Artistic, you consent to the practices described in this Privacy Policy.
         </motion.p>
 
-        <Section
-          dark={isDark}
-          title="1. Information We Collect"
-          content={
-            <>
-              We may collect the following types of information:<br /><br />
+        <div className="space-y-8">
+          <Section
+            dark={isDark}
+            title="1. Information We Collect"
+            content={
+              <div className="space-y-4">
+                <p>We may collect the following types of information:</p>
 
-              <span className={`font-semibold ${isDark ? "text-white" : "text-black"}`}>
-                a) Personal Information
-              </span><br />
+                <div>
+                  <span className={`font-semibold ${isDark ? "text-white" : "text-black"}`}>
+                    a) Personal Information
+                  </span>
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center gap-2"><Dot className="shrink-0" />Full name</div>
+                    <div className="flex items-center gap-2"><Dot className="shrink-0" />Email address</div>
+                    <div className="flex items-center gap-2"><Dot className="shrink-0" />Contact details (Phone Number, Delivery Address)</div>
+                    <div className="flex items-center gap-2"><Dot className="shrink-0" />Payment Information (UPI Transaction IDs handled securely)</div>
+                    <div className="flex items-center gap-2"><Dot className="shrink-0" />Order details and submitted images</div>
+                  </div>
+                </div>
 
-              <Dot className="inline mr-1"/>Full name<br />
-              <Dot className="inline mr-1"/>Email address<br />
-              <Dot className="inline mr-1"/>Contact details (Phone Number, Delivery Address)<br />
-              <Dot className="inline mr-1"/>Payment Information (UPI Transaction IDs handled securely)<br />
-              <Dot className="inline mr-1"/>Order details and submitted images<br /><br />
+                <div>
+                  <span className={`font-semibold ${isDark ? "text-white" : "text-black"}`}>
+                    b) Non-Personal Information
+                  </span>
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center gap-2"><Dot className="shrink-0" />Browser type</div>
+                    <div className="flex items-center gap-2"><Dot className="shrink-0" />Device information</div>
+                    <div className="flex items-center gap-2"><Dot className="shrink-0" />IP address</div>
+                    <div className="flex items-center gap-2"><Dot className="shrink-0" />Website usage data</div>
+                  </div>
+                </div>
+              </div>
+            }
+          />
 
-              <span className={`font-semibold ${isDark ? "text-white" : "text-black"}`}>
-                b) Non-Personal Information
-              </span><br />
+          <Section
+            dark={isDark}
+            title="2. How We Use Your Information"
+            content={
+              <div className="space-y-2">
+                <p>We use the collected information to:</p>
+                <div className="flex items-start gap-2"><Dot className="shrink-0 mt-1" />Process, manage, and deliver your custom orders</div>
+                <div className="flex items-start gap-2"><Dot className="shrink-0 mt-1" />Communicate order updates, payment requests, and support responses</div>
+                <div className="flex items-start gap-2"><Dot className="shrink-0 mt-1" />Improve website functionality and user experience</div>
+                <div className="flex items-start gap-2"><Dot className="shrink-0 mt-1" />Prevent fraud and unauthorized activity</div>
+                <div className="flex items-start gap-2"><Dot className="shrink-0 mt-1" />Comply with legal obligations</div>
+                <p className="mt-4 italic opacity-80">We only use your information for legitimate business purposes.</p>
+              </div>
+            }
+          />
 
-              <Dot className="inline mr-1"/>Browser type<br />
-              <Dot className="inline mr-1"/>Device information<br />
-              <Dot className="inline mr-1"/>IP address<br />
-              <Dot className="inline mr-1"/>Website usage data
-            </>
-          }
-        />
+          <Section
+            dark={isDark}
+            title="3. Data Protection & Security"
+            content={
+              <div className="space-y-4">
+                <p>Artistic implements appropriate technical and organizational security measures to protect your personal information against:</p>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2"><Dot className="shrink-0" />Unauthorized access</div>
+                  <div className="flex items-center gap-2"><Dot className="shrink-0" />Data loss</div>
+                  <div className="flex items-center gap-2"><Dot className="shrink-0" />Misuse or alteration</div>
+                </div>
+                <p>However, no method of transmission over the internet is 100% secure. We encourage you to use caution when submitting highly sensitive images.</p>
+              </div>
+            }
+          />
 
-        <Section
-          dark={isDark}
-          title="2. How We Use Your Information"
-          content={
-            <>
-              We use the collected information to:<br /><br />
-              <Dot className="inline mr-1"/>Process, manage, and deliver your custom orders<br />
-              <Dot className="inline mr-1"/>Communicate order updates, payment requests, and support responses<br />
-              <Dot className="inline mr-1"/>Improve website functionality and user experience<br />
-              <Dot className="inline mr-1"/>Prevent fraud and unauthorized activity<br />
-              <Dot className="inline mr-1"/>Comply with legal obligations<br /><br />
-              We only use your information for legitimate business purposes.
-            </>
-          }
-        />
+          <Section
+            dark={isDark}
+            title="4. Sharing of Information"
+            content={
+              <div className="space-y-4">
+                <p>We do not sell, rent, or trade your personal information.</p>
+                <p>We may share information only in the following cases:</p>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2"><Dot className="shrink-0" />With trusted third-party delivery/shipping partners</div>
+                  <div className="flex items-center gap-2"><Dot className="shrink-0" />When required by law</div>
+                  <div className="flex items-center gap-2"><Dot className="shrink-0" />To protect legal rights or prevent fraud</div>
+                </div>
+              </div>
+            }
+          />
 
-        <Section
-          dark={isDark}
-          title="3. Data Protection & Security"
-          content={
-            <>
-              Artistic implements appropriate technical and organizational security measures to protect your personal information against:<br /><br />
-              <Dot className="inline mr-1"/>Unauthorized access<br />
-              <Dot className="inline mr-1"/>Data loss<br />
-              <Dot className="inline mr-1"/>Misuse or alteration<br /><br />
-              However, no method of transmission over the internet is 100% secure. We encourage you to use caution when submitting highly sensitive images.
-            </>
-          }
-        />
+          <Section
+            dark={isDark}
+            title="5. Cookies & Tracking Technologies"
+            content={
+              <div className="space-y-2">
+                <p>Our website may use cookies and similar technologies to:</p>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Enhance user experience</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Analyze website traffic</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Improve performance</div>
+              </div>
+            }
+          />
 
-        <Section
-          dark={isDark}
-          title="4. Sharing of Information"
-          content={
-            <>
-              We do not sell, rent, or trade your personal information.<br /><br />
-              We may share information only in the following cases:<br /><br />
-              <Dot className="inline mr-1"/>With trusted third-party delivery/shipping partners<br />
-              <Dot className="inline mr-1"/>When required by law<br />
-              <Dot className="inline mr-1"/>To protect legal rights or prevent fraud
-            </>
-          }
-        />
+          <Section
+            dark={isDark}
+            title="6. Third-Party Services"
+            content={
+              <div className="space-y-2">
+                <p>We may use third-party services for:</p>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Payment processing (e.g., UPI providers)</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Analytics</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Website hosting and database management</div>
+              </div>
+            }
+          />
 
-        <Section
-          dark={isDark}
-          title="5. Cookies & Tracking Technologies"
-          content={
-            <>
-              Our website may use cookies and similar technologies to:<br /><br />
-              <Dot className="inline mr-1"/>Enhance user experience<br />
-              <Dot className="inline mr-1"/>Analyze website traffic<br />
-              <Dot className="inline mr-1"/>Improve performance
-            </>
-          }
-        />
+          <Section
+            dark={isDark}
+            title="7. Data Retention"
+            content={
+              <div className="space-y-2">
+                <p>We retain personal information only as necessary to:</p>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Fulfill orders and physical shipping</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Comply with legal obligations</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Resolve disputes</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Enforce agreements</div>
+              </div>
+            }
+          />
 
-        <Section
-          dark={isDark}
-          title="6. Third-Party Services"
-          content={
-            <>
-              We may use third-party services for:<br /><br />
-              <Dot className="inline mr-1"/>Payment processing (e.g., UPI providers)<br />
-              <Dot className="inline mr-1"/>Analytics<br />
-              <Dot className="inline mr-1"/>Website hosting and database management
-            </>
-          }
-        />
+          <Section
+            dark={isDark}
+            title="8. Your Rights"
+            content={
+              <div className="space-y-2">
+                <p>You have the right to:</p>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Request access to the personal data we hold</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Request correction of inaccurate data</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Request deletion of your data (post-delivery)</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Withdraw consent</div>
+              </div>
+            }
+          />
 
-        <Section
-          dark={isDark}
-          title="7. Data Retention"
-          content={
-            <>
-              We retain personal information only as necessary to:<br /><br />
-              <Dot className="inline mr-1"/>Fulfill orders and physical shipping<br />
-              <Dot className="inline mr-1"/>Comply with legal obligations<br />
-              <Dot className="inline mr-1"/>Resolve disputes<br />
-              <Dot className="inline mr-1"/>Enforce agreements
-            </>
-          }
-        />
+          <Section
+            dark={isDark}
+            title="9. Children’s Privacy"
+            content={
+              <p>We do not knowingly collect personal information from children under 18 years of age without parental consent.</p>
+            }
+          />
 
-        <Section
-          dark={isDark}
-          title="8. Your Rights"
-          content={
-            <>
-              You have the right to:<br /><br />
-              <Dot className="inline mr-1"/>Request access to the personal data we hold<br />
-              <Dot className="inline mr-1"/>Request correction of inaccurate data<br />
-              <Dot className="inline mr-1"/>Request deletion of your data (post-delivery)<br />
-              <Dot className="inline mr-1"/>Withdraw consent
-            </>
-          }
-        />
+          <Section
+            dark={isDark}
+            title="10. Policy Updates"
+            content={
+              <p>We may update this Privacy Policy periodically. Continued use of our site means you agree to the latest policy.</p>
+            }
+          />
 
-        <Section
-          dark={isDark}
-          title="9. Children’s Privacy"
-          content={
-            <>
-              We do not knowingly collect personal information from children under 18 years of age without parental consent.
-            </>
-          }
-        />
-
-        <Section
-          dark={isDark}
-          title="10. Policy Updates"
-          content={
-            <>
-              We may update this Privacy Policy periodically. Continued use of our site means you agree to the latest policy.
-            </>
-          }
-        />
-
-        <Section
-          dark={isDark}
-          title="11. Contact Us"
-          content={
-            <>
-              <Dot className="inline mr-1"/>Email: artistic.official12@gmail.com<br />
-              <Dot className="inline mr-1"/>Phone: +91 0000000000
-            </>
-          }
-        />
+          <Section
+            dark={isDark}
+            title="11. Contact Us"
+            content={
+              <div className="space-y-1 mt-2">
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Email: artistic.official12@gmail.com</div>
+                <div className="flex items-center gap-2"><Dot className="shrink-0" />Phone: +91 9392822250</div>
+              </div>
+            }
+          />
+        </div>
 
         <motion.div
           variants={itemVariants}
-          className={`mt-8 text-xs ${
-            isDark ? "text-[#888]" : "text-black"
+          className={`mt-16 pt-8 border-t transition-colors duration-300 text-xs sm:text-sm ${
+            isDark ? "text-[#888] border-white/5" : "text-gray-500 border-gray-200"
           }`}
         >
-          Last updated: February 27, 2026
+          Last updated: April, 2026
         </motion.div>
       </motion.div>
     </div>
@@ -238,20 +248,20 @@ export default function PrivacyPolicy({ isDark }) {
 
 /* SECTION COMPONENT */
 const Section = ({ title, content, dark }) => (
-  <motion.div variants={itemVariants} className="mb-6">
+  <motion.div variants={itemVariants} className="group">
     <h2
-      className={`text-[16px] font-semibold mb-2 ${
-        dark ? "text-white" : "text-black"
+      className={`text-sm sm:text-base md:text-lg font-semibold mb-2 transition-colors duration-300 ${
+        dark ? "text-white group-hover:text-white" : "text-black group-hover:text-black"
       }`}
     >
       {title}
     </h2>
-    <p
-      className={`text-sm leading-relaxed ${
-        dark ? "text-[#b5b5b5]" : "text-black"
+    <div
+      className={`text-xs sm:text-sm leading-relaxed transition-colors duration-300 ${
+        dark ? "text-[#b5b5b5] group-hover:text-[#d5d5d5]" : "text-gray-700 group-hover:text-black"
       }`}
     >
       {content}
-    </p>
+    </div>
   </motion.div>
 );
