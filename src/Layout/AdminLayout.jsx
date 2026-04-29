@@ -5,7 +5,7 @@ import ThemeToggle from "../Components/ThemeToggle";
 import { Menu } from "lucide-react";
 
 export default function AdminLayout({ children }) {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(localStorage.getItem("theme") !== "light");
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   // Auto-collapse sidebar on mobile screens
@@ -38,7 +38,7 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className={`flex min-h-screen transition-all duration-500 relative overflow-hidden
-       ${isDark ? "bg-black text-white" : "bg-[#f4f6f8] text-black"}`}>
+       ${isDark ? "bg-[#050505] text-white" : "bg-[#f4f6f8] text-black"}`}>
 
       {/* Sidebar */}
       <AdminSidebar isDark={isDark} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
@@ -56,7 +56,7 @@ export default function AdminLayout({ children }) {
         {/* Top Bar */}
         <div
           className={`sticky top-0 z-20 flex justify-between items-center px-4 md:px-8 py-4 border-b transition-colors duration-300 w-full
-            ${isDark ? "bg-black border-white/10" : "bg-white/70 backdrop-blur-md border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]"}`}
+            ${isDark ? "bg-[#050505]/80 backdrop-blur-xl border-white/10" : "bg-white/70 backdrop-blur-md border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]"}`}
         >
           <div className="flex items-center gap-3">
             <button 
