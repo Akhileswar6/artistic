@@ -126,7 +126,7 @@ export default function Footer({ isDark }) {
 
     <div className="flex items-center gap-3">
       <Phone size={16} />
-      <span>+91 12345 67890</span>
+      <span>+91 9392822250</span>
     </div>
 
     <div className="flex items-start gap-3">

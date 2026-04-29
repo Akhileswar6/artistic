@@ -171,8 +171,8 @@ export default function Orders({ isDark }) {
                 <div
                   key={order._id}
                   className={`group rounded-lg p-4 border transition-all duration-500 hover:shadow-2xl  ${isDark
-                      ? "bg-white/[0.02] border-white/10 hover:border-white/20 "
-                      : "bg-white border-black/5 hover:border-black/10 "
+                    ? "bg-white/[0.02] border-white/10 hover:border-white/20 "
+                    : "bg-white border-black/5 hover:border-black/10 "
                     }`}
                 >
                   <div className="flex flex-col md:flex-row gap-5 items-center">
@@ -219,8 +219,8 @@ export default function Orders({ isDark }) {
                         <button
                           onClick={() => setSelectedOrder(order)}
                           className={`group/btn flex items-center gap-2 text-[13px]  cursor-pointer transition-all px-3 py-1.5 rounded-lg ${isDark
-                              ? "text-blue-400 hover:bg-blue-400/10"
-                              : "text-blue-600 hover:bg-blue-50"
+                            ? "text-blue-400 hover:bg-blue-400/10"
+                            : "text-blue-600 hover:bg-blue-50"
                             }`}
                         >
                           View Details

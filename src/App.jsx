@@ -123,9 +123,8 @@ export default function App() {
       />
 
       <div
-        className={`min-h-screen flex flex-col transition-colors duration-300 ${
-          isDark ? "bg-black text-white" : "bg-white text-black"
-        }`}
+        className={`min-h-screen flex flex-col transition-colors duration-300 ${isDark ? "bg-black text-white" : "bg-white text-black"
+          }`}
       >
         <Suspense fallback={<PageLoader />}>
           <AnimatePresence mode="wait">
