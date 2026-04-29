@@ -41,6 +41,7 @@
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -50,6 +51,7 @@
   0% {
     transform: translateX(-50%);
   }
+
   100% {
     transform: translateX(0);
   }
@@ -61,15 +63,19 @@
   0% {
     transform: translateX(0%);
   }
+
   100% {
     transform: translateX(300%);
   }
 }
 
 @keyframes stepGlow {
-  0%, 100% {
-    box-shadow: 0 0 0px rgba(251,146,60,0);
+
+  0%,
+  100% {
+    box-shadow: 0 0 0px rgba(251, 146, 60, 0);
   }
+
   50% {
     box-shadow: 0 0 10px rgba(226, 226, 225, 0.4);
   }
@@ -83,9 +89,11 @@
   0% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
+
   100% {
     transform: translateY(0px);
   }
@@ -96,11 +104,21 @@
 }
 
 
-.float-slow:nth-child(1) { animation-delay: 1s; }
-.float-slow:nth-child(2) { animation-delay: 1s; }
-.float-slow:nth-child(3) { animation-delay: 2s; }
+.float-slow:nth-child(1) {
+  animation-delay: 1s;
+}
 
-.float-slow:nth-child(4) { animation-delay: 2s; }
+.float-slow:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.float-slow:nth-child(3) {
+  animation-delay: 2s;
+}
+
+.float-slow:nth-child(4) {
+  animation-delay: 2s;
+}
 
 /* CUSTOM SCROLLBAR */
 ::-webkit-scrollbar {
@@ -109,18 +127,19 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0a; 
+  background: #0a0a0a;
   border-left: 1px solid #1a1a1a;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #262626; 
+  background: #262626;
   border-radius: 10px;
-  border: 2px solid #0a0a0a; /* Creates padding effect */
+  border: 2px solid #0a0a0a;
+  /* Creates padding effect */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #404040; 
+  background: #404040;
 }
 
 /* Scrollbar Buttons (Arrows) */
@@ -129,11 +148,13 @@
   height: 12px;
   border-left: 1px solid #1a1a1a;
 }
+
 ::-webkit-scrollbar-button:vertical:increment {
   background: #212121 url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 12 12' fill='%23404040'%3E%3Cpath d='M6 9L2 4h8z'/%3E%3C/svg%3E") no-repeat center;
   height: 12px;
   border-left: 1px solid #1a1a1a;
 }
+
 ::-webkit-scrollbar-button:vertical:decrement:hover,
 ::-webkit-scrollbar-button:vertical:increment:hover {
   background-color: #1a1a1a;
@@ -146,16 +167,15 @@
 }
 
 @keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
 }
-
-
-
-
-
-
