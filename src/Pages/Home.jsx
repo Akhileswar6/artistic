@@ -66,7 +66,7 @@ export default function Home({ isDark }) {
         }`} style={{ fontFamily: "Inter, serif" }}
     >
 
-      <motion.div 
+      <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -74,7 +74,7 @@ export default function Home({ isDark }) {
       >
 
         {/* BACKGROUND ANIMATION */}
-        <div 
+        <div
           className="absolute inset-0 z-0 flex px-4 md:px-8 mix-blend-luminosity scale-[1.15] rotate-[-4deg] pointer-events-none"
           style={{ maskImage: "radial-gradient(ellipse at center, black 20%, transparent 80%)", WebkitMaskImage: "radial-gradient(ellipse at center, black 20%, transparent 80%)" }}
         >
@@ -260,7 +260,7 @@ export default function Home({ isDark }) {
       <div className="max-w-7xl mx-auto px-5 py-4">
 
         {/* HOW IT WORKS */}
-        <motion.div 
+        <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
