@@ -14,11 +14,11 @@ const navLinks = [
   { label: "Contact", path: "/contact", icon: <Phone size={20} /> },
 ];
 
-function Navbar({ isDark, setIsDark, user, setUser }) {
+function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn }) {
   const location = useLocation();
   const [activeStyle, setActiveStyle] = useState({});
   const [isOpen, setIsOpen] = useState(false);
-  const [showSignIn, setShowSignIn] = useState(false);
+
   const linkRefs = useRef([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const desktopDropdownRef = useRef();
