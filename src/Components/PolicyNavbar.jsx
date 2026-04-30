@@ -6,7 +6,6 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
   const [open, setOpen] = useState(false);
   const location = useLocation();
 
-  // Close menu when route changes
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
