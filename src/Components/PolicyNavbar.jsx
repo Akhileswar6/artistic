@@ -12,7 +12,7 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
   }, [location.pathname]);
 
   const navClass = ({ isActive }) =>
-    `flex items-center gap-2 px-4 py-2 text-[13px] rounded-xl transition-all duration-300 font-medium ${isActive
+    `flex items-center gap-2 px-3 py-2 text-[13px] rounded-lg transition-all duration-300 font-medium ${isActive
       ? isDark
         ? "bg-white text-black shadow-lg shadow-white/5"
         : "bg-black text-white shadow-lg shadow-black/10"
@@ -61,7 +61,7 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
             {/* LOGO */}
             <NavLink
               to="/"
-              className={`text-[22px] font-semibold tracking-tight transition-opacity hover:opacity-80 ${isDark ? "text-white" : "text-black"
+              className={`text-[22px] font-semibold  ${isDark ? "text-white" : "text-black"
                 }`}
               style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
             >
