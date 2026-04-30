@@ -63,7 +63,7 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
               <img
                 src={logo}
                 alt="artistic"
-                className="h-9 w-auto object-contain"
+                className="h-10 w-auto object-contain"
               />
             </NavLink>
           </div>
@@ -127,7 +127,7 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
             <img
               src={logo}
               alt="artistic"
-              className="h-8 w-auto object-contain"
+              className="h-10 w-auto object-contain"
             />
           </NavLink>
           <button

@@ -294,7 +294,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
               <img
                 src={logo}
                 alt="artistic"
-                className="h-8 w-auto object-contain"
+                className="h-10 w-auto object-contain"
               />
           </div>
           {/* Right */}
