@@ -1,4 +1,4 @@
-﻿import { Mail, Phone, MapPin, Clock, MessageCircle, Send, Lock, User, AtSign, Tag, MessageSquare } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, MessageCircle, Send, Lock, User, AtSign, Tag, MessageSquare } from "lucide-react";
 import { Instagram, Facebook, Linkedin, ChatCircle } from "griddy-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -246,12 +246,15 @@ export default function Contact() {
               <div className={`mt-6 pt-5 border-t ${isDark ? "border-white/5" : "border-black/5"}`}>
                 <div className="flex gap-2">
                   {[
-                    { Icon: Instagram, dark: instagramImg },
-                    { Icon: Facebook, dark: facebookImg },
-                    { Icon: Linkedin, dark: linkedinImg },
+                    { Icon: Instagram, dark: instagramImg, link: "https://www.instagram.com/linesbyakhileswar" },
+                    { Icon: Facebook, dark: facebookImg, link: "https://www.facebook.com/akhil.kamale.1/directory_names" },
+                    { Icon: Linkedin, dark: linkedinImg, link: "https://www.linkedin.com/in/akhileswar-kamale/" },
                   ].map((item, i) => (
-                    <motion.button
+                    <motion.a
                       key={i}
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       whileHover={{ scale: 1.1, y: -2 }}
                       whileTap={{ scale: 0.9 }}
                       className={`w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center transition-colors cursor-pointer ${isDark ? "bg-white/5 hover:bg-white/10" : "bg-black/5 hover:bg-black/10"
@@ -262,7 +265,7 @@ export default function Contact() {
                       ) : (
                         <item.Icon size={22} className={isDark ? "text-white" : "text-black"} />
                       )}
-                    </motion.button>
+                    </motion.a>
                   ))}
                 </div>
               </div>
