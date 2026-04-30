@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Instagram, Linkedin, Facebook, CheckCircle } from "griddy-icons";
 import instagram from "../assets/instagram_dark.png";
@@ -17,149 +18,150 @@ export default function Footer({ isDark }) {
       }`}
       style={{ fontFamily: "Inter, sans-serif" }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-10">
-
-        <div className="flex flex-col md:flex-row gap-10 md:gap-30">
-
+      <div className="max-w-7xl mx-auto px-6 py-12 md:py-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* Brand */}
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
               <span
-                className={`text-[25px] font-semibold ${
+                className={`text-[28px] font-bold tracking-tight ${
                   isDark ? "text-white" : "text-black"
                 }`} style={{fontFamily: "Bricolage Grotesque, sans-serif"}}
               >
                 artistic
               </span>
             </div>
-
-            <p className={`text-sm max-w-xs ${
-              isDark ? "text-neutral-400" : "text-neutral-600"
+            <p className={`text-[15px] leading-relaxed max-w-xs ${
+              isDark ? "text-neutral-400" : "text-neutral-500"
             }`}>
-              Every Sketch Breathes.
+              Where every sketch breathes.
             </p>
-
             <div className="flex items-center gap-4 mt-4">
-  {[
-    {
-      LightIcon: Instagram,
-      darkImg: instagram,
-      alt: "Instagram",
-    },
-    {
-      LightIcon: Facebook,
-      darkImg: facebook,
-      alt: "Facebook",
-    },
-    {
-      LightIcon: Linkedin,
-      darkImg: linkedin,
-      alt: "LinkedIn",
-    },
-    
-  ].map((item, i) => {
-    const LightIcon = item.LightIcon;
-
-    return isDark ? (
-      <img
-        key={i}
-        src={item.darkImg}
-        alt={item.alt}
-        className="w-5 h-5 cursor-pointer transition hover:scale-110 "
-      />
-    ) : (
-      <LightIcon
-        key={i}
-        size={24}
-        className="text-black transition cursor-pointer hover:scale-110 hover:text-neutral-700"
-      />
-    );
-  })}
-</div>
+              {[
+                {
+                  LightIcon: Instagram,
+                  darkImg: instagram,
+                  alt: "Instagram",
+                  link: "https://www.instagram.com/linesbyakhileswar"
+                },
+                {
+                  LightIcon: Facebook,
+                  darkImg: facebook,
+                  alt: "Facebook",
+                  link: "https://www.facebook.com/akhil.kamale.1/directory_names"
+                },
+                {
+                  LightIcon: Linkedin,
+                  darkImg: linkedin,
+                  alt: "LinkedIn",
+                  link: "https://www.linkedin.com/in/akhileswar-kamale/"
+                },
+              ].map((item, i) => {
+                const LightIcon = item.LightIcon;
+                return (
+                  <motion.a
+                    key={i}
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ y: -3, scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className={`p-2 rounded-xl transition-all ${isDark ? "bg-white/5 hover:bg-white/10" : "bg-black/5 hover:bg-black/10"}`}
+                  >
+                    {isDark ? (
+                      <img src={item.darkImg} alt={item.alt} className="w-5 h-5" />
+                    ) : (
+                      <LightIcon size={22} className="text-black" />
+                    )}
+                  </motion.a>
+                );
+              })}
+            </div>
           </div>
 
           {/* Links */}
-          <div>
-            <h4 className="font-medium mb-3 text-[17px]" style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
+          <div className="lg:ml-10">
+            <h4 className="font-bold mb-4 text-[18px] tracking-tight" style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
               Quick Links
             </h4>
-            <ul className={`space-y-3 text-[13px] ${
-              isDark ? "text-neutral-400" : "text-neutral-600"
-            }`}>
-              <li><Link to="/" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Home</Link></li>
-              <li><Link to="/gallery" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Gallery</Link></li>
-              <li><Link to="/order" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Order Now</Link></li>
-              <li><Link to="/about" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>About Artist</Link></li>
+            <ul className="space-y-3">
+              {[
+                { label: "Home", to: "/" },
+                { label: "Gallery", to: "/gallery" },
+                { label: "Order Now", to: "/order" },
+                { label: "About Artist", to: "/about" }
+              ].map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className={`text-[14px] transition-colors duration-300 ${isDark ? "text-neutral-400 hover:text-white" : "text-neutral-500 hover:text-black"}`}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-
-          <div>
-            <h4 className="font-medium mb-3 text-[17px]"  style={{fontFamily: "Bricolage Grotesque, sans-serif"}} >
+          {/* Policies */}
+          <div className="lg:ml-5">
+            <h4 className="font-bold mb-4 text-[18px] tracking-tight" style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
               Policies
             </h4>
-            <ul className={`space-y-3 text-[13px] ${
-              isDark ? "text-neutral-400" : "text-neutral-600"
-            }`}>
-              <li><Link to="/terms" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Terms of Service</Link></li>
-              <li><Link to="/privacy-policy" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Privacy Policy</Link></li>
-              <li><Link to="/refund-policy" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Refund Policy</Link></li>
-              <li><Link to="/cancellation-policy" className={`space-y-2 text-sm ${ isDark ? "text-neutral-400 hover:text-white" : "text-neutral-600 hover:text-black"}`}>Cancellation Policy</Link></li>
+            <ul className="space-y-3">
+              {[
+                { label: "Terms of Service", to: "/terms" },
+                { label: "Privacy Policy", to: "/privacy-policy" },
+                { label: "Refund Policy", to: "/refund-policy" },
+                { label: "Cancellation Policy", to: "/cancellation-policy" }
+              ].map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className={`text-[14px] transition-colors duration-300 ${isDark ? "text-neutral-400 hover:text-white" : "text-neutral-500 hover:text-black"}`}>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-{/* Contact */}
-<div>
-  <h4 className="font-medium mb-4 text-[17px]" style={{fontFamily: "Bricolage Grotesque, sans-serif"}}  >
-    Contact
-  </h4>
+          {/* Contact */}
+          <div>
+            <h4 className="font-bold mb-4 text-[18px] tracking-tight" style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
+              Contact
+            </h4>
+            <div className={`space-y-3 text-[14px] ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+              <div className="flex items-center gap-3 group cursor-pointer hover:text-blue-500 transition-colors">
+                <div className={`p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-black/5"}`}>
+                  <Mail size={16} />
+                </div>
+                <span>artistic.official12@gmail.com</span>
+              </div>
+              <div className="flex items-center gap-3 group cursor-pointer hover:text-green-500 transition-colors">
+                <div className={`p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-black/5"}`}>
+                  <Phone size={16} />
+                </div>
+                <span>+91 9392822250</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className={`p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-black/5"}`}>
+                  <MapPin size={16} />
+                </div>
+                <span className="leading-relaxed">Adoni, Andhra Pradesh, India</span>
+              </div>
+            </div>
 
-  <div className={`space-y-3 text-sm ${
-    isDark ? "text-neutral-400" : "text-neutral-600"
-  }`}>
-
-    <div className="flex items-center gap-3">
-      <Mail size={16} />
-      <span>artistic.official12@gmail.com</span>
-    </div>
-
-    <div className="flex items-center gap-3">
-      <Phone size={16} />
-      <span>+91 9392822250</span>
-    </div>
-
-    <div className="flex items-start gap-3">
-      <MapPin size={16} className="mt-[2px]" />
-      <span>Adoni, Andhra Pradesh, India</span>
-    </div>
-
-  </div>
-
-  {/* Message Card */}
-  <div
-    className={`mt-5 rounded-xl border p-4 flex gap-2 ${
-      isDark
-        ? "bg-[#141414] border-neutral-700 text-white"
-        : "bg-neutral-200 border-gray-300 text-black"
-    }`}
-  >
-    <CheckCircle className="text-green-500 mt-[2px]" size={19} />
-
-    <div>
-      <p className="font-medium text-sm">Response Time</p>
-
-      <p className={`text-xs mt-1 ${
-        isDark ? "text-neutral-400" : "text-neutral-600"
-      }`}>
-        Orders are reviewed within 24 hours. You'll be notified via your dashboard.
-      </p>
-    </div>
-  </div>
-
-    
-</div>
-
+            {/* Message Card */}
+            <div className={`mt-8 rounded-2xl border p-5 flex gap-4 transition-all hover:shadow-lg ${
+              isDark ? "bg-[#141414]/50 border-white/5 hover:bg-[#141414]" : "bg-neutral-50 border-black/5 hover:bg-neutral-100 shadow-lg"
+            }`}>
+              <div className="mt-1">
+                <CheckCircle className="text-green-500" size={18} />
+              </div>
+              <div>
+                <p className={` text-[13px] ${isDark ? "text-white" : "text-black"}`}>Response Time</p>
+                <p className={`text-[12px] mt-1.5 leading-relaxed opacity-80 ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+                  Orders are reviewed within 24 hours. You'll be notified via your dashboard.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className={`border-t mt-10 pt-6 flex flex-col md:flex-row justify-between items-center text-sm ${
@@ -168,7 +170,9 @@ export default function Footer({ isDark }) {
             : "border-neutral-300 text-neutral-600"
         }`}>
           <p>© {new Date().getFullYear()} artistic. All rights reserved.</p>
-          <p className="mt-2 md:mt-0">Made with ♥ Akhil</p>
+          <p className="mt-2 md:mt-0 flex items-center gap-1.5">
+            Made with <img src={isDark ? "/white.png" : "/black.png"} alt="heart" className="w-4 h-4 object-contain" /> Akhil
+          </p>
         </div>
 
       </div>
