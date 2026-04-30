@@ -23,13 +23,13 @@ export default function Footer({ isDark }) {
           {/* Brand */}
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <span
-                className={`text-[28px] font-bold tracking-tight ${
-                  isDark ? "text-white" : "text-black"
-                }`} style={{fontFamily: "Bricolage Grotesque, sans-serif"}}
-              >
-                artistic
-              </span>
+              <Link to="/">
+                <img
+                  src="/logo.png"
+                  alt="artistic"
+                  className="h-10 w-auto object-contain"
+                />
+              </Link>
             </div>
             <p className={`text-[15px] leading-relaxed max-w-xs ${
               isDark ? "text-neutral-400" : "text-neutral-500"
