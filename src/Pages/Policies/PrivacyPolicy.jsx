@@ -27,9 +27,8 @@ export default function PrivacyPolicy({ isDark }) {
 
   return (
     <div
-      className={`relative w-full min-h-screen py-10 sm:py-16 px-6 sm:px-12 overflow-hidden transition-colors duration-500 ${
-        isDark ? "bg-[#080808]" : "bg-[#faf9f6]"
-      }`}
+      className={`relative w-full min-h-screen py-10 sm:py-16 px-6 sm:px-12 overflow-hidden transition-colors duration-500 ${isDark ? "bg-[#080808]" : "bg-[#faf9f6]"
+        }`}
       style={{ fontFamily: "Inter, serif" }}
     >
 
@@ -38,30 +37,25 @@ export default function PrivacyPolicy({ isDark }) {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className={`relative z-10 max-w-6xl mx-auto shadow-2xl rounded-[1.5rem] p-6 sm:p-8 md:p-10 backdrop-blur-xl border transition-all duration-300 ${
-          isDark ? "bg-[#0A0A0C]/80 border-white/5 shadow-black/50" : "bg-white/80 border-gray-200/50 shadow-xl"
-        }`}
+        className={`relative z-10 max-w-6xl mx-auto shadow-2xl rounded-[1.5rem] p-6 sm:p-8 md:p-10 backdrop-blur-xl border transition-all duration-300 ${isDark ? "bg-[#0A0A0C]/80 border-white/5 shadow-black/50" : "bg-white/80 border-gray-200/50 shadow-xl"
+          }`}
       >
         {/* HEADER */}
-        <motion.div variants={itemVariants} className="flex items-center justify-between gap-3 mb-6">
-          <h1
-            className={`text-xl sm:text-2xl md:text-3xl font-medium tracking-tight ${
-              isDark ? "text-[#f5f5f5]" : "text-black"
-            }`}
-            style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-          >
-            Privacy Policy
-          </h1>
+        <motion.div variants={itemVariants}>
+          <div className="flex items-center justify-center mb-8">
+            <h1 className={`text-3xl md:text-4xl font-bold tracking-tight text-center ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque" }}>
+              Privacy Policy
+            </h1>
+          </div>
         </motion.div>
 
         {/* INTRO */}
         <motion.p
           variants={itemVariants}
-          className={`text-xs sm:text-sm mb-8 leading-relaxed opacity-80 ${
-            isDark ? "text-[#b5b5b5]" : "text-black"
-          }`}
+          className={`text-xs sm:text-sm mb-8 leading-relaxed opacity-80 ${isDark ? "text-[#b5b5b5]" : "text-black"
+            }`}
         >
-          At <span className="font-bold">Artistic</span>, we value your privacy and are committed to protecting your personal information. 
+          At <span className="font-bold">Artistic</span>, we value your privacy and are committed to protecting your personal information.
           This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
           <br /><br />
           By using Artistic, you consent to the practices described in this Privacy Policy.
@@ -235,9 +229,8 @@ export default function PrivacyPolicy({ isDark }) {
 
         <motion.div
           variants={itemVariants}
-          className={`mt-16 pt-8 border-t transition-colors duration-300 text-xs sm:text-sm ${
-            isDark ? "text-[#888] border-white/5" : "text-gray-500 border-gray-200"
-          }`}
+          className={`mt-16 pt-8 border-t transition-colors duration-300 text-xs sm:text-sm ${isDark ? "text-[#888] border-white/5" : "text-gray-500 border-gray-200"
+            }`}
         >
           Last updated: April, 2026
         </motion.div>
@@ -250,16 +243,14 @@ export default function PrivacyPolicy({ isDark }) {
 const Section = ({ title, content, dark }) => (
   <motion.div variants={itemVariants} className="group">
     <h2
-      className={`text-sm sm:text-base md:text-lg font-semibold mb-2 transition-colors duration-300 ${
-        dark ? "text-white group-hover:text-white" : "text-black group-hover:text-black"
-      }`}
+      className={`text-sm sm:text-base md:text-lg font-semibold mb-2 transition-colors duration-300 ${dark ? "text-white group-hover:text-white" : "text-black group-hover:text-black"
+        }`}
     >
       {title}
     </h2>
     <div
-      className={`text-xs sm:text-sm leading-relaxed transition-colors duration-300 ${
-        dark ? "text-[#b5b5b5] group-hover:text-[#d5d5d5]" : "text-gray-700 group-hover:text-black"
-      }`}
+      className={`text-xs sm:text-sm leading-relaxed transition-colors duration-300 ${dark ? "text-[#b5b5b5] group-hover:text-[#d5d5d5]" : "text-gray-700 group-hover:text-black"
+        }`}
     >
       {content}
     </div>
