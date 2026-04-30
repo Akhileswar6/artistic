@@ -60,6 +60,7 @@ const PageTransition = ({ children, ...props }) => (
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     const checkSession = () => {
@@ -87,9 +88,31 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Sliding Session Window: Reset timer on activity or navigation
+  useEffect(() => {
+    const resetTimer = () => {
+      if (localStorage.getItem("user") && localStorage.getItem("loginTimestamp")) {
+        localStorage.setItem("loginTimestamp", Date.now().toString());
+      }
+    };
+
+    resetTimer(); // Reset on navigation (since this effect runs on location change)
+
+    // Also reset on physical activity
+    window.addEventListener("mousemove", resetTimer);
+    window.addEventListener("keydown", resetTimer);
+    window.addEventListener("click", resetTimer);
+
+    return () => {
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("keydown", resetTimer);
+      window.removeEventListener("click", resetTimer);
+    };
+  }, [location.pathname]);
+
 
   const [isDark, setIsDark] = useState(
-    localStorage.getItem("theme") === "dark"
+    localStorage.getItem("theme") !== "light"
   );
 
   useEffect(() => {
@@ -102,7 +125,7 @@ export default function App() {
     }
   }, [isDark]);
 
-  const location = useLocation();
+
 
   return (
     <>
