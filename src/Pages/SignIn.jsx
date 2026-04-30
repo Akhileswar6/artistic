@@ -44,6 +44,8 @@ export default function SignIn({ onClose, isDark, setUser }) {
   const [authType, setAuthType] = useState(null);
   const [emailError, setEmailError] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
+  const [focusedField, setFocusedField] = useState(null);
+
 
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -53,8 +55,9 @@ export default function SignIn({ onClose, isDark, setUser }) {
   useEffect(() => {
     if (step === "otp") {
       setOtp(Array(6).fill(""));
-      setResendTimer(60);
+      setResendTimer(5);
     }
+
   }, [step]);
 
   useEffect(() => {
@@ -82,8 +85,9 @@ export default function SignIn({ onClose, isDark, setUser }) {
 
       if (res.ok) {
         toast.success("OTP resent successfully");
-        setResendTimer(60);
+        setResendTimer(5);
       } else {
+
         toast.error(data.message || "Failed to resend OTP");
       }
     } catch {
@@ -265,65 +269,84 @@ export default function SignIn({ onClose, isDark, setUser }) {
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className={`w-full max-w-3xl min-h-[480px] flex flex-col md:flex-row rounded-2xl overflow-hidden relative shadow-2xl transition-colors duration-300 ${isDark
-            ? "bg-[#141414] text-white shadow-black/80"
-            : "bg-white text-black shadow-xl"
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className={`w-full max-w-[440px] md:max-w-4xl min-h-[500px] flex flex-col md:flex-row rounded-3xl overflow-hidden relative shadow-2xl transition-colors duration-500 ${isDark
+            ? "bg-[#0a0a0a] text-white shadow-black/90 border border-white/5"
+            : "bg-white text-black shadow-2xl border border-black/5"
           }`}
       >
-        {/* ================= LEFT SIDE (ARTISTIC BG) ================= */}
-        <div className="hidden md:block md:w-1/2 relative overflow-hidden bg-black">
+
+        {/* ================= LEFT SIDE (ARTISTIC BG - DESKTOP ONLY) ================= */}
+        <div className="hidden md:flex md:w-[45%] relative overflow-hidden bg-[#050505]">
           <motion.img
-            // initial={{ scale: 1.0 }}
-            // animate={{ scale: 1.1 }}
+            initial={{ scale: 1.1 }}
+            animate={{ 
+              scale: [1.1, 1.15, 1.1],
+              rotate: [0, 1, 0]
+            }}
             transition={{
-              duration: 20,
+              duration: 25,
               repeat: Infinity,
-              repeatType: "reverse",
               ease: "linear",
             }}
             src={isDark ? CharcoalSketch : PencilSketch}
             alt="Artistic Sketch"
-            className={`absolute inset-0 w-full h-full object-cover ${isDark ? "opacity-60" : "opacity-90 grayscale-[20%]"}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${isDark ? "opacity-50" : "opacity-80 grayscale-[30%]"}`}
           />
-          {/* Blend Gradient */}
-          <div
-            className={`absolute inset-0 bg-gradient-to-r ${isDark
-                ? "from-transparent via-transparent to-[#141414]"
+          {/* Advanced Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-80" />
+          <div className={`absolute inset-0 bg-gradient-to-r ${isDark
+                ? "from-transparent via-transparent to-[#0a0a0a]"
                 : "from-transparent via-transparent to-white"
               }`}
           />
+          
+          {/* Floating Artistic Elements */}
+          <div className="absolute top-10 left-10 w-20 h-20 border border-white/10 rounded-full blur-2xl animate-pulse" />
+          
           {/* Overlay Content */}
-          <div className="absolute inset-0 flex flex-col justify-end p-8 z-10 mix-blend-normal">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
+          <div className="absolute inset-0 flex flex-col justify-end p-10 z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              className={`text-4xl font-bold mb-3 ${isDark ? "text-white" : "text-[#1a1a1a]"}`}
-              style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+              transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
             >
-              Artistic.
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className={`text-sm leading-relaxed max-w-[90%] font-medium ${isDark ? "text-neutral-300" : "text-gray-800"}`}
-            >
-              Where imagination meets canvas. Join our community and bring your creative visions to life.
-            </motion.p>
+              <h2
+                className={`text-5xl mb-4 tracking-tight ${isDark ? "text-white" : "text-black"}`}
+                style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+              >
+                Artistic
+              </h2>
+              <p className={`text-[15px] leading-relaxed max-w-[85%] font-medium ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+                Where every sketch breathes
+              </p>
+            </motion.div>
           </div>
         </div>
 
         {/* ================= RIGHT SIDE (CONTENT) ================= */}
-        <div className="w-full md:w-1/2 p-6 md:p-10 relative flex flex-col justify-center">
+        <div className="w-full md:w-[55%] p-6 sm:p-10 md:p-12 relative flex flex-col justify-center min-h-[500px]">
+
+          {/* Mobile Header (Hidden on Desktop) */}
+          <div className="md:hidden mb-8">
+             <h2
+                className={`text-2xl  tracking-tight ${isDark ? "text-white" : "text-[#1a1a1a]"}`}
+                style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+              >
+                Artistic
+              </h2>
+          </div>
+
           {/* Close Button */}
           <button
             onClick={onClose}
-            className={`absolute top-5 right-5 transition cursor-pointer z-50 ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-black"
+            className={`absolute top-6 right-6 p-2 rounded-full transition-all duration-300 z-50 ${
+              isDark 
+                ? "text-gray-500 hover:text-white hover:bg-white/5" 
+                : "text-gray-400 hover:text-black hover:bg-black/5"
               }`}
           >
-            <X size={20} />
+            <X size={22} />
           </button>
 
           <AnimatePresence mode="wait">
@@ -335,74 +358,88 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="text-center space-y-6"
+                className="space-y-8"
               >
-                <motion.h2
-                  variants={itemVariants}
-                  className="text-[30px] font-semibold"
-                  style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-                >
-                  Welcome back..
-                </motion.h2>
+                <div className="space-y-2">
+                  <motion.h2
+                    variants={itemVariants}
+                    className="text-3xl md:text-4xl tracking-tight"
+                    style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+                  >
+                    Welcome back
+                  </motion.h2>
+                  <motion.p 
+                    variants={itemVariants}
+                    className={`text-sm ${isDark ? "text-neutral-500" : "text-neutral-500"}`}
+                  >
+                    Sign in to manage your commissions and orders.
+                  </motion.p>
+                </div>
 
-                <motion.div variants={itemVariants} className="space-y-4 w-full mx-auto text-[15px]">
+                <motion.div variants={itemVariants} className="space-y-4 w-full">
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01, y: -1 }}
+                    whileTap={{ scale: 0.99 }}
                     onClick={handleGoogleSignIn}
                     disabled={loading}
-                    className={`w-full h-11 border rounded-lg flex items-center justify-center gap-3 cursor-pointer transition shadow-sm ${isDark
-                        ? "border-neutral-700 bg-[#202020] hover:bg-neutral-800"
-                        : "border-gray-300 bg-white hover:bg-gray-50"
+                    className={`w-full h-12 rounded-xl flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 font-medium ${isDark
+                        ? "border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:border-neutral-700 text-white"
+                        : "border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-black shadow-sm"
                       }`}
                   >
-                    <FcGoogle size={22} />
-                    Sign in with Google
+                    <FcGoogle size={24} />
+                    Continue with Google
                   </motion.button>
 
+                  <div className="relative py-2 flex items-center">
+                    <div className={`flex-grow border-t ${isDark ? "border-neutral-800" : "border-gray-200"}`}></div>
+                    <span className={`flex-shrink mx-4 text-[11px] uppercase tracking-widest font-bold ${isDark ? "text-neutral-700" : "text-gray-400"}`}>or</span>
+                    <div className={`flex-grow border-t ${isDark ? "border-neutral-800" : "border-gray-200"}`}></div>
+                  </div>
+
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01, y: -1 }}
+                    whileTap={{ scale: 0.99 }}
                     onClick={() => {
                       setAuthType("login");
                       localStorage.setItem("authType", "login");
                       setStep("email");
                     }}
-                    className={`w-full h-11 border rounded-lg flex items-center justify-center gap-2 cursor-pointer transition pr-4 shadow-sm ${isDark
-                        ? "border-neutral-700 bg-[#202020] hover:bg-neutral-800"
-                        : "border-gray-300 bg-white hover:bg-gray-50"
+                   className={`w-full h-12 rounded-xl flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 font-medium ${isDark
+                        ? "border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:border-neutral-700 text-white"
+                        : "border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-black shadow-sm"
                       }`}
                   >
-                    <img src={EmailIcon} alt="Email Icon" className="w-6 h-6" />
-                    Sign in with email
+                    <div className={`p-1 rounded-md ${isDark ? "bg-black/5" : "bg-white/10"}`}>
+                      <img src={EmailIcon} alt="Email" className="w-7 h-7" />
+                    </div>
+                    Continue with Email
                   </motion.button>
                 </motion.div>
 
-                <motion.p variants={itemVariants} className={`text-sm ${isDark ? "text-gray-400 " : "text-gray-600"}`}>
-                  Don't have an account?{" "}
-                  <span
-                    onClick={() => {
-                      setAuthType("signup");
-                      localStorage.setItem("authType", "signup");
-                      setStep("signup-email");
-                    }}
-                    className={`underline cursor-pointer font-medium ${isDark ? "hover:text-white" : "hover:text-black"
-                      }`}
-                  >
-                    Create one
-                  </span>
-                </motion.p>
+                <div className="space-y-4">
+                  <motion.p variants={itemVariants} className={`text-sm text-center ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
+                    New to Artistic?{" "}
+                    <span
+                      onClick={() => {
+                        setAuthType("signup");
+                        localStorage.setItem("authType", "signup");
+                        setStep("signup-email");
+                      }}
+                      className={`cursor-pointer  underline transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-neutral-700"
+                        }`}
+                    >
+                      Create an account
+                    </span>
+                  </motion.p>
 
-                <motion.p variants={itemVariants} className={`text-[12px] pt-4 ${isDark ? "text-gray-500" : "text-gray-500"}`}>
-                  By signing in, you agree to {"Artistic's "}
-                  <Link to="/terms" onClick={onClose} className={`underline cursor-pointer ${isDark ? "hover:text-white" : "hover:text-black"}`}>
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link to="/privacy-policy" onClick={onClose} className={`underline cursor-pointer ${isDark ? "hover:text-white" : "hover:text-black"}`}>
-                    Privacy Policy
-                  </Link>
-                </motion.p>
+                  <motion.p variants={itemVariants} className={`text-[11px] text-center leading-relaxed ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>
+                    By continuing, you agree to our{" "}
+                    <Link to="/terms" onClick={onClose} className={`underline hover:text-neutral-400 ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-neutral-700"}`}>Terms</Link>
+                    {" "}and{" "}
+                    <Link to="/privacy-policy" onClick={onClose} className={`underline hover:text-neutral-400 ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-neutral-700"}`}>Privacy Policy</Link>.
+                  </motion.p>
+                </div>
               </motion.div>
             )}
 
@@ -414,24 +451,25 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="text-center space-y-6"
+                className="space-y-8"
               >
-                <motion.div variants={itemVariants} className="flex justify-center mb-2">
-                  <div className={`p-3 rounded-full ${isDark ? 'bg-neutral-800' : 'bg-gray-100'}`}>
-                    <img src={EmailIcon} alt="Email Icon" className="w-6 h-6 opacity-70" />
-                  </div>
-                </motion.div>
-
-                <motion.h2 variants={itemVariants} className="text-[28px] font-semibold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-                  Enter OTP
-                </motion.h2>
-
-                <motion.p variants={itemVariants} className={`text-[14px] ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                  We sent a 6-digit code to <br />
-                  <span className={`font-medium mt-1 inline-block ${isDark ? "text-white" : "text-black"}`}>
-                    {email}
-                  </span>
-                </motion.p>
+                <div className="space-y-3">
+                   <motion.button
+                    whileHover={{ x: -3 }}
+                    onClick={() => setStep(authType === 'signup' ? 'signup-email' : 'email')}
+                    className={`flex items-center gap-2 text-sm font-medium transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}
+                  >
+                    <ArrowLeft size={16} />
+                    Change email
+                  </motion.button>
+                  <motion.h2 variants={itemVariants} className="text-3xl font-bold tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                    Verify code
+                  </motion.h2>
+                  <motion.p variants={itemVariants} className={`text-sm leading-relaxed ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
+                    We've sent a 6-digit verification code to <br/>
+                    <span className={` ${isDark ? "text-white" : "text-black"}`}>{email}</span>
+                  </motion.p>
+                </div>
 
                 <motion.form
                   variants={itemVariants}
@@ -439,58 +477,59 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     e.preventDefault();
                     handleVerify();
                   }}
+                  className="space-y-8"
                 >
-                  {/* OTP Inputs */}
-                  <div className="flex justify-center gap-2 sm:gap-3 mb-6 mt-4">
+                  <div className="flex justify-between gap-2 sm:gap-3">
                     {otp.map((digit, index) => (
                       <input
                         key={index}
                         id={`otp-${index + 1}`}
                         type="text"
+                        inputMode="numeric"
+                        autoComplete="one-time-code"
                         maxLength="1"
                         value={digit}
                         onChange={(e) => handleOtpChange(e.target.value, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
-                        className={`w-9 sm:w-11 h-12 text-center text-lg border rounded-lg shadow-sm focus:outline-none focus:ring-2 ${isDark
-                            ? "border-neutral-700 bg-[#1c1c1c] text-white focus:ring-white/30"
-                            : "border-gray-300 bg-white text-black focus:ring-black/20"
+                        className={`w-full h-14 text-center text-xl font-bold border rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 ${isDark
+                            ? "border-neutral-800 bg-neutral-900/50 text-white focus:ring-white/20 focus:border-white/30"
+                            : "border-gray-200 bg-white text-black focus:ring-black/5 focus:border-black/20 shadow-sm"
                           }`}
                       />
                     ))}
                   </div>
 
-                  {/* Button */}
                   <motion.button
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
                     type="submit"
                     disabled={loading}
-                    className={`w-full py-2.5 text-[14px] font-medium rounded-lg transition cursor-pointer shadow-md ${isDark
-                        ? "bg-white text-black hover:bg-gray-200"
+                    className={`w-full h-10 text-[15px] rounded-lg transition-all duration-300 cursor-pointer shadow-lg ${isDark
+                        ? "bg-white text-black hover:bg-neutral-200"
                         : "bg-black text-white hover:bg-neutral-800"
-                      } ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+                      } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
-                    {loading ? "Verifying..." : "Verify OTP"}
+                    {loading ? "Verifying..." : "Verify Identity"}
                   </motion.button>
                 </motion.form>
 
-                {resendTimer > 0 ? (
-                  <p className={`text-[13px] ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                    Resend code in 00:{resendTimer.toString().padStart(2, "0")}
-                  </p>
-                ) : (
-                  <p className={`text-[13px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                    Didn't receive the code?{" "}
-                    <span
+                <div className="text-center">
+                  {resendTimer > 0 ? (
+                    <p className={`text-sm font-medium ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>
+                      Resend code in <span className="font-bold tabular-nums">00:{resendTimer.toString().padStart(2, "0")}</span>
+                    </p>
+                  ) : (
+                    <p className={`text-sm ${isDark ? "text-neutral-500" : "text-neutral-500"} `}>Didn't receive code?{" "}
+                    <button
                       onClick={handleResendOTP}
-                      className={`font-medium cursor-pointer underline ${isDark ? "text-white hover:text-gray-300" : "text-black hover:text-gray-500"
+                      className={`text-sm underline cursor-pointer transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-black"
                         }`}
                     >
-                      Resend
-                    </span>
-                  </p>
-                )}
+                        Resend
+                    </button>
+                    </p>
+                  )}
+                </div>
               </motion.div>
             )}
 
@@ -502,55 +541,49 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="text-center space-y-5"
+                className="space-y-8"
               >
-                <motion.h2
-                  variants={itemVariants}
-                  className="text-[30px] font-semibold"
-                 style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-                >
-                  Create Account
-                </motion.h2>
+                 <div className="space-y-3">
+                   <motion.button
+                    whileHover={{ x: -3 }}
+                    onClick={() => setStep("options")}
+                    className={`flex items-center gap-2 text-sm font-medium transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}
+                  >
+                    <ArrowLeft size={16} />
+                    Back
+                  </motion.button>
+                  <motion.h2 variants={itemVariants} className="text-3xl tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                    Create account
+                  </motion.h2>
+                  <motion.p variants={itemVariants} className={`text-sm ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
+                    Join our community of art lovers.
+                  </motion.p>
+                </div>
 
                 <motion.form
                   variants={itemVariants}
                   onSubmit={async (e) => {
                     e.preventDefault();
-
                     if (validateForm()) {
-                      localStorage.setItem("authType", "signup");
-
                       if (!acceptTerms) {
                         toast.error("Please accept terms and conditions");
                         return;
                       }
-
                       setLoading(true);
-
                       try {
                         const res = await fetch(`${BASE_URL}/api/auth/send-otp`, {
                           method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                          },
+                          headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ email, type: "signup" }),
                         });
-
                         const data = await res.json();
-
                         if (res.ok) {
                           setEmailError("");
                           toast.success("OTP sent to your email");
                           setStep("otp");
                         } else {
-                          if (
-                            data.message.includes("exists") ||
-                            data.message.includes("signup")
-                          ) {
-                            setEmailError(data.message);
-                          } else {
-                            toast.error(data.message);
-                          }
+                          setEmailError(data.message.includes("exists") ? data.message : "");
+                          if (!data.message.includes("exists")) toast.error(data.message);
                         }
                       } catch {
                         toast.error("Something went wrong");
@@ -559,97 +592,96 @@ export default function SignIn({ onClose, isDark, setUser }) {
                       }
                     }
                   }}
-                  className="space-y-4 text-left"
+                  className="space-y-5"
                 >
-                  <motion.div variants={itemVariants}>
-                    <label className={`text-[13px] font-medium ml-1 ${isDark ? "text-gray-300" : "text-gray-600"}`}>Full Name</label>
-                    <input
-                      type="text"
-                      placeholder="Enter your full name"
-                      className={`w-full border p-2.5 mt-1.5 rounded-lg text-[14px] focus:outline-none transition-shadow ${isDark
-                          ? "border-neutral-700 bg-[#1c1c1c] text-white focus:ring-1 focus:ring-white"
-                          : "border-gray-300 bg-white text-black focus:ring-1 focus:ring-black"
-                        }`}
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                    />
-                    {errors.fullName && (
-                      <p className="text-red-500 text-[12px] mt-1.5 ml-1">{errors.fullName}</p>
-                    )}
-                  </motion.div>
+                  <div className="space-y-4">
+                    <div className="space-y-1.5">
+                      <label className={`text-xs uppercase ml-1 transition-colors duration-200 ${
+                        focusedField === "fullName" 
+                          ? (isDark ? "text-white" : "text-black") 
+                          : (isDark ? "text-neutral-500" : "text-neutral-400")
+                      }`}>Full Name</label>
+                      <input
+                        type="text"
+                        placeholder="John Doe"
+                        onFocus={() => setFocusedField("fullName")}
+                        onBlur={() => setFocusedField(null)}
+                        className={`w-full h-10 px-4 rounded-lg text-sm border transition-all duration-300 focus:outline-none ${isDark
+                            ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-700"
+                            : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-2 focus:ring-black/5 shadow-sm placeholder:text-neutral-400"
+                          }`}
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                      />
 
-                  <motion.div variants={itemVariants}>
-                    <label className={`text-[13px] font-medium ml-1 ${isDark ? "text-gray-300" : "text-gray-600"}`}>Email Address</label>
-                    <input
-                      type="email"
-                      placeholder="Enter your email"
-                      className={`w-full border p-2.5 mt-1.5 rounded-lg text-[14px] focus:outline-none transition-shadow ${isDark
-                          ? "border-neutral-700 bg-[#1c1c1c] text-white focus:ring-1 focus:ring-white"
-                          : "border-gray-300 bg-white text-black focus:ring-1 focus:ring-black"
-                        }`}
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        setEmailError("");
-                      }}
-                    />
-                    {emailError && <p className="text-red-500 text-[12px] mt-1.5 ml-1">{emailError}</p>}
-                    {errors.email && <p className="text-red-500 text-[12px] mt-1.5 ml-1">{errors.email}</p>}
-                  </motion.div>
+                      {errors.fullName && <p className="text-red-500 text-[11px] ml-1 font-medium">{errors.fullName}</p>}
+                    </div>
 
-                  {/* Terms */}
-                  <motion.div variants={itemVariants} className="flex items-start gap-3 mt-2 px-1">
+                    <div className="space-y-1.5">
+                      <label className={`text-xs uppercase ml-1 transition-colors duration-200 ${
+                        focusedField === "email" 
+                          ? (isDark ? "text-white" : "text-black") 
+                          : (isDark ? "text-neutral-500" : "text-neutral-400")
+                      }`}>Email Address</label>
+                      <input
+                        type="email"
+                        placeholder="name@example.com"
+                        onFocus={() => setFocusedField("email")}
+                        onBlur={() => setFocusedField(null)}
+                        className={`w-full h-10 px-4 rounded-lg text-sm border transition-all duration-300 focus:outline-none ${isDark
+                            ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-700"
+                            : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-2 focus:ring-black/5 shadow-sm placeholder:text-neutral-400"
+                          }`}
+                        value={email}
+                        onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
+                      />
+
+                      {(emailError || errors.email) && <p className="text-red-500 text-[11px] ml-1 font-medium">{emailError || errors.email}</p>}
+                    </div>
+                  </div>
+
+                  <div className={`flex gap-4`}>
                     <input
                       type="checkbox"
+                      id="terms"
                       checked={acceptTerms}
                       onChange={(e) => setAcceptTerms(e.target.checked)}
-                      className="mt-1 w-4 h-4 cursor-pointer accent-black"
+                      className="mt-1 w-4 h-4 cursor-pointer accent-black shrink-0"
                     />
-                    <div>
-                      <p className={`text-[13px] font-medium ${isDark ? "text-white" : "text-black"}`}>
-                        Accept terms and conditions
-                      </p>
-                      <p className={`text-[12px] leading-tight mt-0.5 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-                        By checking this, you agree to our Terms of Service.
-                      </p>
-                    </div>
-                  </motion.div>
+                    <label htmlFor="terms" className={`text-sm leading-relaxed font-medium cursor-pointer ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+                      <p className={`mb-1 ${isDark ? "text-neutral-300" : "text-neutral-900"}`}>Accept Terms and Conditions</p>
+                      <p className={`text-xs ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>By checking this, you agree to our <Link to="/terms" className="underline hover:text-black">Terms of Service</Link> and <Link to="/privacy-policy" className="underline hover:text-black">Privacy Policy</Link>.</p>
+                    </label>
+                  </div>
 
-                  {/* Button */}
                   <motion.button
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
                     type="submit"
                     disabled={loading}
-                    className={`w-full mt-2 py-2.5 text-[14px] font-medium rounded-lg transition cursor-pointer shadow-md ${isDark
-                        ? "bg-white text-black hover:bg-gray-200"
+                    className={`w-full h-10 text-sm rounded-lg transition-all duration-300 cursor-pointer shadow-lg ${isDark
+                        ? "bg-white text-black hover:bg-neutral-200"
                         : "bg-black text-white hover:bg-neutral-800"
-                      } ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+                      } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
-                    {loading ? "Creating..." : "Create account"}
+                    {loading ? "Creating Account..." : "Create Account"}
                   </motion.button>
                 </motion.form>
 
-                <p className={`text-[13.5px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                <p className={`text-sm text-center ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
                   Already have an account?{" "}
                   <span
-                    onClick={() => {
-                      setAuthType("login");
-                      localStorage.setItem("authType", "login");
-                      setStep("email");
-                      setEmailError("");
-                    }}
-                    className={`underline font-medium cursor-pointer ${isDark ? "hover:text-white" : "hover:text-black"
-                      }`}
+                    onClick={() => { setAuthType("login"); setStep("email"); setEmailError(""); }}
+                    className={`cursor-pointer transition-colors underline ${isDark ? "text-neutral-500 hover:text-neutral-300" : "text-neutral-500 hover:text-black"}`}
                   >
                     Sign in
                   </span>
                 </p>
+
               </motion.div>
             )}
 
-            {/* ================= EMAIL ================= */}
+            {/* ================= EMAIL SIGN IN ================= */}
             {step === "email" && (
               <motion.div
                 key="email"
@@ -657,52 +689,45 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="text-center space-y-6"
+                className="space-y-8"
               >
-                <motion.div variants={itemVariants} className="flex justify-center mb-2">
-                  <div className={`p-4 rounded-full ${isDark ? 'bg-neutral-800' : 'bg-gray-100'}`}>
-                    <img src={EmailIcon} alt="Email Icon" className="w-8 h-8 opacity-80" />
-                  </div>
-                </motion.div>
-
-                <motion.h1
-                  variants={itemVariants}
-                  className="text-[28px] font-semibold"
-                 style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-                >
-                  Sign In
-                </motion.h1>
+                <div className="space-y-3">
+                   <motion.button
+                    whileHover={{ x: -3 }}
+                    onClick={() => setStep("options")}
+                    className={`flex items-center gap-2 text-sm font-medium transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}
+                  >
+                    <ArrowLeft size={16} />
+                    Back
+                  </motion.button>
+                  <motion.h2 variants={itemVariants} className="text-3xl tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                    Sign in
+                  </motion.h2>
+                  <motion.p variants={itemVariants} className={`text-sm ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
+                    Enter your email to receive a secure login code.
+                  </motion.p>
+                </div>
 
                 <motion.form
                   variants={itemVariants}
                   onSubmit={async (e) => {
                     e.preventDefault();
+                    if (!/\S+@\S+\.\S+/.test(email)) { toast.error("Please enter a valid email"); return; }
                     setLoading(true);
-
                     try {
                       const res = await fetch(`${BASE_URL}/api/auth/send-otp`, {
                         method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email, type: "login" }),
                       });
-
                       const data = await res.json();
-
                       if (res.ok) {
                         setEmailError("");
-                        toast.success("OTP sent to your email");
+                        toast.success("Login code sent!");
                         setStep("otp");
                       } else {
-                        if (
-                          data.message.includes("No account") ||
-                          data.message.includes("signup")
-                        ) {
-                          setEmailError(data.message);
-                        } else {
-                          toast.error(data.message);
-                        }
+                        setEmailError(data.message.includes("No account") ? data.message : "");
+                        if (!data.message.includes("No account")) toast.error(data.message);
                       }
                     } catch {
                       toast.error("Something went wrong");
@@ -710,73 +735,60 @@ export default function SignIn({ onClose, isDark, setUser }) {
                       setLoading(false);
                     }
                   }}
-                  className="text-left space-y-4"
+                  className="space-y-6"
                 >
-                  <motion.div variants={itemVariants}>
-                    <label className={`text-[13px] font-medium ml-1 ${isDark ? "text-gray-300" : "text-gray-600"}`}>Email Address</label>
+                  <div className="space-y-1.5">
+                    <label className={`text-xs uppercase ml-1 transition-colors duration-200 ${
+                      focusedField === "loginEmail" 
+                        ? (isDark ? "text-white" : "text-black") 
+                        : (isDark ? "text-neutral-500" : "text-neutral-400")
+                    }`}>Email Address</label>
                     <input
                       type="email"
-                      placeholder="Enter your email"
-                      className={`w-full border p-2.5 mt-1.5 rounded-lg text-[14px] focus:outline-none transition-shadow ${isDark
-                          ? "border-neutral-700 bg-[#1c1c1c] text-white focus:ring-1 focus:ring-white"
-                          : "border-gray-300 bg-white text-black focus:ring-1 focus:ring-black"
+                      placeholder="name@example.com"
+                      autoFocus
+                      onFocus={() => setFocusedField("loginEmail")}
+                      onBlur={() => setFocusedField(null)}
+                      className={`w-full h-10 px-4 rounded-lg text-sm border transition-all duration-300 focus:outline-none ${isDark
+                          ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-500"
+                          : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-1 focus:ring-black/20 shadow-sm placeholder:text-neutral-400"
                         }`}
                       value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        setEmailError("");
-                      }}
+                      onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
                     />
-                    {emailError && (
-                      <p className="text-red-500 text-[12px] mt-1.5 ml-1">{emailError}</p>
-                    )}
-                  </motion.div>
+
+                    {emailError && <p className="text-red-500 text-[11px] ml-1 font-medium">{emailError}</p>}
+                  </div>
 
                   <motion.button
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
                     type="submit"
                     disabled={loading}
-                    className={`w-full mt-2 py-2.5 text-[14px] font-medium rounded-lg transition cursor-pointer shadow-md ${isDark
-                        ? "bg-white text-black hover:bg-gray-200"
+                    className={`w-full h-10 text-[15px]  rounded-lg transition-all duration-300 cursor-pointer shadow-lg ${isDark
+                        ? "bg-white text-black hover:bg-neutral-200"
                         : "bg-black text-white hover:bg-neutral-800"
-                      } ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
+                      } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
-                    {loading ? "Sending code..." : "Continue"}
+                    {loading ? "Sending Code..." : "Send Login Code"}
                   </motion.button>
                 </motion.form>
 
-                <motion.p variants={itemVariants} className={`text-[13.5px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                <p className={`text-sm text-center ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
                   Don't have an account?{" "}
                   <span
-                    onClick={() => {
-                      setAuthType("signup");
-                      localStorage.setItem("authType", "signup");
-                      setStep("signup-email");
-                      setEmailError("");
-                    }}
-                    className={`underline font-medium cursor-pointer ${isDark ? "hover:text-white" : "hover:text-black"
-                      }`}
+                    onClick={() => { setAuthType("signup"); setStep("signup-email"); setEmailError(""); }}
+                    className={`cursor-pointer transition-colors underline ${isDark ? "text-neutral-500 hover:text-neutral-300" : "text-neutral-500 hover:text-black"}`}
                   >
-                    Create one
+                    Join now
                   </span>
-                </motion.p>
-
-                <motion.p
-                  variants={itemVariants}
-                  onClick={() => setStep("options")}
-                  className={`text-[13.5px] cursor-pointer inline-flex items-center mt-4 transition-colors ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-black"
-                    }`}
-                >
-                  <ArrowLeft className="mr-1.5" size={14} />
-                  Back to options
-                </motion.p>
+                </p>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </motion.div>
     </div>
+
   );
 }
