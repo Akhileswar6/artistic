@@ -300,7 +300,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
               className={`text-4xl font-bold mb-3 ${isDark ? "text-white" : "text-[#1a1a1a]"}`}
-              style={{ fontFamily: "Playfair Display, serif" }}
+              style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
             >
               Artistic.
             </motion.h2>
@@ -340,7 +340,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 <motion.h2
                   variants={itemVariants}
                   className="text-[30px] font-semibold"
-                  style={{ fontFamily: "Playfair Display, serif" }}
+                  style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
                 >
                   Welcome back..
                 </motion.h2>
@@ -422,7 +422,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                   </div>
                 </motion.div>
 
-                <motion.h2 variants={itemVariants} className="text-[28px] font-semibold" style={{ fontFamily: "Playfair Display" }}>
+                <motion.h2 variants={itemVariants} className="text-[28px] font-semibold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
                   Enter OTP
                 </motion.h2>
 
@@ -507,7 +507,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 <motion.h2
                   variants={itemVariants}
                   className="text-[30px] font-semibold"
-                  style={{ fontFamily: "Playfair Display, serif" }}
+                 style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
                 >
                   Create Account
                 </motion.h2>
@@ -668,7 +668,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 <motion.h1
                   variants={itemVariants}
                   className="text-[28px] font-semibold"
-                  style={{ fontFamily: "Playfair Display, serif" }}
+                 style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
                 >
                   Sign In
                 </motion.h1>
