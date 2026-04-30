@@ -88,21 +88,21 @@ export default function RecentSketches({ isDark }) {
           >
             <Link
               to="/gallery"
-              className={`inline-flex items-center gap-2 text-[13px] sm:text-sm px-4 py-2 rounded-full border transition-all ${isDark ? "text-white border-white/20 hover:bg-white/10" : "text-black border-black/20 hover:bg-black/5"
+              className={`inline-flex items-center gap-2 text-[12px] font-medium px-3 py-1 rounded-full border transition-all ${isDark ? "text-white border-white/20 hover:bg-white/10" : "text-black border-black/20 hover:bg-black/5"
                 }`}
             >
-              Go to Gallery <ArrowRight size={16} />
+              Go to Gallery <ArrowRight size={14} />
             </Link>
           </motion.div>
         </div>
 
-        {/* Masonry Grid */}
+        {/* Gallery Grid */}
         <motion.div
           ref={gridRef}
           variants={containerVariants}
           initial="hidden"
           animate={visible ? "visible" : "hidden"}
-          className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-3 sm:gap-4 space-y-3 sm:space-y-4 px-2 sm:px-4"
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6 px-2 sm:px-4"
         >
           {sketches.map((sketch) => (
             <motion.div
@@ -110,19 +110,19 @@ export default function RecentSketches({ isDark }) {
               variants={itemVariants}
               whileHover={{ y: -5 }}
               onClick={() => setSelectedArtwork(sketch)}
-              className={`break-inside-avoid group relative rounded-xl overflow-hidden transition-all duration-300 cursor-pointer ${isDark
+              className={`group relative rounded-xl overflow-hidden transition-all duration-500 cursor-pointer ${isDark
                 ? "bg-neutral-900 border border-white/5 hover:border-white/10 shadow-2xl"
                 : "bg-white border border-black/5 shadow-lg hover:shadow-xl"
                 }`}
             >
               {/* Image Container */}
-              <div className="relative overflow-hidden">
+              <div className="relative overflow-hidden aspect-[3/4]">
                 <motion.img
                   src={sketch.img}
                   alt={sketch.title}
-                  whileHover={{ scale: 1.03 }}
+                  whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.4 }}
-                  className="w-full h-auto object-contain"
+                  className="w-full h-full object-cover"
                 />
 
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full pointer-events-none" />
@@ -154,7 +154,7 @@ export default function RecentSketches({ isDark }) {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className={`relative w-full max-w-4xl max-h-[85vh] overflow-hidden rounded-2xl shadow-2xl flex flex-col md:flex-row ${isDark ? "bg-[#111] border border-white/10" : "bg-white"
+              className={`relative w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl shadow-2xl flex flex-col md:flex-row ${isDark ? "bg-[#111] border border-white/10" : "bg-white"
                 }`}
               onClick={(e) => e.stopPropagation()}
             >
@@ -180,7 +180,7 @@ export default function RecentSketches({ isDark }) {
               <div className="w-full md:w-2/5 p-5 sm:p-6 md:p-8 overflow-y-auto">
                 <div className="flex flex-col h-full">
                   <div className="mb-5 md:mb-6">
-                    <span className="inline-block px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-500 text-[11px] sm:text-[12px] mb-3 font-medium">
+                    <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] sm:text-[12px] mb-3 font-semibold uppercase tracking-wider ${isDark ? "bg-white/10 text-white" : "bg-black/5 text-black"}`}>
                       {selectedArtwork.category}
                     </span>
                     <h2 className={`text-xl sm:text-2xl md:text-3xl mb-2 sm:mb-3 tracking-tight ${isDark ? "text-white" : "text-neutral-900"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
