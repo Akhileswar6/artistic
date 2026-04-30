@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-export default function Layout({ isDark, setIsDark, user, setUser }) {
+export default function Layout({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn }) {
   return (
     <div
       className={`min-h-screen flex flex-col transition-colors duration-300 ${isDark
@@ -11,15 +11,22 @@ export default function Layout({ isDark, setIsDark, user, setUser }) {
         }`}
     >
       {/* Navbar */}
-      <Navbar isDark={isDark} setIsDark={setIsDark} user={user} setUser={setUser} />
+      <Navbar
+        isDark={isDark}
+        setIsDark={setIsDark}
+        user={user}
+        setUser={setUser}
+        showSignIn={showSignIn}
+        setShowSignIn={setShowSignIn}
+      />
 
       {/* Main Content */}
       <main className="flex-grow">
-        <Outlet context={{ user, isDark, setIsDark, setUser }} />
+        <Outlet context={{ user, isDark, setIsDark, setUser, setShowSignIn }} />
       </main>
 
       {/* Footer */}
       <Footer isDark={isDark} />
     </div>
   );
-}
+}
