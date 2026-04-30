@@ -31,6 +31,7 @@ export default function Order({ isDark }) {
 
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Price Configuration
   const stylePrices = {
@@ -196,30 +197,30 @@ export default function Order({ isDark }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center items-center gap-3 md:gap-8 mb-12"
+          className="flex justify-center items-center gap-2 md:gap-8 mb-10 md:mb-12"
         >
           {[
             { num: 1, label: "Details" },
             { num: 2, label: "Artwork" },
             { num: 3, label: "Confirm" }
           ].map((s, index) => (
-            <div key={s.num} className="flex items-center gap-3 md:gap-8">
-              <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 group cursor-pointer" onClick={() => step > s.num && setStep(s.num)}>
-                <div className={`w-7 h-7 md:w-8 md:h-8 text-[13px] md:text-[14px] rounded-full flex items-center justify-center transition-all duration-300 ${step > s.num
+            <div key={s.num} className="flex items-center gap-2 md:gap-8">
+              <div className="flex flex-col md:flex-row items-center gap-1.5 md:gap-3 group cursor-pointer" onClick={() => step > s.num && setStep(s.num)}>
+                <div className={`w-6 h-6 md:w-8 md:h-8 text-[11px] md:text-[14px] rounded-full flex items-center justify-center transition-all duration-300 ${step > s.num
                   ? "bg-green-500 text-white"
                   : step === s.num
                     ? "bg-neutral-700 text-white scale-110"
                     : isDark ? "bg-[#141416] text-neutral-600 border border-white/5" : "bg-white text-neutral-400 border border-black/5 shadow-sm"
                   }`}>
-                  {step > s.num ? <Check size={18} strokeWidth={3} /> : s.num}
+                  {step > s.num ? <Check size={14} className="md:w-[18px]" strokeWidth={3} /> : s.num}
                 </div>
-                <span className={`text-[11px] md:text-[13px] uppercase tracking-widest transition-colors ${step >= s.num ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-600" : "text-neutral-400")
+                <span className={`text-[10px] md:text-[13px] uppercase tracking-wider md:tracking-widest transition-colors ${step >= s.num ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-600" : "text-neutral-400")
                   }`}>
                   {s.label}
                 </span>
               </div>
               {index < 2 && (
-                <div className={`hidden md:block w-12 h-[1px] transition-colors duration-500 ${step > s.num ? "bg-green-500" : isDark ? "bg-neutral-800" : "bg-neutral-300"}`} />
+                <div className={`hidden md:block w-8 lg:w-12 h-[1px] transition-colors duration-500 ${step > s.num ? "bg-green-500" : isDark ? "bg-neutral-800" : "bg-neutral-300"}`} />
               )}
             </div>
           ))}
@@ -244,6 +245,8 @@ export default function Order({ isDark }) {
                     setStep={setStep}
                     orderData={orderData}
                     handleInputChange={handleInputChange}
+                    user={user}
+                    setShowAuthModal={setShowAuthModal}
                   />
                 )}
 
@@ -256,6 +259,8 @@ export default function Order({ isDark }) {
                     handlePhoto={handlePhoto}
                     removePhoto={removePhoto}
                     setZoom={setZoom}
+                    user={user}
+                    setShowAuthModal={setShowAuthModal}
                   />
                 )}
 
@@ -278,11 +283,11 @@ export default function Order({ isDark }) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col gap-6 sticky top-28 self-start lg:col-span-4"
+            className="flex flex-col gap-6 lg:sticky lg:top-28 self-start lg:col-span-4"
           >
             {/* ORDER SUMMARY */}
             <div
-              className={`rounded-2xl border p-6 transition-all duration-300 ${isDark
+              className={`rounded-2xl border p-5 md:p-6 transition-all duration-300 ${isDark
                 ? "bg-[#141416]/80 backdrop-blur-xl border-white/10 shadow-2xl shadow-black/40"
                 : "bg-white/80 backdrop-blur-xl border-black/5 shadow-2xl shadow-black/5"
                 }`}
@@ -306,7 +311,7 @@ export default function Order({ isDark }) {
                       <span className="text-[14px]">{frameLabels[orderData.frameOption]}</span>
                       <span className="text-[11px]  uppercase tracking-widest text-neutral-500">Frame</span>
                     </div>
-                    <span className="text-orange-500">+₹{framePrice.toLocaleString()}</span>
+                    <span className={`${isDark ? "text-white" : "text-black"}`}>+₹{framePrice.toLocaleString()}</span>
                   </div>
                 )}
 
@@ -317,13 +322,13 @@ export default function Order({ isDark }) {
                   <span className="text-xl" style={{ fontFamily: "Bricolage Grotesque" }}>₹{totalPrice.toLocaleString()}</span>
                 </div>
 
-                <div className={`p-4 rounded-xl flex flex-col gap-2 relative overflow-hidden ${isDark ? "bg-orange-500/10 border border-orange-500/20" : "bg-orange-50 border border-orange-200"}`}>
-                  <ShieldCheck className={`absolute -bottom-4 -right-4 w-20 h-20 opacity-10 ${isDark ? "text-orange-500" : "text-orange-600"}`} />
+                <div className={`p-4 rounded-xl flex flex-col gap-2 relative overflow-hidden ${isDark ? "bg-white/5 border border-white/10" : "bg-black/5 border border-black/10"}`}>
+                  <ShieldCheck className={`absolute -bottom-4 -right-4 w-20 h-20 opacity-10 ${isDark ? "text-white" : "text-black"}`} />
                   <div className="flex justify-between items-center relative z-10">
-                    <span className={`text-[12px] uppercase ${isDark ? "text-orange-400" : "text-orange-600"}`} >Advance Payment (25%)</span>
-                    <span className={`text-lg  ${isDark ? "text-orange-400" : "text-orange-600"}`}>₹{advanceAmount.toLocaleString()}</span>
+                    <span className={`text-[12px] uppercase ${isDark ? "text-neutral-400" : "text-neutral-600"}`} >Advance Payment (25%)</span>
+                    <span className={`text-lg  ${isDark ? "text-white" : "text-black"}`}>₹{advanceAmount.toLocaleString()}</span>
                   </div>
-                  <p className={`text-[11px] font-medium leading-relaxed relative z-10 ${isDark ? "text-orange-400/70" : "text-orange-800/70"}`}>
+                  <p className={`text-[11px] font-medium leading-relaxed relative z-10 ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
                     Advance payment is required to confirm your order, and the remaining amount will be collected after the final artwork is delivered.
                   </p>
                 </div>
@@ -389,6 +394,54 @@ export default function Order({ isDark }) {
               </button>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Auth Modal */}
+      <AnimatePresence>
+        {showAuthModal && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAuthModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className={`relative w-full max-w-sm p-8 rounded-xl text-center shadow-2xl border ${isDark ? "bg-[#141416] border-white/10" : "bg-white border-black/5"
+                }`}
+            >
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-6 ${isDark ? "bg-white/10" : "bg-black/5"
+                }`}>
+                <ShieldCheck size={22} className={isDark ? "text-white" : "text-black"} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque" }}>Signin Required</h3>
+              <p className={`text-sm mb-8 ${isDark ? "text-white/60" : "text-black/60"}`}>
+                Please login to start your custom commission.
+              </p>
+              <div className="space-y-3">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => navigate("/signin")}
+                  className={`w-full py-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${isDark ? "bg-white text-black hover:bg-neutral-200" : "bg-black text-white hover:bg-neutral-800"
+                    }`}
+                >
+                  Login to Continue
+                </motion.button>
+                <button
+                  onClick={() => setShowAuthModal(false)}
+                  className={`text-sm font-medium opacity-50 hover:opacity-100 transition-opacity cursor-pointer ${isDark ? "text-white" : "text-black"}`}
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
