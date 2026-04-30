@@ -58,13 +58,12 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
             </button>
 
             {/* LOGO */}
-            <NavLink
-              to="/"
-              className={`text-[22px] font-semibold  ${isDark ? "text-white" : "text-black"
-                }`}
-              style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-            >
-              artistic
+            <NavLink to="/">
+              <img
+                src="/logo.png"
+                alt="artistic"
+                className="h-9 w-auto object-contain"
+              />
             </NavLink>
           </div>
 
@@ -124,9 +123,11 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
         {/* DRAWER HEADER */}
         <div className={`p-5 border-b flex items-center justify-between ${isDark ? "border-white/5 bg-black/60" : "border-neutral-100 bg-white"}`}>
           <NavLink to="/" onClick={() => setOpen(false)}>
-            <span className={`text-[20px] font-semibold tracking-tight ${isDark ? "text-white " : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-              Policies
-            </span>
+            <img
+              src="/logo.png"
+              alt="artistic"
+              className="h-8 w-auto object-contain"
+            />
           </NavLink>
           <button
             onClick={() => setOpen(false)}
