@@ -134,7 +134,7 @@ export default function About({ isDark }) {
               },
               {
                 icon: Award,
-                color: "text-orange-500",
+                color: "text-neutral-500",
                 title: "Premium Standards",
                 desc: "Using only the finest archival-grade papers and professional mediums to ensure your artwork remains vibrant and pristine for a lifetime."
               },
