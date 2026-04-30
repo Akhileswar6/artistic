@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState, memo } from "react";
 import { NavLink, useLocation, Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "../Components/ThemeToggle";
-import { ShoppingBag, Menu, X, ChevronDown, LogOut, Bell, User } from "lucide-react";
+import { ShoppingBag, Menu, X, ChevronDown, LogOut, Bell, User, Home, Image, Info, Phone, Settings, Instagram, Twitter, MessageSquare, ExternalLink } from "lucide-react";
 import SignIn from "../Pages/SignIn";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { label: "Home", path: "/" },
-  { label: "Gallery", path: "/gallery" },
-  { label: "Order Now", path: "/order" },
-  { label: "About", path: "/about" },
-  { label: "Contact", path: "/contact" },
+  { label: "Home", path: "/", icon: <Home size={20} /> },
+  { label: "Gallery", path: "/gallery", icon: <Image size={20} /> },
+  { label: "Order Now", path: "/order", icon: <ShoppingBag size={20} /> },
+  { label: "About", path: "/about", icon: <Info size={20} /> },
+  { label: "Contact", path: "/contact", icon: <Phone size={20} /> },
 ];
 
 function Navbar({ isDark, setIsDark, user, setUser }) {
@@ -145,10 +146,10 @@ function Navbar({ isDark, setIsDark, user, setUser }) {
                     <img
                       src={user.profilePic}
                       alt="profile"
-                      className="w-9 h-9 rounded-full object-cover border"
+                      className={`w-9 h-9 rounded-xl object-cover border-2 transition-all duration-300 ${showDropdown ? "border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]" : isDark ? "border-white/10" : "border-black/5"}`}
                     />
                   ) : (
-                    <div className={`w-9 h-9 border rounded-full bg-black text-white flex items-center justify-center ${isDark ? "bg-neutral-800 text-white border-neutral-700 hover:bg-neutral-900" : "border-neutral-300"}`}>
+                    <div className={`w-9 h-9 border-2 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-300 ${showDropdown ? "border-blue-500 bg-blue-500/10 text-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]" : isDark ? "bg-neutral-800 text-white border-white/10" : "bg-black text-white border-black/10"}`}>
                       {user.fullName?.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -158,65 +159,94 @@ function Navbar({ isDark, setIsDark, user, setUser }) {
                       } ${isDark ? "text-white" : "text-black"}`}
                   />
                 </div>
-                {/* Dropdown */}
-                {showDropdown && (
-                  <div
-                    className={`absolute right-0 mt-4 w-50 rounded-xl shadow-lg border z-50 ${isDark
-                      ? "bg-[#1c1c1c] border-neutral-700 text-white"
-                      : "bg-white border-neutral-200 text-black"
-                      }`}
-                  >
-                    <ul className="text-sm">
-                      <li onClick={() => {
-                        navigate("/account");
-                        setShowDropdown(false);
-                      }}
-                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white hover:bg-neutral-800" : "hover:bg-neutral-200"}`}>
-                        <User size={18} />
-                        Account
-                      </li>
-                      <li onClick={() => {
-                        navigate("/orders");
-                        setShowDropdown(false);
-                      }}
-                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white hover:bg-neutral-800" : "hover:bg-neutral-200"}`}>
-                        <ShoppingBag size={18} />
-                        Orders
-                      </li>
-                      <li
-                        onClick={() => {
-                          navigate("/notifications");
-                          setShowDropdown(false);
-                        }}
-                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "text-white hover:bg-neutral-800" : "text-black hover:bg-neutral-200"
-                          }`}
-                      >
-                        <div className="relative">
-                          <Bell size={18} />
-                          {unreadCount > 0 && (
-                            <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                          )}
-                        </div>
-                        Notifications
-                      </li>
-                      <hr className={`my-1 border-neutral-300 ${isDark ? "dark:border-neutral-700" : ""}`} />
-                      <li
-                        onClick={() => {
-                          localStorage.removeItem("user");
-                          setShowDropdown(false);
-                          setUser(null);
-                          toast.success("Logged out successfully");
-                          setTimeout(() => {
+                {/* Premium Dropdown */}
+                <AnimatePresence>
+                  {showDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className={`absolute right-0 mt-4 w-64 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border z-50 overflow-hidden ${isDark
+                        ? "bg-[#111111]/90 border-white/10 text-white"
+                        : "bg-white/95 border-black/5 text-black"
+                        } backdrop-blur-xl`}
+                    >
+                      {/* Profile Header */}
+                      <div className={`px-5 py-4 border-b ${isDark ? "border-white/5 bg-white/5" : "border-black/5 bg-black/[0.02]"}`}>
+                        <p className="text-[13px]  capitalize">{user.fullName}</p>
+                        <p className={`text-[11px]  opacity-50 font-medium ${isDark ? "text-gray-400" : "text-gray-500"}`}>{user.email}</p>
+                      </div>
+
+                      <div className="p-2">
+                        <ul className="space-y-0.5">
+                          <li onClick={() => {
+                            navigate("/account");
+                            setShowDropdown(false);
+                          }}
+                            className={`px-4 py-1.5 flex items-center gap-4 rounded-xl cursor-pointer transition-all duration-200 group ${isDark ? "hover:bg-white/10" : "hover:bg-black/5"}`}>
+                            <div className={`p-1.5 rounded-lg transition-colors ${isDark ? "bg-white/5 group-hover:bg-blue-500/20 text-blue-400" : "bg-black/5 group-hover:bg-blue-50 text-blue-600"}`}>
+                              <User size={16} />
+                            </div>
+                            <span className="text-[13px] font-medium">Account Settings</span>
+                          </li>
+
+                          <li onClick={() => {
+                            navigate("/orders");
+                            setShowDropdown(false);
+                          }}
+                            className={`px-4 py-1.5 flex items-center gap-4 rounded-xl cursor-pointer transition-all duration-200 group ${isDark ? "hover:bg-white/10" : "hover:bg-black/5"}`}>
+                            <div className={`p-1.5 rounded-lg transition-colors ${isDark ? "bg-white/5 group-hover:bg-purple-500/20 text-purple-400" : "bg-black/5 group-hover:bg-purple-50 text-purple-600"}`}>
+                              <ShoppingBag size={16} />
+                            </div>
+                            <span className="text-[13px] font-medium">My Orders</span>
+                          </li>
+
+                          <li
+                            onClick={() => {
+                              navigate("/notifications");
+                              setShowDropdown(false);
+                            }}
+                            className={`px-4 py-1.5 flex items-center gap-4 rounded-xl cursor-pointer transition-all duration-200 group ${isDark ? "hover:bg-white/10" : "hover:bg-black/5"}`}
+                          >
+                            <div className={`relative p-1.5 rounded-lg transition-colors ${isDark ? "bg-white/5 group-hover:bg-orange-500/20 text-orange-400" : "bg-black/5 group-hover:bg-orange-50 text-orange-600"}`}>
+                              <Bell size={16} />
+                              {unreadCount > 0 && (
+                                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-[#111] dark:border-[#111]"></span>
+                              )}
+                            </div>
+                            <div className="flex items-center justify-between flex-1">
+                              <span className="text-[13px] font-medium">Notifications</span>
+                              {unreadCount > 0 && (
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${isDark ? "bg-red-500/20 text-red-400" : "bg-red-500 text-white"}`}>
+                                  {unreadCount}
+                                </span>
+                              )}
+                            </div>
+                          </li>
+                        </ul>
+
+                        <div className={`my-2 h-px ${isDark ? "bg-white/5" : "bg-black/5"}`} />
+
+                        <button
+                          onClick={() => {
+                            localStorage.removeItem("user");
+                            setShowDropdown(false);
+                            setUser(null);
+                            toast.success("Logged out successfully");
                             navigate("/");
-                          }, 800);
-                        }}
-                        className={`px-5 py-2 flex gap-4 rounded-xl text-red-500 cursor-pointer ${isDark ? "text-red-500 hover:bg-neutral-800" : "text-red-500 hover:bg-neutral-200"}`}>
-                        <LogOut size={18} />
-                        Logout
-                      </li>
-                    </ul>
-                  </div>
-                )}
+                          }}
+                          className={`w-full px-4 py-1.5 flex items-center gap-4 rounded-xl  transition-all duration-200 group text-red-500`}
+                        >
+                          <div className={`p-1.5 rounded-lg transition-colors ${isDark ? "bg-red-500/10" : "bg-red-50"}`}>
+                            <LogOut size={16} />
+                          </div>
+                          <span className="text-[13px]">Logout</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <button
@@ -276,6 +306,7 @@ function Navbar({ isDark, setIsDark, user, setUser }) {
             <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
             {user ? (
               <div className="relative" ref={mobileDropdownRef}>
+                {/* Avatar */}
                 <div
                   onClick={() => setShowDropdown(!showDropdown)}
                   className="flex items-center gap-1 cursor-pointer"
@@ -284,70 +315,107 @@ function Navbar({ isDark, setIsDark, user, setUser }) {
                     <img
                       src={user.profilePic}
                       alt="profile"
-                      className="w-8 h-8 rounded-full object-cover border"
+                      className={`w-8 h-8 rounded-xl object-cover border-2 transition-all duration-300 ${showDropdown ? "border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]" : isDark ? "border-white/10" : "border-black/5"}`}
                     />
                   ) : (
-                    <div className={`w-8 h-8 border rounded-full bg-black text-white flex items-center justify-center text-xs ${isDark ? "bg-neutral-800 text-white border-neutral-700 hover:bg-neutral-900" : "border-neutral-300"}`}>
+                    <div className={`w-8 h-8 border-2 rounded-xl flex items-center justify-center text-xs font-bold transition-all duration-300 ${showDropdown ? "border-blue-500 bg-blue-500/10 text-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]" : isDark ? "bg-neutral-800 text-white border-white/10" : "bg-black text-white border-black/10"}`}>
                       {user.fullName?.charAt(0).toUpperCase()}
                     </div>
                   )}
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-200 ${showDropdown ? "rotate-180" : "rotate-0"
+                      } ${isDark ? "text-white" : "text-black"}`}
+                  />
                 </div>
-                {showDropdown && (
-                  <div
-                    className={`absolute right-0 mt-3 w-48 rounded-xl shadow-lg border z-50 ${isDark
-                      ? "bg-[#1c1c1c] border-neutral-700 text-white"
-                      : "bg-white border-neutral-200 text-black"
-                      }`}
-                  >
-                    <ul className="text-sm">
-                      <li onClick={() => {
-                        navigate("/account");
-                        setShowDropdown(false);
-                      }}
-                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "hover:bg-neutral-800" : "hover:bg-neutral-100"}`}>
-                        <User size={16} />
-                        Account
-                      </li>
-                      <li onClick={() => {
-                        navigate("/orders");
-                        setShowDropdown(false);
-                      }}
-                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "hover:bg-neutral-800" : "hover:bg-neutral-100"}`}>
-                        <ShoppingBag size={16} />
-                        Orders
-                      </li>
-                      <li
-                        onClick={() => {
-                          navigate("/notifications");
-                          setShowDropdown(false);
-                        }}
-                        className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer ${isDark ? "hover:bg-neutral-800" : "hover:bg-neutral-100"
-                          }`}
-                      >
-                        <div className="relative">
-                          <Bell size={16} />
-                          {unreadCount > 0 && (
-                            <span className="absolute -top-1 -right-1 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
-                          )}
-                        </div>
-                        Notifications
-                      </li>
-                      <hr className={`my-1 ${isDark ? "border-neutral-700" : "border-neutral-200"}`} />
-                      <li
-                        onClick={() => {
-                          localStorage.removeItem("user");
-                          setShowDropdown(false);
-                          setUser(null);
-                          toast.success("Logged out successfully");
-                          navigate("/");
-                        }}
-                        className="px-4 py-2 flex items-center gap-4 rounded-xl text-red-500 cursor-pointer">
-                        <LogOut size={16} />
-                        Logout
-                      </li>
-                    </ul>
-                  </div>
-                )}
+                {/* Premium Mobile Dropdown */}
+                <AnimatePresence>
+                  {showDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className={`absolute right-0 mt-4 w-60 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border z-50 overflow-hidden ${isDark
+                        ? "bg-[#111111]/95 border-white/10 text-white"
+                        : "bg-white/95 border-black/5 text-black"
+                        } backdrop-blur-xl`}
+                    >
+                      {/* Profile Header */}
+                      <div className={`px-5 py-4 border-b ${isDark ? "border-white/5 bg-white/5" : "border-black/5 bg-black/[0.02]"}`}>
+                        <p className="text-[13px] font-bold capitalize">{user.fullName}</p>
+                        <p className={`text-[11px] opacity-50 font-medium truncate ${isDark ? "text-gray-400" : "text-gray-500"}`}>{user.email}</p>
+                      </div>
+
+                      <div className="p-2">
+                        <ul className="space-y-0.5">
+                          <li onClick={() => {
+                            navigate("/account");
+                            setShowDropdown(false);
+                          }}
+                            className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer transition-all duration-200 group ${isDark ? "hover:bg-white/10" : "hover:bg-black/5"}`}>
+                            <div className={`p-1.5 rounded-lg transition-colors ${isDark ? "bg-white/5 group-hover:bg-blue-500/20 text-blue-400" : "bg-black/5 group-hover:bg-blue-50 text-blue-600"}`}>
+                              <User size={16} />
+                            </div>
+                            <span className="text-[13px] font-medium">Account Settings</span>
+                          </li>
+
+                          <li onClick={() => {
+                            navigate("/orders");
+                            setShowDropdown(false);
+                          }}
+                            className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer transition-all duration-200 group ${isDark ? "hover:bg-white/10" : "hover:bg-black/5"}`}>
+                            <div className={`p-1.5 rounded-lg transition-colors ${isDark ? "bg-white/5 group-hover:bg-purple-500/20 text-purple-400" : "bg-black/5 group-hover:bg-purple-50 text-purple-600"}`}>
+                              <ShoppingBag size={16} />
+                            </div>
+                            <span className="text-[13px] font-medium">My Orders</span>
+                          </li>
+
+                          <li
+                            onClick={() => {
+                              navigate("/notifications");
+                              setShowDropdown(false);
+                            }}
+                            className={`px-4 py-2 flex items-center gap-4 rounded-xl cursor-pointer transition-all duration-200 group ${isDark ? "hover:bg-white/10" : "hover:bg-black/5"}`}
+                          >
+                            <div className={`relative p-1.5 rounded-lg transition-colors ${isDark ? "bg-white/5 group-hover:bg-orange-500/20 text-orange-400" : "bg-black/5 group-hover:bg-orange-50 text-orange-600"}`}>
+                              <Bell size={16} />
+                              {unreadCount > 0 && (
+                                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-[#111] dark:border-[#111]"></span>
+                              )}
+                            </div>
+                            <div className="flex items-center justify-between flex-1">
+                              <span className="text-[13px] font-medium">Notifications</span>
+                              {unreadCount > 0 && (
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${isDark ? "bg-red-500/20 text-red-400" : "bg-red-500 text-white"}`}>
+                                  {unreadCount}
+                                </span>
+                              )}
+                            </div>
+                          </li>
+                        </ul>
+
+                        <div className={`my-2 h-px ${isDark ? "bg-white/5" : "bg-black/5"}`} />
+
+                        <button
+                          onClick={() => {
+                            localStorage.removeItem("user");
+                            setShowDropdown(false);
+                            setUser(null);
+                            toast.success("Logged out successfully");
+                            navigate("/");
+                          }}
+                          className={`w-full px-4 py-2 flex items-center gap-4 rounded-xl transition-all duration-200 group text-red-500 hover:bg-red-500/5`}
+                        >
+                          <div className={`p-1.5 rounded-lg transition-colors ${isDark ? "bg-red-500/10" : "bg-red-50"}`}>
+                            <LogOut size={16} />
+                          </div>
+                          <span className="text-[13px] font-medium">Logout</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <button
@@ -364,44 +432,105 @@ function Navbar({ isDark, setIsDark, user, setUser }) {
         </div>
       </div>
 
-      {/* ================= MOBILE OVERLAY ================= */}
-      {isOpen && (
-        <div
-          onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-black/40 z-40"
-        />
-      )}
-
-      {/* ================= SLIDE DRAWER ================= */}
-      <div
-        className={`fixed left-0 top-[56px] h-[calc(100%-56px)] w-[200px] z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full"
-          } ${isDark ? "bg-black text-white" : "bg-white text-black"
-          } border-r ${isDark ? "border-neutral-800" : "border-neutral-300"
-          } flex flex-col`}
-      >
-        {/* 🔹 NAV LINKS */}
-        <div className="flex flex-col text-[15px]" style={{ fontFamily: "Inter, serif" }}>
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.path}
-              to={link.path}
+      {/* ================= PREMIUM MOBILE SIDEBAR (REDESIGNED) ================= */}
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Ultra-smooth Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
               onClick={() => setIsOpen(false)}
-              className={({ isActive }) =>
-                `px-8 py-4 transition-colors ${isActive
-                  ? isDark
-                    ? "text-white"
-                    : "text-black"
-                  : isDark
-                    ? "text-neutral-400 hover:text-white"
-                    : "text-neutral-600 hover:text-black"
-                }`
-              }
+              className="fixed inset-0 bg-black/40 backdrop-blur-md z-[60] md:hidden"
+            />
+
+            {/* Premium Glassmorphic Drawer */}
+            <motion.div
+              initial={{ x: "-100%", opacity: 0.5 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: "-100%", opacity: 0.5 }}
+              transition={{
+                type: "spring",
+                damping: 30,
+                stiffness: 300,
+                mass: 0.8
+              }}
+              className={`fixed left-0 top-0 h-[100dvh] w-[300px] z-[70] md:hidden shadow-[20px_0_50px_-20px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden
+                ${isDark
+                  ? "bg-black/90 border-r border-white/10"
+                  : "bg-white/95 border-r border-black/5"
+                } backdrop-blur-2xl`}
             >
-              {link.label}
-            </NavLink>
-          ))}
-        </div>
-      </div>
+              {/* Animated Background Decoration */}
+              <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-40 h-40 rounded-full blur-[80px] opacity-20 bg-blue-500 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-40 h-40 rounded-full blur-[80px] opacity-10 bg-purple-500 pointer-events-none" />
+
+              {/* Drawer Header */}
+              <div className={`relative p-7 flex items-center justify-between ${isDark ? "border-b border-white/5" : "border-b border-black/5"}`}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <span className={`text-2xl font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                    artistic
+                  </span>
+                </motion.div>
+
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setIsOpen(false)}
+                  className={`p-2.5 rounded-2xl transition-all ${isDark ? "bg-white/5 hover:bg-white/10 text-white" : "bg-black/5 hover:bg-black/10 text-black"}`}
+                >
+                  <X size={20} />
+                </motion.button>
+              </div>
+
+              {/* Navigation Links with Staggered Animation */}
+              <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1 custom-scrollbar">
+                {navLinks.map((link, idx) => (
+                  <motion.div
+                    key={link.path}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + idx * 0.05 }}
+                  >
+                    <NavLink
+                      to={link.path}
+                      onClick={() => setIsOpen(false)}
+                      className={({ isActive }) => `
+                        flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative
+                        ${isActive
+                          ? isDark
+                            ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white font-bold"
+                            : "bg-gradient-to-r from-blue-50/80 to-purple-50/80 text-blue-700 font-bold shadow-sm"
+                          : isDark
+                            ? "text-gray-400 hover:bg-white/5 hover:text-white"
+                            : "text-gray-600 hover:bg-black/[0.03] hover:text-black"
+                        }
+                      `}
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <span className={`transition-all duration-500 group-hover:scale-110 group-hover:rotate-6
+                            ${isActive ? "text-blue-500 opacity-100" : "opacity-60 group-hover:opacity-100"}`}>
+                            {link.icon}
+                          </span>
+                          <span className="text-[15px] tracking-tight">{link.label}</span>
+                        </>
+                      )}
+                    </NavLink>
+                  </motion.div>
+                ))}
+              </div>
+
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* ================= SIGN IN MODAL ================= */}
       {showSignIn && (
