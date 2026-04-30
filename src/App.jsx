@@ -111,6 +111,8 @@ export default function App() {
   }, [location.pathname]);
 
 
+  const [showSignIn, setShowSignIn] = useState(false);
+
   const [isDark, setIsDark] = useState(
     localStorage.getItem("theme") !== "light"
   );
@@ -238,6 +240,8 @@ export default function App() {
                     setIsDark={setIsDark}
                     user={user}
                     setUser={setUser}
+                    showSignIn={showSignIn}
+                    setShowSignIn={setShowSignIn}
                   />
                 }
               >
@@ -269,7 +273,7 @@ export default function App() {
                   path="/order"
                   element={
                     <PageTransition>
-                      <Order isDark={isDark} />
+                      <Order isDark={isDark} setShowSignIn={setShowSignIn} />
                     </PageTransition>
                   }
                 />
@@ -314,6 +318,7 @@ export default function App() {
                   }
                 />
               </Route>
+
 
               {/* Policy Routes */}
               <Route
