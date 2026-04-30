@@ -1,6 +1,7 @@
 import { NavLink, useLocation, Outlet } from "react-router-dom";
 import { Sun, Moon, Menu, X, ArrowLeft, FileText, Shield, RotateCcw, AlertTriangle, Home } from "lucide-react";
 import { useState, useEffect } from "react";
+import logo from "../assets/logo.png";
 
 export default function PolicyNavbar({ isDark, setIsDark }) {
   const [open, setOpen] = useState(false);
@@ -60,7 +61,7 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
             {/* LOGO */}
             <NavLink to="/">
               <img
-                src="/logo.png"
+                src={logo}
                 alt="artistic"
                 className="h-9 w-auto object-contain"
               />
@@ -124,7 +125,7 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
         <div className={`p-5 border-b flex items-center justify-between ${isDark ? "border-white/5 bg-black/60" : "border-neutral-100 bg-white"}`}>
           <NavLink to="/" onClick={() => setOpen(false)}>
             <img
-              src="/logo.png"
+              src={logo}
               alt="artistic"
               className="h-8 w-auto object-contain"
             />

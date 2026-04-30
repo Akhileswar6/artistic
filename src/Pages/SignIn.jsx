@@ -7,6 +7,7 @@ import EmailIcon from "../assets/email.png";
 import PencilSketch from "../assets/Pencil.webp";
 import CharcoalSketch from "../assets/Charcoal.jpg";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "../assets/logo.png";
 
 const containerVariants = {
   hidden: { opacity: 0, x: 20 },
@@ -311,7 +312,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
             >
-                <img src="/logo.png" alt="artistic" className="h-16 w-auto object-contain mb-4" />
+                <img src={logo} alt="artistic" className="h-14 w-auto object-contain mb-4" />
               <p className={`text-[15px] leading-relaxed max-w-[85%] font-medium ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
                 Where every sketch breathes
               </p>
@@ -324,7 +325,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
 
           {/* Mobile Header (Hidden on Desktop) */}
           <div className="md:hidden mb-8">
-              <img src="/logo.png" alt="artistic" className="h-10 w-auto object-contain" />
+              <img src={logo} alt="artistic" className="h-10 w-auto object-contain" />
           </div>
 
           {/* Close Button */}

@@ -5,6 +5,7 @@ import { ShoppingBag, Menu, X, ChevronDown, LogOut, Bell, User, Home, Image, Inf
 import SignIn from "../Pages/SignIn";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "../assets/logo.png";
 
 const navLinks = [
   { label: "Home", path: "/", icon: <Home size={20} /> },
@@ -96,7 +97,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
           <div className="flex items-center gap-12">
             <NavLink to="/">
               <img
-                src="/logo.png"
+                src={logo}
                 alt="artistic"
                 className="h-10 w-auto object-contain"
               />
@@ -291,7 +292,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
               )}
             </button>
               <img
-                src="/logo.png"
+                src={logo}
                 alt="artistic"
                 className="h-8 w-auto object-contain"
               />
@@ -466,7 +467,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
               <div className={`relative p-7 flex items-center justify-between ${isDark ? "border-b border-white/5" : "border-b border-black/5"}`}>
                   <Link to="/" onClick={() => setIsOpen(false)}>
                     <img
-                      src="/logo.png"
+                      src={logo}
                       alt="artistic"
                       className="h-10 w-auto object-contain"
                     />

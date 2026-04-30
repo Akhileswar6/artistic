@@ -5,6 +5,7 @@ import { Instagram, Linkedin, Facebook, CheckCircle } from "griddy-icons";
 import instagram from "../assets/instagram_dark.png";
 import facebook from "../assets/facebook_dark.png";
 import linkedin from "../assets/linkedin_dark.png";
+import logo from "../assets/logo.png";
 
 
 
@@ -25,7 +26,7 @@ export default function Footer({ isDark }) {
             <div className="flex items-center gap-3">
               <Link to="/">
                 <img
-                  src="/logo.png"
+                  src={logo}
                   alt="artistic"
                   className="h-10 w-auto object-contain"
                 />
