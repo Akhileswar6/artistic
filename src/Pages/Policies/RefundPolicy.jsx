@@ -73,7 +73,7 @@ export default function RefundPolicy({ isDark }) {
             content={
               <div className="space-y-4">
                 <p>All artworks provided by Artistic are custom-made specifically based on the images and instructions submitted by the customer.</p>
-                <p>To initiate production, a non-refundable <span className="font-semibold text-orange-500">25% Advance Payment</span> is required.</p>
+                <p>To initiate production, a non-refundable <span className="font-bold underline">25% Advance Payment</span> is required.</p>
                 <p>Because each order is personalized:</p>
                 <div className="space-y-2">
                   <div className="flex items-start gap-2"><Dot className="shrink-0 mt-1"/><span>The 25% advance payment strictly covers the artist's initial time, effort, and materials.</span></div>
