@@ -311,12 +311,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
             >
-              <h2
-                className={`text-5xl mb-4 tracking-tight ${isDark ? "text-white" : "text-black"}`}
-                style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-              >
-                Artistic
-              </h2>
+                <img src="/logo.png" alt="artistic" className="h-16 w-auto object-contain mb-4" />
               <p className={`text-[15px] leading-relaxed max-w-[85%] font-medium ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
                 Where every sketch breathes
               </p>
@@ -329,12 +324,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
 
           {/* Mobile Header (Hidden on Desktop) */}
           <div className="md:hidden mb-8">
-             <h2
-                className={`text-2xl  tracking-tight ${isDark ? "text-white" : "text-[#1a1a1a]"}`}
-                style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-              >
-                Artistic
-              </h2>
+              <img src="/logo.png" alt="artistic" className="h-10 w-auto object-contain" />
           </div>
 
           {/* Close Button */}
