@@ -95,12 +95,11 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
           {/* Left */}
           <div className="flex items-center gap-12">
             <NavLink to="/">
-              <span
-                className={`text-[25px] font-semibold ${isDark ? "text-white" : "text-black"
-                  }`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-              >
-                artistic
-              </span>
+              <img
+                src="/logo.png"
+                alt="artistic"
+                className="h-10 w-auto object-contain"
+              />
             </NavLink>
             {/* Desktop Links */}
             <div className="relative flex items-center gap-8">
@@ -291,15 +290,11 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
                 />
               )}
             </button>
-            <NavLink to="/">
-              <span
-                className={`text-[20px] font-semibold ${isDark ? "text-white" : "text-black"
-                  }`}
-                style={{ fontFamily: "Yatra One, system-ui" }}
-              >
-                artistic
-              </span>
-            </NavLink>
+              <img
+                src="/logo.png"
+                alt="artistic"
+                className="h-8 w-auto object-contain"
+              />
           </div>
           {/* Right */}
           <div className="flex items-center gap-3">
@@ -469,15 +464,13 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
 
               {/* Drawer Header */}
               <div className={`relative p-7 flex items-center justify-between ${isDark ? "border-b border-white/5" : "border-b border-black/5"}`}>
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <span className={`text-2xl font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-                    artistic
-                  </span>
-                </motion.div>
+                  <Link to="/" onClick={() => setIsOpen(false)}>
+                    <img
+                      src="/logo.png"
+                      alt="artistic"
+                      className="h-10 w-auto object-contain"
+                    />
+                  </Link>
 
                 <motion.button
                   whileHover={{ scale: 1.1, rotate: 90 }}
