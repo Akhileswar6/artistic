@@ -8,8 +8,8 @@ const features = [
     icon: <PenTool size={22} />,
     title: "Artisan Craftsmanship",
     desc: "Every piece is 100% hand-drawn from scratch. No digital filters, just pure skill and artistic intuition.",
-    color: "text-orange-500",
-    bg: "bg-orange-500/10"
+    color: "text-neutral-900 dark:text-white",
+    bg: "bg-black/5 dark:bg-white/10"
   },
   {
     icon: <Trophy size={22} />,

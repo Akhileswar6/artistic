@@ -1,8 +1,15 @@
 import { Info, ArrowRight } from "lucide-react";
 
-export default function Details({ isDark, setStep, orderData, handleInputChange }) {
+export default function Details({ isDark, setStep, orderData, handleInputChange, user, setShowAuthModal }) {
 
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orderData.email);
+
+  const handleFocus = (e) => {
+    if (!user) {
+      e.target.blur();
+      setShowAuthModal(true);
+    }
+  };
 
   return (
     <div
@@ -23,6 +30,7 @@ export default function Details({ isDark, setStep, orderData, handleInputChange 
             name="name"
             value={orderData.name}
             onChange={handleInputChange}
+            onFocus={handleFocus}
             placeholder="Enter Full Name"
             className={`w-full border p-2.5 rounded-lg text-[14px] outline-none transition-all capitalize
               ${isDark
@@ -38,6 +46,7 @@ export default function Details({ isDark, setStep, orderData, handleInputChange 
             name="email"
             value={orderData.email}
             onChange={handleInputChange}
+            onFocus={handleFocus}
             type="email"
             placeholder="Enter Email Address"
             className={`w-full border p-2.5 rounded-lg text-[14px] outline-none transition-all ${isDark
@@ -65,12 +74,13 @@ export default function Details({ isDark, setStep, orderData, handleInputChange 
               name="phone"
               value={orderData.phone}
               onChange={handleInputChange}
+              onFocus={handleFocus}
               inputMode="numeric"
               placeholder="10-digit Mobile Number"
               className={`w-full pl-12 pr-3 p-2.5 border rounded-lg text-[14px] focus:outline-none transition-all ${isDark
                 ? "border-white/10 bg-white/[0.02] text-white focus:border-white/30 focus:bg-white/[0.05] placeholder:text-neutral-700"
                 : "border-black/10 bg-black/[0.02] text-black focus:border-black/30 focus:bg-black/5 placeholder:text-neutral-400"
-                } ${orderData.phone && orderData.phone.replace(/\s/g, "").length !== 10 ? "border-orange-500/50" : ""}`}
+                } ${orderData.phone && orderData.phone.replace(/\s/g, "").length !== 10 ? "border-red-500/50" : ""}`}
             />
           </div>
 
@@ -89,6 +99,7 @@ export default function Details({ isDark, setStep, orderData, handleInputChange 
           name="address"
           value={orderData.address}
           onChange={handleInputChange}
+          onFocus={handleFocus}
           rows="3"
           placeholder="Complete physical address including landmarks and postal code..."
           className={`w-full p-4 rounded-lg border text-[14px] focus:outline-none transition-all resize-none ${isDark
@@ -105,15 +116,23 @@ export default function Details({ isDark, setStep, orderData, handleInputChange 
           : "bg-black/[0.02] border-black/5"
           }`}
       >
-        <Info size={18} className={`shrink-0 mt-0.5 ${isDark ? "text-neutral-500" : "text-neutral-400"}`} />
-        <p className={`text-[13px]  font-medium ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
-          Client information is strictly confidential. Details are solely utilized for secure delivery coordination and critical studio updates regarding your commission.
-        </p>
+        <div onClick={handleFocus} className="flex gap-4">
+          <Info size={18} className={`shrink-0 mt-0.5 ${isDark ? "text-neutral-500" : "text-neutral-400"}`} />
+          <p className={`text-[13px]  font-medium ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+            Client information is strictly confidential. Details are solely utilized for secure delivery coordination and critical studio updates regarding your commission.
+          </p>
+        </div>
       </div>
 
       <button
-        onClick={() => setStep(2)}
-        disabled={!orderData.name || !isEmailValid || orderData.phone.length !== 10 || !orderData.address}
+        onClick={(e) => {
+          if (!user) {
+            setShowAuthModal(true);
+          } else {
+            setStep(2);
+          }
+        }}
+        disabled={user && (!orderData.name || !isEmailValid || orderData.phone.length !== 10 || !orderData.address)}
         className={`mt-10 w-full px-5 py-3 text-[14px] font-bold uppercase  rounded-lg transition-all duration-300 flex items-center justify-center gap-3 group cursor-pointer ${isDark
           ? "bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed"
           : "bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed"

@@ -7,10 +7,22 @@ export default function ArtPhoto({
   setOrderData,
   handlePhoto,
   removePhoto,
-  setZoom
+  setZoom,
+  user,
+  setShowAuthModal
 }) {
 
+  const handleInteraction = (e) => {
+    if (!user) {
+      if (e && e.preventDefault) e.preventDefault();
+      setShowAuthModal(true);
+      return true;
+    }
+    return false;
+  };
+
   const updateField = (field, value) => {
+    if (handleInteraction()) return;
     setOrderData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -18,7 +30,7 @@ export default function ArtPhoto({
     <div className="space-y-8">
 
       {/* ART STYLE */}
-      <div className={`rounded-xl border p-6 md:p-8 transition-all duration-300 ${isDark
+      <div className={`rounded-xl border p-5 md:p-8 transition-all duration-300 ${isDark
         ? "border-white/10 bg-[#141416]/80 backdrop-blur-xl shadow-2xl shadow-black/40"
         : "border-black/5 bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/5"
         }`}>
@@ -29,7 +41,7 @@ export default function ArtPhoto({
           </h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
 
           {/* Realistic */}
           <div
@@ -156,7 +168,7 @@ export default function ArtPhoto({
 
 
       {/* FRAME OPTION */}
-      <div className={`rounded-2xl border p-6 md:p-8 transition-all duration-300 ${isDark
+      <div className={`rounded-2xl border p-5 md:p-8 transition-all duration-300 ${isDark
         ? "border-white/10 bg-[#141416]/80 backdrop-blur-xl shadow-2xl shadow-black/40"
         : "border-black/5 bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/5"
         }`}>
@@ -167,7 +179,7 @@ export default function ArtPhoto({
           </h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { id: "noframe", label: "No Frame", extra: "Included" },
             { id: "standard8x10", label: "Standard 8x10\"", extra: "+₹200" },
@@ -207,7 +219,7 @@ export default function ArtPhoto({
 
 
       {/* PHOTO UPLOAD */}
-      <div className={`rounded-2xl border p-6 md:p-8 transition-all duration-300 ${isDark
+      <div className={`rounded-2xl border p-5 md:p-8 transition-all duration-300 ${isDark
         ? "border-white/10 bg-[#141416]/80 backdrop-blur-xl shadow-2xl shadow-black/40"
         : "border-black/5 bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/5"
         }`}>
@@ -227,14 +239,18 @@ export default function ArtPhoto({
 
 
         {!orderData.photo ? (
-          <label className={`group border-2 border-dashed rounded-2xl p-10 flex flex-col items-center cursor-pointer transition-all duration-300 ${isDark ? "border-white/20 hover:border-white/40 bg-white/[0.02] hover:bg-white/[0.04]" : "border-black/20 hover:border-black/40 bg-black/[0.02] hover:bg-black/[0.04]"
+          <label 
+            onClick={(e) => {
+              if (handleInteraction()) e.preventDefault();
+            }}
+            className={`group border-2 border-dashed rounded-2xl p-10 flex flex-col items-center cursor-pointer transition-all duration-300 ${isDark ? "border-white/20 hover:border-white/40 bg-white/[0.02] hover:bg-white/[0.04]" : "border-black/20 hover:border-black/40 bg-black/[0.02] hover:bg-black/[0.04]"
             }`}>
             <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-5 transition-transform duration-300 group-hover:-translate-y-2 ${isDark ? "bg-white/10 text-white" : "bg-black/5 text-black"}`}>
               <Upload size={24} />
             </div>
             <p className="text-[16px] mb-2">Drop photo here or click to browse</p>
             <p className={`text-[13px] font-medium ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>Optimal: High-res, well-lit, front-facing (Max 5MB)</p>
-            <input type="file" onChange={handlePhoto} className="hidden" />
+            <input type="file" onChange={(e) => !handleInteraction() && handlePhoto(e)} className="hidden" />
           </label>
         ) : (
           <div className="space-y-6">
@@ -268,7 +284,7 @@ export default function ArtPhoto({
 
 
       {/* SPECIAL INSTRUCTIONS */}
-      <div className={`rounded-2xl border p-6 md:p-8 transition-all duration-300 ${isDark
+      <div className={`rounded-2xl border p-5 md:p-8 transition-all duration-300 ${isDark
         ? "border-white/10 bg-[#141416]/80 backdrop-blur-xl shadow-2xl shadow-black/40"
         : "border-black/5 bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/5"
         }`}>
@@ -285,6 +301,7 @@ export default function ArtPhoto({
         <textarea
           rows="4"
           value={orderData.instructions}
+          onFocus={handleInteraction}
           onChange={(e) => updateField("instructions", e.target.value)}
           placeholder="E.g., 'Enhance eye details', 'Remove background clutter', 'Ensure a vintage feel'..."
           className={`w-full p-4 rounded-xl border text-[14px] leading-relaxed focus:outline-none transition-all resize-none ${isDark
@@ -313,8 +330,10 @@ export default function ArtPhoto({
         </button>
 
         <button
-          onClick={() => setStep(3)}
-          disabled={!orderData.photo}
+          onClick={() => {
+            if (!handleInteraction()) setStep(3);
+          }}
+          disabled={user && !orderData.photo}
           className={`px-6 py-2.5 text-[14px] font-bold uppercase rounded-lg transition-all duration-300 flex items-center justify-center gap-3 group cursor-pointer ${isDark
             ? "bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed"
             : "bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed"

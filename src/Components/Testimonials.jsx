@@ -4,80 +4,70 @@ export default function Testimonials({ isDark }) {
 
 const testimonials = [
   {
-    name: "Nina Taylor",
-    city: "Chennai",
+    name: "Ananya Sharma",
+    city: "Mumbai",
     style: "Charcoal Drawing",
-    img: "https://i.pravatar.cc/150?u=nina",
     text: "The attention to detail is unbelievable. Every shade and line looks exactly like the original photo. My family couldn't believe it was hand drawn. Truly impressive work."
   },
   {
-    name: "Priya S.",
+    name: "Priya Singh",
     city: "Bangalore",
     style: "Pencil Sketch",
-    img: "https://i.pravatar.cc/150?u=priya",
     text: "I gifted this sketch to my parents on their anniversary and it became the highlight of the celebration. The likeness is perfect and the emotions in the artwork are beautiful."
   },
   {
-    name: "Rahul K.",
-    city: "Mumbai",
+    name: "Rahul Kapoor",
+    city: "Delhi",
     style: "Color Portrait",
-    img: "https://i.pravatar.cc/150?u=rahul",
     text: "Absolutely amazing work. The colors are vibrant and the detailing is exceptional. It looks even better in person than in the preview images."
   },
   {
-    name: "James Chen",
-    city: "Delhi",
+    name: "Ishaan Mehta",
+    city: "Pune",
     style: "Caricature",
-    img: "https://i.pravatar.cc/150?u=james",
     text: "The caricature was hilarious and beautifully done. It captured the personality perfectly while still looking elegant and artistic."
   },
   {
-    name: "David Wilson",
+    name: "Aditya Verma",
     city: "Hyderabad",
     style: "Pencil Sketch",
-    img: "https://i.pravatar.cc/150?u=david",
     text: "Clean, professional, and incredibly detailed artwork. The sketch feels alive and every small feature is captured perfectly."
   },
   {
-    name: "Sneha P.",
-    city: "Pune",
+    name: "Sneha Patil",
+    city: "Nagpur",
     style: "Charcoal Drawing",
-    img: "https://i.pravatar.cc/150?u=sneha",
     text: "I ordered a charcoal sketch for my sister's birthday and she absolutely loved it. The shading and texture look so realistic."
   },
   {
-    name: "Arjun R.",
-    city: "Kolkata",
+    name: "Arjun Reddy",
+    city: "Chennai",
     style: "Pencil Sketch",
-    img: "https://i.pravatar.cc/150?u=arjun",
     text: "One of the best artworks I have ever received. The artist perfectly captured the emotions in the photograph."
   },
   {
-    name: "Meera L.",
-    city: "Ahmedabad",
+    name: "Meera Iyer",
+    city: "Kochi",
     style: "Color Portrait",
-    img: "https://i.pravatar.cc/150?u=meera",
     text: "The colors are stunning and the artwork feels premium. Everyone who visits my house asks about the portrait."
   },
   {
-    name: "Karan D.",
-    city: "Delhi",
+    name: "Karan Malhotra",
+    city: "Chandigarh",
     style: "Caricature",
-    img: "https://i.pravatar.cc/150?u=karan",
     text: "Such a fun and creative caricature. It perfectly represents our personalities and makes everyone smile."
   },
   {
-    name: "Ayesha N.",
+    name: "Ayesha Khan",
     city: "Lucknow",
     style: "Charcoal Drawing",
-    img: "https://i.pravatar.cc/150?u=ayesha",
     text: "The portrait exceeded my expectations. The detailing in the eyes and hair is incredible and the overall finish looks very professional."
   }
 ];
 
 
   return (
-    <div className="mt-20 md:mt-32 overflow-hidden relative">
+    <div className="mt-20 md:mt-32 overflow-hidden relative py-12">
 
       {/* Title */}
       <div className="text-center mb-12 md:mb-16 px-4">
@@ -114,20 +104,17 @@ const testimonials = [
 
   <div
   key={i}
-  className={`min-w-[280px] max-w-[280px] sm:min-w-[320px] sm:max-w-[320px] border rounded-2xl p-5 sm:p-6 flex-shrink-0 transition duration-300 hover:-translate-y-2 ${
+  className={`min-w-[300px] max-w-[300px] sm:min-w-[350px] sm:max-w-[350px] border rounded-2xl p-4 flex-shrink-0 transition duration-300 hover:-translate-y-1 ${
     isDark
-      ? "bg-[#111] border-neutral-700"
-      : "bg-white border-neutral-200 shadow-md"
+      ? "bg-[#111] border-neutral-700 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+      : "bg-white border-neutral-200 shadow-xl"
   }`}
 >
 
             <div className="flex items-center gap-3 mb-3">
-
-              <img src={t.img} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full" />
-
               <div>
-                <p className="font-semibold text-[15px] sm:text-base" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{t.name}</p>
-                <p className="text-[12px] sm:text-sm text-neutral-500">
+                <p className="font-semibold text-[14px] sm:text-[15px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{t.name}</p>
+                <p className="text-[11px] sm:text-[12px] text-neutral-500">
                   {t.city} · {t.style}
                 </p>
               </div>
@@ -136,11 +123,11 @@ const testimonials = [
 
             <div className="flex mb-2">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} size={13} className="sm:w-[14px] sm:h-[14px]" fill="#facc15" color="#facc15" />
+                <Star key={i} size={11} className="sm:w-[12px] sm:h-[12px]" fill="#facc15" color="#facc15" />
               ))}
             </div>
 
-            <p className="text-[13px] sm:text-sm opacity-90 leading-relaxed">{t.text}</p>
+            <p className="text-[12px] sm:text-[13px] opacity-90 leading-relaxed">{t.text}</p>
 
           </div>
 
@@ -156,20 +143,17 @@ const testimonials = [
 
           <div
   key={i}
-  className={`min-w-[280px] max-w-[280px] sm:min-w-[320px] sm:max-w-[320px] border rounded-2xl p-5 sm:p-6 flex-shrink-0 transition duration-300 hover:-translate-y-2 ${
+  className={`min-w-[300px] max-w-[300px] sm:min-w-[350px] sm:max-w-[350px] border rounded-2xl p-4 flex-shrink-0 transition duration-300 hover:-translate-y-1 ${
     isDark
-      ? "bg-[#111] border-neutral-700"
-      : "bg-white border-neutral-200 shadow-md"
+      ? "bg-[#111] border-neutral-700 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+      : "bg-white border-neutral-200 shadow-xl"
   }`}
 >
 
             <div className="flex items-center gap-3 mb-3">
-
-              <img src={t.img} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full" />
-
               <div>
-                <p className="font-semibold text-[15px] sm:text-base" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{t.name}</p>
-                <p className="text-[12px] sm:text-sm text-neutral-500">
+                <p className="font-semibold text-[14px] sm:text-[15px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{t.name}</p>
+                <p className="text-[11px] sm:text-[12px] text-neutral-500">
                   {t.city} · {t.style}
                 </p>
               </div>
@@ -178,11 +162,11 @@ const testimonials = [
 
             <div className="flex mb-2">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} size={13} className="sm:w-[14px] sm:h-[14px]" fill="#facc15" color="#facc15" />
+                <Star key={i} size={11} className="sm:w-[12px] sm:h-[12px]" fill="#facc15" color="#facc15" />
               ))}
             </div>
 
-            <p className="text-[13px] sm:text-sm opacity-90 leading-relaxed">{t.text}</p>
+            <p className="text-[12px] sm:text-[13px] opacity-90 leading-relaxed">{t.text}</p>
 
           </div>
 

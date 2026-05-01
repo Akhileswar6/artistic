@@ -156,13 +156,12 @@ export default function CustomerShowcase({ isDark }) {
           {[
             { label: "Happy Clients", value: "100+" },
             { label: "Custom Portraits", value: "120+" },
-            { label: "Countries Served", value: "15+" }
           ].map((stat, i) => (
             <div key={i} className="text-center w-[40%] sm:w-auto">
-              <div className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2 ${isDark ? "text-white" : "text-neutral-900"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+              <div className={`text-3xl sm:text-4xl md:text-5xl mb-1 sm:mb-2 ${isDark ? "text-white" : "text-neutral-900"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
                 {stat.value}
               </div>
-              <div className={`text-[9px] sm:text-[10px] uppercase tracking-[0.1em] sm:tracking-[0.2em] font-bold ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>
+              <div className={`text-[9px] sm:text-[12px] uppercase tracking-[0.1em] sm:tracking-[0.2em] ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>
                 {stat.label}
               </div>
             </div>

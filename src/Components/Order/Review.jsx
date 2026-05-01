@@ -20,7 +20,7 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
   return (
     <div className="space-y-8">
 
-      <div className={`rounded-2xl border p-6 md:p-8 transition-all duration-300 ${isDark
+      <div className={`rounded-2xl border p-5 md:p-8 transition-all duration-300 ${isDark
           ? "border-white/10 bg-[#141416]/80 backdrop-blur-xl shadow-2xl shadow-black/40"
           : "border-black/5 bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/5"
         }`}>
@@ -43,18 +43,18 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
                 <Edit2 size={12} /> Modify
               </button>
             </div>
-            <div className={`grid md:grid-cols-2 gap-6 p-6 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/5" : "bg-black/[0.02] border-black/5"}`}>
+            <div className={`grid md:grid-cols-2 gap-4 md:gap-6 p-4 md:p-6 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/5" : "bg-black/[0.02] border-black/5"}`}>
               <div className="space-y-1">
-                <span className={`text-[12px] uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Full Name</span>
-                <p className="text-[15px] font-medium capitalize">{orderData.name}</p>
+                <span className={`text-[10px] md:text-[12px] uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Full Name</span>
+                <p className="text-[14px] md:text-[15px] font-medium capitalize">{orderData.name}</p>
               </div>
               <div className="space-y-1">
-                <span className={`text-[12px] uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Email Address</span>
-                <p className="text-[14px] font-medium flex items-center gap-2 truncate"><Mail size={14} className="opacity-50" /> {orderData.email}</p>
+                <span className={`text-[10px] md:text-[12px] uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Email Address</span>
+                <p className="text-[13px] md:text-[14px] font-medium flex items-center gap-2 truncate text-neutral-300"><Mail size={14} className="opacity-50 shrink-0" /> <span className="truncate">{orderData.email}</span></p>
               </div>
               <div className="space-y-1">
-                <span className={`text-[12px]  uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Contact Number</span>
-                <p className="text-[14px] font-medium flex items-center gap-2"><Phone size={14} className="opacity-50" /> +91 {orderData.phone}</p>
+                <span className={`text-[10px] md:text-[12px]  uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Contact Number</span>
+                <p className="text-[13px] md:text-[14px] font-medium flex items-center gap-2"><Phone size={14} className="opacity-50 shrink-0" /> +91 {orderData.phone}</p>
               </div>
               <div className="space-y-1 md:col-span-2 pt-2 border-t border-dashed border-gray-500/20">
                 <span className={`text-[12px] uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Shipping Destination</span>
@@ -88,16 +88,16 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
               <div className="md:col-span-8 lg:col-span-9 space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className={`p-4 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/5" : "bg-black/[0.02] border-black/5"}`}>
-                    <span className={`text-[11px] font-bold uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Selected Style</span>
-                    <p className="text-[15px] mt-2 flex items-center gap-2 ">
-                      <Check size={16} className="text-green-500" /> {styleLabels[orderData.artStyle]}
+                    <span className={`text-[10px] md:text-[11px] font-bold uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Selected Style</span>
+                    <p className="text-[13px] md:text-[15px] mt-2 flex items-center gap-2 leading-tight">
+                      <Check size={14} className="text-green-500 shrink-0" /> {styleLabels[orderData.artStyle]}
                     </p>
                   </div>
 
                   <div className={`p-4 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/5" : "bg-black/[0.02] border-black/5"}`}>
-                    <span className={`text-[11px] font-bold uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Selected Frame</span>
-                    <p className="text-[14px] mt-2 flex items-center gap-2">
-                      <Frame size={16} className="text-green-500" /> {frameLabels[orderData.frameOption]}
+                    <span className={`text-[10px] md:text-[11px] font-bold uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Selected Frame</span>
+                    <p className="text-[13px] md:text-[14px] mt-2 flex items-center gap-2 leading-tight">
+                      <Frame size={14} className="text-green-500 shrink-0" /> {frameLabels[orderData.frameOption]}
                     </p>
                   </div>
                 </div>
@@ -123,10 +123,10 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
 
         {/* Cancellation Policy */}
         <div className={`flex gap-4 p-5 rounded-xl border transition-all ${isDark
-            ? "bg-orange-950/10 border-orange-900/30 text-orange-200/90"
-            : "bg-[#FFF9F0] border-orange-100/50 text-orange-900"
+            ? "bg-white/5 border-white/10 text-neutral-300"
+            : "bg-black/5 border-black/10 text-neutral-800"
           }`}>
-          <AlertTriangle size={20} className="shrink-0 mt-0.5 text-orange-500" />
+          <AlertTriangle size={20} className={`shrink-0 mt-0.5 ${isDark ? "text-white" : "text-black"}`} />
           <p className="text-[12px] leading-relaxed font-medium ">
             <span className=" flex items-center text-[14px] gap-1 mb-1 text-white">Cancellation Policy</span>
             <span className="opacity-80">Free cancellation prior to studio acceptance. Post-acceptance, the 25% retainer is non-refundable. Work-in-progress cannot be cancelled.</span>
@@ -168,8 +168,10 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
           whileTap={{ scale: 0.98 }}
           onClick={handleSubmit}
           disabled={loading}
-          className={`px-6 py-3 text-white text-[14px] font-bold uppercase  cursor-pointer rounded-xl shadow-2xl flex items-center justify-center gap-3 
-            ${loading ? "bg-orange-500/70 border-orange-500/50 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600 border border-orange-400"}
+          className={`px-6 py-3 text-[14px] font-bold uppercase cursor-pointer rounded-xl shadow-2xl flex items-center justify-center gap-3 
+            ${loading 
+              ? (isDark ? "bg-white/50 text-black/50" : "bg-black/50 text-white/50") 
+              : (isDark ? "bg-white text-black hover:bg-neutral-200" : "bg-black text-white hover:bg-neutral-800")}
           `}
         >
           {loading ? (
@@ -179,7 +181,7 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
             </>
           ) : (
             <>
-              Confirm Commission
+              Confirm Order
               <Check size={18} strokeWidth={3} />
             </>
           )}
