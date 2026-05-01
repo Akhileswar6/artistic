@@ -35,6 +35,7 @@ const CancellationPolicy = lazy(() => import("./Pages/Policies/CancellationPolic
 // Lazy Loaded User Pages
 const Account = lazy(() => import("./Pages/User/Account"));
 const Orders = lazy(() => import("./Pages/User/Orders"));
+const OrderDetail = lazy(() => import("./Pages/User/OrderDetail"));
 const Notifications = lazy(() => import("./Pages/User/Notifications"));
 
 // Loading Component
@@ -306,6 +307,14 @@ export default function App() {
                   element={
                     <PageTransition>
                       <Orders isDark={isDark} />
+                    </PageTransition>
+                  }
+                />
+                <Route
+                  path="/orders/:id"
+                  element={
+                    <PageTransition>
+                      <OrderDetail isDark={isDark} />
                     </PageTransition>
                   }
                 />
