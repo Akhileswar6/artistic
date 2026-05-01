@@ -31,7 +31,8 @@ export default function Order({ isDark }) {
 
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
+
+
 
   // Price Configuration
   const stylePrices = {
@@ -246,7 +247,8 @@ export default function Order({ isDark }) {
                     orderData={orderData}
                     handleInputChange={handleInputChange}
                     user={user}
-                    setShowAuthModal={setShowAuthModal}
+                    setShowAuthModal={() => setShowSignIn(true)}
+
                   />
                 )}
 
@@ -260,7 +262,8 @@ export default function Order({ isDark }) {
                     removePhoto={removePhoto}
                     setZoom={setZoom}
                     user={user}
-                    setShowAuthModal={setShowAuthModal}
+                    setShowAuthModal={() => setShowSignIn(true)}
+
                   />
                 )}
 
@@ -397,53 +400,7 @@ export default function Order({ isDark }) {
         )}
       </AnimatePresence>
 
-      {/* Auth Modal */}
-      <AnimatePresence>
-        {showAuthModal && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowAuthModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className={`relative w-full max-w-sm p-8 rounded-xl text-center shadow-2xl border ${isDark ? "bg-[#141416] border-white/10" : "bg-white border-black/5"
-                }`}
-            >
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-6 ${isDark ? "bg-white/10" : "bg-black/5"
-                }`}>
-                <ShieldCheck size={22} className={isDark ? "text-white" : "text-black"} />
-              </div>
-              <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque" }}>Signin Required</h3>
-              <p className={`text-sm mb-8 ${isDark ? "text-white/60" : "text-black/60"}`}>
-                Please login to start your custom commission.
-              </p>
-              <div className="space-y-3">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate("/signin")}
-                  className={`w-full py-3 rounded-lg text-sm font-bold transition-all cursor-pointer ${isDark ? "bg-white text-black hover:bg-neutral-200" : "bg-black text-white hover:bg-neutral-800"
-                    }`}
-                >
-                  Login to Continue
-                </motion.button>
-                <button
-                  onClick={() => setShowAuthModal(false)}
-                  className={`text-sm font-medium opacity-50 hover:opacity-100 transition-opacity cursor-pointer ${isDark ? "text-white" : "text-black"}`}
-                >
-                  Maybe Later
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+
     </div>
   );
 }
