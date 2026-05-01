@@ -32,8 +32,14 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
       try {
         const user = JSON.parse(localStorage.getItem("user"));
         if (!user) return;
+        const token = localStorage.getItem("token");
         const res = await fetch(
-          `http://localhost:5000/api/notifications/${user._id}`
+          `http://localhost:5000/api/notifications/${user._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
         const data = await res.json();
         const unread = data.filter((n) => !n.read).length;
@@ -403,10 +409,10 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
                           }}
                           className={`w-full px-4 py-2 flex items-center gap-4 rounded-xl transition-all duration-200 group text-red-500 hover:bg-red-500/5`}
                         >
-                          <div className={`p-1.5 rounded-lg transition-colors ${isDark ? "bg-red-500/10" : "bg-red-50"}`}>
+                          <div className={`p-1.5 rounded-lg transition-colors cursor-pointer ${isDark ? "bg-red-500/10" : "bg-red-50"}`}>
                             <LogOut size={16} />
                           </div>
-                          <span className="text-[13px] font-medium">Logout</span>
+                          <span className="text-[13px] font-medium cursor-pointer">Logout</span>
                         </button>
                       </div>
                     </motion.div>

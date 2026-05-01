@@ -82,10 +82,10 @@ export default function Footer({ isDark }) {
 
           {/* Links */}
           <div className="lg:ml-10">
-            <h4 className="font-bold mb-4 text-[18px] tracking-tight" style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
+            <h4 className=" mb-2 text-[18px] " style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
               Quick Links
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {[
                 { label: "Home", to: "/" },
                 { label: "Gallery", to: "/gallery" },
@@ -103,10 +103,10 @@ export default function Footer({ isDark }) {
 
           {/* Policies */}
           <div className="lg:ml-5">
-            <h4 className="font-bold mb-4 text-[18px] tracking-tight" style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
+            <h4 className="mb-2 text-[18px] " style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
               Policies
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {[
                 { label: "Terms of Service", to: "/terms" },
                 { label: "Privacy Policy", to: "/privacy-policy" },
@@ -124,10 +124,10 @@ export default function Footer({ isDark }) {
 
           {/* Contact */}
           <div>
-            <h4 className="font-bold mb-4 text-[18px] tracking-tight" style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
+            <h4 className=" mb-2 text-[18px]" style={{fontFamily: "Bricolage Grotesque, sans-serif"}}>
               Contact
             </h4>
-            <div className={`space-y-3 text-[14px] ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+            <div className={`space-y-2 text-[14px] ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
               <div className="flex items-center gap-3 group cursor-pointer hover:text-blue-500 transition-colors">
                 <div className={`p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-black/5"}`}>
                   <Mail size={16} />
@@ -149,14 +149,12 @@ export default function Footer({ isDark }) {
             </div>
 
             {/* Message Card */}
-            <div className={`mt-8 rounded-2xl border p-5 flex gap-4 transition-all hover:shadow-lg ${
+            <div className={`mt-6 rounded-2xl border p-5 flex gap-4 transition-all hover:shadow-lg ${
               isDark ? "bg-[#141414]/50 border-white/5 hover:bg-[#141414]" : "bg-neutral-50 border-black/5 hover:bg-neutral-100 shadow-lg"
             }`}>
-              <div className="mt-1">
-                <CheckCircle className="text-green-500" size={18} />
-              </div>
+              
               <div>
-                <p className={` text-[13px] ${isDark ? "text-white" : "text-black"}`}>Response Time</p>
+                <p className={` text-[14px] ${isDark ? "text-white" : "text-black"}`}>Response Time</p>
                 <p className={`text-[12px] mt-1.5 leading-relaxed opacity-80 ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
                   Orders are reviewed within 24 hours. You'll be notified via your dashboard.
                 </p>
