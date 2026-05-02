@@ -54,7 +54,7 @@ export default function ArtPhoto({
                 }`
                 : isDark
                   ? "bg-white/[0.02] border border-white/10 hover:border-white/30 text-neutral-400 hover:text-neutral-200"
-                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600 hover:text-neutral-800"
+                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600 hover:text-neutral-800 shadow-md"
               }`}
           >
             <div className="flex justify-between items-center">
@@ -76,12 +76,12 @@ export default function ArtPhoto({
             className={`relative p-5 rounded-2xl flex flex-col gap-2 cursor-pointer transition-all duration-300 group
   ${orderData.artStyle === "charcoal"
                 ? `${isDark
-                  ? "bg-white/[0.08] border-1 border-white text-white"
+                  ? "bg-white/[0.08] border-1 border-white text-white "
                   : "bg-black/[0.03] border-1 border-black text-black"
                 }`
                 : isDark
                   ? "bg-white/[0.02] border border-white/10 hover:border-white/30 text-neutral-400 hover:text-neutral-200"
-                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600 hover:text-neutral-800"
+                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600 hover:text-neutral-800 shadow-md"
               }`}
           >
             <div className="flex justify-between items-center">
@@ -113,7 +113,7 @@ export default function ArtPhoto({
                 }`
                 : isDark
                   ? "bg-white/[0.02] border border-white/10 hover:border-white/30 text-neutral-400 hover:text-neutral-200"
-                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600 hover:text-neutral-800"
+                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600 hover:text-neutral-800 shadow-md"
               }`}
           >
             <div className="flex justify-between items-center">
@@ -145,7 +145,7 @@ export default function ArtPhoto({
                 }`
                 : isDark
                   ? "bg-white/[0.02] border border-white/10 hover:border-white/30 text-neutral-400 hover:text-neutral-200"
-                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600 hover:text-neutral-800"
+                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600 hover:text-neutral-800 shadow-md"
               }`}
           >
             <div className="flex justify-between items-center">
@@ -193,7 +193,7 @@ export default function ArtPhoto({
                 ? `${isDark ? "bg-white/[0.08] border-1 border-white text-white" : "bg-black/[0.03] border-1 border-black text-black"}`
                 : isDark
                   ? "bg-white/[0.02] border border-white/10 hover:border-white/30 text-neutral-400"
-                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600"
+                  : "bg-black/[0.02] border border-black/10 hover:border-black/30 text-neutral-600 shadow-md"
                 }`}
             >
               <span className="text-[14px]">{option.label}</span>
@@ -289,7 +289,7 @@ export default function ArtPhoto({
         : "border-black/5 bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/5"
         }`}>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-2">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-2 ">
           <div className="flex items-center gap-3">
             <h2 className="text-lg md:text-xl" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
               Special Instructions
@@ -304,7 +304,7 @@ export default function ArtPhoto({
           onFocus={handleInteraction}
           onChange={(e) => updateField("instructions", e.target.value)}
           placeholder="E.g., 'Enhance eye details', 'Remove background clutter', 'Ensure a vintage feel'..."
-          className={`w-full p-4 rounded-xl border text-[14px] leading-relaxed focus:outline-none transition-all resize-none ${isDark
+          className={`w-full p-4 rounded-xl border text-[14px] leading-relaxed focus:outline-none transition-all resize-none shadow-md ${isDark
               ? "border-white/10 bg-white/[0.02] text-white focus:border-white/30 focus:bg-white/[0.05] placeholder:text-neutral-700"
               : "border-black/10 bg-black/[0.02] text-black focus:border-black/30 focus:bg-black/5 placeholder:text-neutral-400"
             }`}
@@ -317,7 +317,7 @@ export default function ArtPhoto({
 
         <button
           onClick={() => setStep(1)}
-          className={`group px-6 py-2.5 text-[14px] font-bold uppercase  rounded-lg transition-all cursor-pointer flex items-center justify-center gap-3 ${isDark
+          className={`group px-6 py-2.5 text-[14px]  uppercase  rounded-lg transition-all cursor-pointer flex items-center justify-center gap-3 ${isDark
               ? "bg-[#141416] text-white border border-white/10 hover:bg-neutral-800"
               : "bg-white text-black border border-black/10 shadow-sm hover:bg-neutral-50"
             }`}
@@ -334,7 +334,7 @@ export default function ArtPhoto({
             if (!handleInteraction()) setStep(3);
           }}
           disabled={user && !orderData.photo}
-          className={`px-6 py-2.5 text-[14px] font-bold uppercase rounded-lg transition-all duration-300 flex items-center justify-center gap-3 group cursor-pointer ${isDark
+          className={`px-6 py-2.5 text-[14px] uppercase rounded-lg transition-all duration-300 flex items-center justify-center gap-3 group cursor-pointer ${isDark
             ? "bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed"
             : "bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed"
             }`}
