@@ -164,7 +164,7 @@ export default function Order({ isDark }) {
 
   return (
     <div
-      className={`min-h-[calc(100vh-64px)] py-12 md:py-20 px-4 md:px-8 transition-colors duration-500 relative overflow-hidden ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"
+      className={`min-h-[calc(100vh-64px)] pt-28 md:pt-32 pb-12 md:pb-20 px-4 md:px-8 transition-colors duration-500 relative overflow-hidden ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"
         }`}
       style={{ fontFamily: "Inter, sans-serif" }}
     >
@@ -290,9 +290,9 @@ export default function Order({ isDark }) {
           >
             {/* ORDER SUMMARY */}
             <div
-              className={`rounded-2xl border p-5 md:p-6 transition-all duration-300 ${isDark
+              className={`rounded-2xl border p-5 md:p-6 transition-all duration-300 shadow-md ${isDark
                 ? "bg-[#141416]/80 backdrop-blur-xl border-white/10 shadow-2xl shadow-black/40"
-                : "bg-white/80 backdrop-blur-xl border-black/5 shadow-2xl shadow-black/5"
+                : "bg-white/80 backdrop-blur-xl border-black/5 shadow-2xl "
                 }`}
             >
               <h3 className="mb-6 text-xl" style={{ fontFamily: "Bricolage Grotesque" }}>
@@ -351,7 +351,7 @@ export default function Order({ isDark }) {
 
             {/* PAYMENT INFO */}
             <div
-              className={`p-5 rounded-2xl border transition-all ${isDark
+              className={`p-5 rounded-2xl border transition-all shadow-md ${isDark
                 ? "bg-[#141416]/50 border-white/5"
                 : "bg-white/50 border-black/5"
                 }`}
