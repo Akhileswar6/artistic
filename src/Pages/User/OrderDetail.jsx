@@ -117,7 +117,7 @@ export default function OrderDetail({ isDark }) {
 
   if (loading) {
     return (
-      <div className={`min-h-screen pt-28 md:pt-32 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-black text-white" : "bg-gray-50 text-black"}`}>
+      <div className={`min-h-screen pt-28 md:pt-32 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"}`}>
         <div className="max-w-4xl mx-auto">
           <OrderSkeleton />
         </div>
@@ -128,7 +128,7 @@ export default function OrderDetail({ isDark }) {
   if (!order) return null;
 
   return (
-    <div className={`min-h-screen pt-28 md:pt-32 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-black text-white" : "bg-gray-50 text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
+    <div className={`min-h-screen pt-28 md:pt-32 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
       <div className="max-w-4xl mx-auto space-y-8">
         
         {/* Header */}
