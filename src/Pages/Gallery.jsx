@@ -250,7 +250,7 @@ export default function Gallery({ isDark }) {
 
   return (
     <div className={`min-h-screen transition-colors duration-500 ${isDark ? "bg-[#0a0a0b]" : "bg-[#fcfcfc]"}`} style={{ fontFamily: "Inter, sans-serif" }}>
-      <section className="pt-16 md:pt-24 pb-12 md:pb-20 px-4 md:px-8 max-w-[1400px] mx-auto">
+      <section className="pt-28 md:pt-32 pb-12 md:pb-20 px-4 md:px-8 max-w-[1400px] mx-auto">
 
         {/* Centered Editorial Header */}
         <div className="text-center mb-10 sm:mb-16 max-w-2xl mx-auto">
@@ -267,22 +267,23 @@ export default function Gallery({ isDark }) {
               Explore our complete collection of hand-drawn masterpieces. Each piece tells a story of precision, emotion, and the timeless art of sketching.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-lg mx-auto mb-8 sm:mb-12">
-              {/* Active Gallery Card */}
-              <div className={`flex-1 flex flex-col items-center justify-center w-full p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all cursor-default ${isDark ? "bg-white/5 border-white text-white" : "bg-black/5 border-black text-black"
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-md mx-auto mb-8 sm:mb-12">
+              {/* Active Gallery Button */}
+              <div className={`flex-1 flex items-center justify-center w-full px-2 py-3 text-[15px] font-medium rounded-full transition-all border cursor-default backdrop-blur-md ${isDark
+                ? "bg-white/10 text-white border-white/20 shadow-[0_4px_15px_rgba(0,0,0,0.2)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"
+                : "bg-black/5 text-black border-black/10 shadow-[0_4px_15px_rgba(0,0,0,0.05)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] shadow-md"
                 }`}>
-                <h3 className="text-base sm:text-lg font-bold mb-1" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>All Artworks</h3>
-                <p className={`text-[11px] sm:text-xs ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>Main Collection</p>
+                <span >All Artworks</span>
               </div>
 
-              {/* Inactive Carousel Card */}
+
+              {/* Inactive Carousel Button */}
               <Link to="/process" className="flex-1 w-full">
-                <div className={`flex flex-col items-center justify-center w-full p-4 sm:p-6 rounded-xl sm:rounded-2xl border-2 transition-all hover:-translate-y-1 hover:shadow-lg ${isDark ? "bg-transparent border-white/20 text-neutral-400 hover:border-white hover:text-white" : "bg-transparent border-black/20 text-neutral-500 hover:border-black hover:text-black"
+                <div className={`flex items-center justify-center w-full px-5 py-3 text-[15px] font-medium rounded-full shadow-lg transition-all cursor-pointer border ${isDark
+                  ? "bg-white/5 text-neutral-400 border-white/10 hover:border-white/30 hover:text-white"
+                  : "bg-white/40 text-neutral-500 border-black/10 hover:border-black/30 hover:text-black shadow-sm"
                   }`}>
-                  <h3 className="text-base sm:text-lg font-bold mb-1" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-                    Process Carousel
-                  </h3>
-                  <p className="text-[11px] sm:text-xs opacity-70">Swipeable Stories</p>
+                  <span>Process Carousel</span>
                 </div>
               </Link>
             </div>
@@ -302,9 +303,11 @@ export default function Gallery({ isDark }) {
                   <button
                     key={cat}
                     onClick={() => setFilter(cat)}
-                    className={`px-4 py-1.5 rounded-lg text-[12px] transition-all duration-300 border ${filter === cat
-                      ? (isDark ? "bg-white text-black border-white" : "bg-black text-white border-black")
-                      : (isDark ? "border-white/10 text-neutral-500 hover:border-white/30" : "border-black/10 text-neutral-400 hover:border-black/30")
+                    className={`px-4 py-1.5 rounded-full text-[12px] transition-all duration-300 border ${filter === cat
+                      ? (isDark 
+                          ? "bg-white/10 text-white border-white/20 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.2)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]" 
+                          : "bg-black/5 text-black border-black/10 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.05)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] shadow-md")
+                      : (isDark ? "border-white/10 text-neutral-500 hover:border-white/30 hover:text-white" : "border-black/10 text-neutral-400 hover:border-black/30 hover:text-black ")
                       }`}
                   >
                     {cat}
@@ -425,7 +428,7 @@ export default function Gallery({ isDark }) {
               <div className="w-full md:w-2/5 p-5 sm:p-6 md:p-10 overflow-y-auto">
                 <div className="flex flex-col h-full">
                   <div className="mb-6 sm:mb-8">
-                    <span className="inline-block px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-500 text-[11px] sm:text-[12px] mb-2 sm:mb-3 font-medium">
+                    <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] sm:text-[12px] mb-2 sm:mb-3 font-semibold uppercase tracking-wider ${isDark ? "bg-white/10 text-white" : "bg-black/5 text-black"}`}>
                       {selected.category}
                     </span>
                     <h2 className="text-xl sm:text-2xl mb-2 tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
