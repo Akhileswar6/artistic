@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, memo } from "react";
 import { NavLink, useLocation, Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "../Components/ThemeToggle";
-import { ShoppingBag, Menu, X, ChevronDown, LogOut, Bell, User, Home, Image, Info, Phone, Settings, Instagram, Twitter, MessageSquare, ExternalLink } from "lucide-react";
+import { ShoppingBag, Menu, X, ChevronDown, ChevronLeft, LogOut, Bell, User, Home, Image, Info, Phone, Settings, Instagram, Twitter, MessageSquare, ExternalLink } from "lucide-react";
 import SignIn from "../Pages/SignIn";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,7 +10,7 @@ import logo from "../assets/logo.png";
 const navLinks = [
   { label: "Home", path: "/", icon: <Home size={20} /> },
   { label: "Gallery", path: "/gallery", icon: <Image size={20} /> },
-  { label: "Order Now", path: "/order", icon: <ShoppingBag size={20} /> },
+  { label: "Order", path: "/order", icon: <ShoppingBag size={20} /> },
   { label: "About", path: "/about", icon: <Info size={20} /> },
   { label: "Contact", path: "/contact", icon: <Phone size={20} /> },
 ];
@@ -91,10 +91,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
     <>
       {/* ================= MAIN NAVBAR ================= */}
       <div
-        className={`sticky top-0 z-50 w-full shadow-md border-b transition-colors duration-300 ${isDark
-          ? "bg-black border-neutral-800"
-          : "bg-white border-neutral-300"
-          }`}
+        className="absolute top-0 left-0 z-50 w-full bg-transparent transition-colors duration-300"
         style={{ fontFamily: "Inter, serif" }}
       >
         {/* ===== DESKTOP NAVBAR ===== */}
@@ -109,10 +106,12 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
               />
             </NavLink>
             {/* Desktop Links */}
-            <div className="relative flex items-center gap-8">
+            <div className="relative flex items-center gap-2">
               {activeIndex !== -1 && (
                 <div
-                  className={`absolute -bottom-1 h-[2px] transition-all duration-300 ${isDark ? "bg-white" : "bg-black"
+                  className={`absolute h-full rounded-full transition-all duration-300 ${isDark
+                    ? "bg-white/10 backdrop-blur-xl border border-white/10 shadow-[0_4px_20px_rgba(255,255,255,0.05)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]"
+                    : "bg-black/5 backdrop-blur-xl border border-black/10 shadow-[0_4px_20px_rgba(0,0,0,0.08)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]"
                     }`}
                   style={activeStyle}
                 />
@@ -123,7 +122,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
                   to={link.path}
                   ref={(el) => (linkRefs.current[index] = el)}
                   className={({ isActive }) =>
-                    `relative z-10 text-[14px] transition-colors duration-200 ${isActive
+                    `relative z-10 px-4 py-1.5 rounded-full text-[14px] font-medium transition-colors duration-200 ${isActive
                       ? isDark
                         ? "text-white"
                         : "text-black"
@@ -257,7 +256,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
             ) : (
               <button
                 onClick={() => setShowSignIn(true)}
-                className={`px-4 py-1.5 text-[13px] rounded-lg border transition cursor-pointer ${isDark
+                className={`px-4 py-1.5 text-[13px] rounded-full border transition cursor-pointer ${isDark
                   ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
                   : "bg-white text-black border-neutral-300 shadow-lg hover:bg-gray-100"
                   }`}
@@ -268,12 +267,11 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
             {!user && (
               <Link
                 to="/order"
-                className={`px-4 py-1.5 flex gap-2 rounded-lg text-[13px] border transition-all duration-200 ${isDark
+                className={`px-4 py-1.5 flex gap-2 rounded-full text-[13px] border transition-all duration-200 ${isDark
                   ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
                   : "bg-white text-black border border-neutral-300 shadow-lg hover:bg-gray-100"
                   }`}
               >
-                <ShoppingBag size={18} />
                 Order Now
               </Link>
             )}
@@ -297,11 +295,11 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
                 />
               )}
             </button>
-              <img
-                src={logo}
-                alt="artistic"
-                className="h-10 w-auto object-contain"
-              />
+            <img
+              src={logo}
+              alt="artistic"
+              className="h-10 w-auto object-contain"
+            />
           </div>
           {/* Right */}
           <div className="flex items-center gap-3">
@@ -422,7 +420,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
             ) : (
               <button
                 onClick={() => setShowSignIn(true)}
-                className={`px-3 py-1.5 text-[11px] font-medium rounded-lg border transition cursor-pointer ${isDark
+                className={`px-3 py-1.5 text-[11px] font-medium rounded-full border transition cursor-pointer ${isDark
                   ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
                   : "bg-white text-black border-neutral-300 shadow-sm hover:bg-gray-100"
                   }`}
@@ -459,38 +457,40 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
                 stiffness: 300,
                 mass: 0.8
               }}
-              className={`fixed left-0 top-0 h-[100dvh] w-[300px] z-[70] md:hidden shadow-[20px_0_50px_-20px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden
+              className={`fixed left-0 top-0 h-[100dvh] w-[200px] z-[70] md:hidden shadow-[20px_0_50px_-20px_rgba(0,0,0,0.5)] flex flex-col
                 ${isDark
                   ? "bg-black/90 border-r border-white/10"
                   : "bg-white/95 border-r border-black/5"
                 } backdrop-blur-2xl`}
             >
-              {/* Animated Background Decoration */}
-              <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-40 h-40 rounded-full blur-[80px] opacity-20 bg-blue-500 pointer-events-none" />
-              <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-40 h-40 rounded-full blur-[80px] opacity-10 bg-purple-500 pointer-events-none" />
+              {/* Animated Background Decoration (Wrapped to hide overflow) */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-40 h-40 rounded-full blur-[80px] opacity-20 bg-blue-500" />
+                <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-40 h-40 rounded-full blur-[80px] opacity-10 bg-purple-500" />
+              </div>
 
               {/* Drawer Header */}
-              <div className={`relative p-7 flex items-center justify-between ${isDark ? "border-b border-white/5" : "border-b border-black/5"}`}>
-                  <Link to="/" onClick={() => setIsOpen(false)}>
-                    <img
-                      src={logo}
-                      alt="artistic"
-                      className="h-10 w-auto object-contain"
-                    />
-                  </Link>
+              <div className={`relative p-6 pl-5 flex items-center ${isDark ? "border-b border-white/5" : "border-b border-black/5"}`}>
+                <Link to="/" onClick={() => setIsOpen(false)}>
+                  <img
+                    src={logo}
+                    alt="artistic"
+                    className="h-10 w-auto object-contain relative z-10"
+                  />
+                </Link>
 
                 <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileHover={{ scale: 1.1, x: -2 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setIsOpen(false)}
-                  className={`p-2.5 rounded-2xl transition-all ${isDark ? "bg-white/5 hover:bg-white/10 text-white" : "bg-black/5 hover:bg-black/10 text-black"}`}
+                  className={`absolute right-0 translate-x-1/2 flex items-center justify-center w-8 h-8 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.15)] border transition-all z-50 ${isDark ? "bg-[#1c1c1c] border-white/10 text-white hover:bg-neutral-800" : "bg-white border-black/10 text-black hover:bg-gray-50"}`}
                 >
-                  <X size={20} />
+                  <ChevronLeft size={18} />
                 </motion.button>
               </div>
 
               {/* Navigation Links with Staggered Animation */}
-              <div className="flex-1 overflow-y-auto px-4 py-6 space-y-1 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3 custom-scrollbar" style={{ fontFamily: "Inter" }}>
                 {navLinks.map((link, idx) => (
                   <motion.div
                     key={link.path}
@@ -502,24 +502,24 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
                       to={link.path}
                       onClick={() => setIsOpen(false)}
                       className={({ isActive }) => `
-                        flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative
+                        flex items-center gap-3 px-4 py-1.5 rounded-full text-[14px] font-medium transition-colors duration-200 group relative
                         ${isActive
                           ? isDark
-                            ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white font-bold"
-                            : "bg-gradient-to-r from-blue-50/80 to-purple-50/80 text-blue-700 font-bold shadow-sm"
+                            ? "bg-white/10 backdrop-blur-xl border border-white/10 shadow-[0_4px_20px_rgba(255,255,255,0.05)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] text-white"
+                            : "bg-black/5 backdrop-blur-xl border border-black/10 shadow-[0_4px_20px_rgba(0,0,0,0.08)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)] text-black"
                           : isDark
-                            ? "text-gray-400 hover:bg-white/5 hover:text-white"
-                            : "text-gray-600 hover:bg-black/[0.03] hover:text-black"
+                            ? "text-neutral-400 hover:text-white hover:bg-white/5"
+                            : "text-neutral-600 hover:text-black hover:bg-black/5"
                         }
                       `}
                     >
                       {({ isActive }) => (
                         <>
                           <span className={`transition-all duration-500 group-hover:scale-110 group-hover:rotate-6
-                            ${isActive ? "text-blue-500 opacity-100" : "opacity-60 group-hover:opacity-100"}`}>
+                            ${isActive ? (isDark ? "text-white" : "text-black") : "opacity-60 group-hover:opacity-100"}`}>
                             {link.icon}
                           </span>
-                          <span className="text-[15px] tracking-tight">{link.label}</span>
+                          <span>{link.label}</span>
                         </>
                       )}
                     </NavLink>
