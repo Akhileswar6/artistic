@@ -153,8 +153,7 @@ export default function App() {
           }`}
       >
         <Suspense fallback={<PageLoader />}>
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
+            <Routes location={location}>
               {/* Admin Routes */}
               <Route
                 path="/admin"
@@ -369,7 +368,6 @@ export default function App() {
                 />
               </Route>
             </Routes>
-          </AnimatePresence>
         </Suspense>
       </div>
     </>
