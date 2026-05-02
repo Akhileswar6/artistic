@@ -35,7 +35,7 @@ export default function About({ isDark }) {
       style={{ fontFamily: "Inter, sans-serif" }}
     >
 
-      <div className="max-w-6xl mx-auto px-6 pt-12 pb-16 relative z-10">
+      <div className="max-w-6xl mx-auto px-6 pt-28 md:pt-32 pb-16 relative z-10">
 
         {/* Hero Section */}
         <motion.div
@@ -86,7 +86,7 @@ export default function About({ isDark }) {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`px-5 py-2.5 rounded-lg text-sm transition-all cursor-pointer ${isDark
+                  className={`px-4 py-2 rounded-full text-[13px] transition-all cursor-pointer ${isDark
                     ? "bg-white text-black hover:bg-neutral-200"
                     : "bg-black text-white hover:bg-neutral-800"
                     }`}
@@ -98,7 +98,7 @@ export default function About({ isDark }) {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`px-5 py-2.5 rounded-lg text-sm  border transition-all cursor-pointer ${isDark
+                  className={`px-4 py-2 rounded-full text-[13px]  border transition-all cursor-pointer ${isDark
                     ? "border-white/10 text-white hover:bg-white/5"
                     : "border-black/10 text-black hover:bg-black/5 shadow-lg"
                     }`}
