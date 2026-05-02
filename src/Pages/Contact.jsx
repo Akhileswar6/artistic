@@ -178,7 +178,7 @@ export default function Contact() {
         )}
       </AnimatePresence>
       {/* Hero Section */}
-      <div className="relative overflow-hidden pt-12 md:pt-16 pb-8 md:pb-10 px-4 md:px-6">
+      <div className="relative overflow-hidden pt-28 md:pt-32 pb-8 md:pb-10 px-4 md:px-6">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[300px] md:h-[400px] pointer-events-none opacity-20">
           <div className={`absolute inset-0 bg-gradient-to-b from-transparent to-transparent ${isDark ? "from-white/10" : "from-black/5"}`} />
         </div>
