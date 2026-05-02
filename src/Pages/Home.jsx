@@ -3,32 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const artworkCols = [
-  [
-    "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5",
-    "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8",
-    "https://images.unsplash.com/photo-1499557408845-810a905a8f4c",
-    "https://images.unsplash.com/photo-1513364776144-60967b0f800f"
-  ],
-  [
-    "https://images.unsplash.com/photo-1536924940846-227afb31e2a5",
-    "https://images.unsplash.com/photo-1580136608260-4eb11f4b24fe",
-    "https://images.unsplash.com/photo-1578301978018-3005759f48f7",
-    "https://images.unsplash.com/photo-1542887800-faca0261c9e1"
-  ],
-  [
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-  ],
-  [
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429"
-  ]
-];
+
 import {
   Palette,
   Search,
@@ -47,7 +22,6 @@ import RecentSketches from "../Components/RecentSketches";
 import ArtistArtworks from "../Components/ArtistArtworks";
 import Features from "../Components/Features";
 import CustomerShowcase from "../Components/CustomerShowcase";
-import OptimizedImage from "../Components/OptimizedImage";
 
 export default function Home({ isDark }) {
   const { user } = useOutletContext();
@@ -70,47 +44,58 @@ export default function Home({ isDark }) {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
-        className={`relative w-full overflow-hidden min-h-[90vh] flex items-center justify-center`}
+        className={`relative w-full overflow-hidden min-h-screen flex items-center justify-center pt-20 pb-16`}
       >
 
-        {/* BACKGROUND ANIMATION */}
-        <div
-          className="absolute inset-0 z-0 flex px-4 md:px-8 mix-blend-luminosity scale-[1.15] rotate-[-4deg] pointer-events-none"
-          style={{ maskImage: "radial-gradient(ellipse at center, black 20%, transparent 80%)", WebkitMaskImage: "radial-gradient(ellipse at center, black 20%, transparent 80%)" }}
-        >
-          {artworkCols.map((colImages, i) => (
-            <div key={i} className={`flex-1 hidden md:flex flex-col overflow-hidden ${i === 1 || i === 2 ? '!flex' : ''}`}>
-              <motion.div
-                animate={{ y: i % 2 === 0 ? ["0%", "-50%"] : ["-50%", "0%"] }}
-                transition={{ repeat: Infinity, ease: "linear", duration: 35 + i * 5 }}
-                className="flex flex-col w-full"
-              >
-                {[...colImages, ...colImages].map((src, idx) => (
-                  <div key={idx} className="relative w-full h-48 md:h-72">
-                    <OptimizedImage
-                      src={`${src}?auto=format&fit=crop&q=80&w=600`}
-                      className={`w-full h-full object-cover ${isDark ? "opacity-100" : "opacity-90"}`}
-                      alt="Artistic Sample"
-                    />
-                    <div className={`absolute inset-0 pointer-events-none shadow-[inset_0_0_100px_40px_${isDark ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)"}]`} />
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-          ))}
+        {/* NEW BACKGROUND ANIMATION */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none flex items-center justify-center">
+          {/* Animated Orbs */}
+          <motion.div
+            animate={{
+              x: [0, 100, 0],
+              y: [0, -50, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+            className={`absolute top-[10%] left-[10%] w-[300px] sm:w-[40vw] max-w-[600px] aspect-square rounded-full filter blur-[70px] sm:blur-[100px] ${isDark ? "bg-orange-500/20 mix-blend-screen" : "bg-orange-400/30 mix-blend-multiply"
+              }`}
+          />
+          <motion.div
+            animate={{
+              x: [0, -80, 0],
+              y: [0, 100, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+            className={`absolute top-[20%] right-[10%] w-[250px] sm:w-[35vw] max-w-[500px] aspect-square rounded-full filter blur-[60px] sm:blur-[100px] ${isDark ? "bg-pink-500/20 mix-blend-screen" : "bg-pink-400/30 mix-blend-multiply"
+              }`}
+          />
+          <motion.div
+            animate={{
+              x: [0, 50, 0],
+              y: [0, 50, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+            className={`absolute bottom-[10%] left-[30%] w-[350px] sm:w-[45vw] max-w-[700px] aspect-square rounded-full filter blur-[80px] sm:blur-[120px] ${isDark ? "bg-purple-500/20 mix-blend-screen" : "bg-purple-400/30 mix-blend-multiply"
+              }`}
+          />
         </div>
 
         {/* FADE BACKGROUND GRADIENT (VIGNETTE) */}
         <div className="absolute inset-0 z-10 pointer-events-none"
           style={{
             background: isDark
-              ? "radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 70%, #000 100%)"
-              : "radial-gradient(ellipse at center, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.8) 75%, #fff 100%)"
+              ? "radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%)"
+              : "radial-gradient(ellipse at center, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 100%)"
           }}
         />
 
+        {/* BOTTOM EDGE FADE FOR SMOOTH TRANSITION */}
+        <div className={`absolute bottom-0 left-0 right-0 h-24 z-10 pointer-events-none bg-gradient-to-t ${isDark ? "from-black to-transparent" : "from-white to-transparent"}`} />
+
         {/* CENTERED CONTENT */}
-        <div className="relative z-20 flex flex-col items-center text-center max-w-4xl px-4 md:px-8 mt-10">
+        <div className="relative z-20 flex flex-col items-center text-center max-w-4xl px-4 md:px-8 mt-4 sm:mt-8">
           {/* Welcome Badge */}
           {user && (
             <motion.div
@@ -119,15 +104,15 @@ export default function Home({ isDark }) {
                 visible: { opacity: 1, y: 0 }
               }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className={`mb-8 px-5 py-2.5 rounded-full border flex items-center backdrop-blur-md
+              className={`mb-8 px-3 py-2 rounded-full border flex items-center text-sm
                 ${isDark
-                  ? "bg-white/5 border-white/10 shadow-2xl text-white"
-                  : "bg-white/60 border-black/10 shadow-sm text-black"
+                  ? "bg-white/10 backdrop-blur-xl border-white/10 shadow-[0_4px_20px_rgba(255,255,255,0.05)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] text-white"
+                  : "bg-white/30 backdrop-blur-xl border-black/10 shadow-sm text-black"
                 }`}
             >
-              <p className="text-[14px] font-medium" style={{ fontFamily: "Inter, sans-serif" }}>
+              <p className={`text-[14px] font-medium ${isDark ? "text-neutral-400" : "text-neutral-600"}`} style={{ fontFamily: "Inter, sans-serif" }}>
                 {isNewUser ? "Welcome to Artistic," : "Welcome back,"} {" "}
-                <span className="text-neutral-500 capitalize">{user.fullName}</span>
+                <span className={`capitalize ${isDark ? "text-white" : "text-black"}`}>{user.fullName}</span>
                 {isNewUser ? " 🎉" : " 👋"}
               </p>
             </motion.div>
@@ -140,8 +125,8 @@ export default function Home({ isDark }) {
               visible: { opacity: 1, scale: 1 }
             }}
             transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-            className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight"
-            style={{ fontFamily: "Bricolage Grotesque, serif" }}
+            className={`${isDark ? "text-white" : "text-neutral-700"} text-4xl sm:text-5xl font-semibold leading-tight`}
+            style={{ fontFamily: "'Scope One', sans-serif" }}
           >
             Turn Your Photos Into <br className="hidden md:block" />
             <span className="relative inline-block mt-2 md:mt-0 px-2 py-1">
@@ -158,7 +143,7 @@ export default function Home({ isDark }) {
               {/* Underline SVG */}
               <svg
                 viewBox="0 0 220 24"
-                className="absolute left-1/2 -translate-x-1/2 top-[75%] w-[110%] opacity-90"
+                className="absolute left-1/2 -translate-x-1/2 top-[65%] w-[110%] opacity-90"
                 fill="none"
               >
                 <motion.path
@@ -169,7 +154,7 @@ export default function Home({ isDark }) {
                   transition={{ duration: 1.5, delay: 1, ease: "easeInOut" }}
                   d="M5 15 C60 5, 160 25, 215 15"
                   stroke="url(#orange-gradient)"
-                  strokeWidth="4"
+                  strokeWidth="3"
                   strokeLinecap="round"
                 />
                 <defs>
@@ -181,23 +166,10 @@ export default function Home({ isDark }) {
               </svg>
             </span> {" "}
             <br className="hidden md:block" />
-            <span className={` ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>Hand-Drawn Sketches</span>
+            <span className={` ${isDark ? "text-white" : "text-neutral-700"}`}>Hand-Drawn Sketches</span>
           </motion.h1>
 
-          {/* Subtext */}
-          <motion.p
-            variants={{
-              hidden: { opacity: 0, y: 30 },
-              visible: { opacity: 1, y: 0 }
-            }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className={`mt-6 sm:mt-8 md:mt-10 text-[14px] sm:text-[15px] leading-relaxed ${isDark ? "text-neutral-300" : "text-neutral-700 font-medium"
-              }`}
-          >
-            Professional pencil, charcoal, color, digital, and caricature
-            artworks. Each sketch is crafted individually — a unique piece of
-            art you'll treasure forever.
-          </motion.p>
+
 
           {/* Actions */}
           <motion.div
@@ -210,9 +182,9 @@ export default function Home({ isDark }) {
           >
             <Link to="/order" className="w-full sm:w-auto" style={{ textDecoration: 'none' }}>
               <button
-                className={`w-full sm:w-auto px-5 py-2.5 sm:py-2 text-[14px] font-medium rounded-lg shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 ${isDark
-                  ? "bg-white text-black hover:bg-neutral-200"
-                  : "bg-black text-white hover:bg-neutral-900 shadow-black/20"
+                className={`w-full sm:w-auto px-4 py-2 sm:py-2 text-[14px] font-medium rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 cursor-pointer border ${isDark
+                  ? "bg-white/5 text-white border-white/10 hover:bg-white/10"
+                  : "bg-white/30 text-black border-black/10 hover:bg-white/40 shadow-sm"
                   }`}
               >
                 Order Your Sketch
@@ -221,9 +193,9 @@ export default function Home({ isDark }) {
             </Link>
             <Link to="/gallery" className="w-full sm:w-auto" style={{ textDecoration: 'none' }}>
               <button
-                className={`w-full sm:w-auto px-5 py-2.5 sm:py-2 text-[14px] font-medium rounded-lg shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 ${isDark
-                  ? "bg-white/5 text-white border-white/20 hover:bg-white/10"
-                  : "bg-white/50 text-black border-black/20 hover:bg-black/5 shadow-sm"
+                className={`w-full sm:w-auto px-4 py-2 sm:py-2 text-[14px] font-medium rounded-full shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 cursor-pointer border ${isDark
+                  ? "bg-white/5 text-white border-white/10 hover:bg-white/10"
+                  : "bg-white/30 text-black border-black/10 hover:bg-white/40 shadow-sm"
                   }`}
               >
                 View Gallery
