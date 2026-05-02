@@ -60,7 +60,7 @@ export default function Orders({ isDark }) {
   ];
 
   return (
-    <div className={`min-h-screen pt-12 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-[#0b0c10] text-white" : "bg-gray-50 text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
+    <div className={`min-h-screen pt-28 md:pt-32 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-[#0b0c10] text-white" : "bg-gray-50 text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
       <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Header */}

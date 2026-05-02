@@ -79,7 +79,7 @@ export default function CarouselPostsSection({ isDark }) {
   };
 
   return (
-    <div className="py-10 border-t border-white/5" >
+    <div className="py-10" >
       <div className="mb-6 sm:mb-10 text-center">
         <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-2 sm:mb-4 ${isDark ? "text-white" : "text-neutral-900"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
           Interactive <span className="text-neutral-500 ">Carousel Gallery</span>

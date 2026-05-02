@@ -56,7 +56,7 @@ export default function Notifications({ isDark }) {
   };
 
   return (
-    <div className={`min-h-screen pt-12 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-[#0b0c10] text-white" : "bg-gray-50 text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
+    <div className={`min-h-screen pt-28 md:pt-32 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-[#0b0c10] text-white" : "bg-gray-50 text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
       <div className="max-w-4xl mx-auto space-y-8">
         
         {/* Header */}
@@ -81,12 +81,12 @@ export default function Notifications({ isDark }) {
         </div>
 
         {/* Filter Tabs */}
-        <div className={`p-1.5 rounded-2xl flex items-center gap-1 transition-all ${isDark ? "bg-white/5" : "bg-gray-200/50 shadow-inner"}`}>
+        <div className={`p-1.5 rounded-xl flex items-center gap-1 transition-all ${isDark ? "bg-white/5" : "bg-gray-200/50 shadow-inner"}`}>
           {["all", "unread", "read"].map((t) => (
             <button
               key={t}
               onClick={() => setFilter(t)}
-              className={`flex-1 py-2 px-4 rounded-xl text-[13px] font-bold capitalize transition-all cursor-pointer ${
+              className={`flex-1 py-2 px-4 rounded-xl text-[13px] capitalize transition-all cursor-pointer ${
                 filter === t
                   ? (isDark ? "bg-[#1c1c1c] text-white shadow-lg shadow-black/20" : "bg-white text-black shadow-sm")
                   : (isDark ? "text-gray-500 hover:text-gray-300" : "text-gray-500 hover:text-black")
@@ -102,7 +102,7 @@ export default function Notifications({ isDark }) {
         {/* List */}
         <div className="space-y-4">
           {filteredNotifications.length === 0 ? (
-            <div className={`py-20 text-center rounded-[32px] border border-dashed ${isDark ? "border-white/10 bg-white/5" : "border-black/5 bg-white"}`}>
+            <div className={`py-20 text-center rounded-[32px] border border-dashed ${isDark ? "border-white/10 bg-[#111111]" : "border-black/5 bg-white"}`}>
               <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 opacity-20">
                 <Bell size={32} />
               </div>

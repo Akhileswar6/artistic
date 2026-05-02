@@ -92,9 +92,9 @@ export default function CustomerShowcase({ isDark }) {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <Link to="/order" className="block w-full sm:w-auto">
-              <button className={`w-full sm:w-auto px-6 py-3 sm:py-2 rounded-full text-[14px] sm:text-[13px] transition-all duration-300 transform hover:-translate-y-1 ${isDark
-                  ? "bg-white text-black hover:bg-neutral-200"
-                  : "bg-black text-white hover:bg-neutral-800 shadow-xl shadow-black/20"
+              <button className={`w-full sm:w-auto px-4 py-1.5 rounded-full text-[13px] border transition-all duration-200 cursor-pointer ${isDark
+                  ? "bg-[#1c1c1c] text-white border-neutral-700 hover:bg-neutral-900"
+                  : "bg-white text-black border-neutral-300 shadow-lg hover:bg-gray-100"
                 }`}>
                 Commission Your Artwork
               </button>

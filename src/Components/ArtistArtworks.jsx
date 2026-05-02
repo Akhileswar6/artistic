@@ -122,10 +122,11 @@ export default function ArtistArtworks({ isDark }) {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <Link
+              
               to="/gallery"
-              className={`inline-flex items-center gap-2 text-[13px] sm:text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isDark
-                ? "text-white border-white/20 hover:bg-white/10"
-                : "text-black border-black/20 hover:bg-black/5"
+              className={`inline-flex items-center justify-center gap-2 px-4 py-2 text-[13px] font-medium rounded-full transition-all duration-300   border ${isDark
+                  ? "bg-white/5 text-neutral-300 border-white/10 hover:text-white hover:border-white/20 hover:bg-white/10 shadow-md"
+                  : "bg-black/5 text-neutral-600 border-black/10 hover:text-black hover:border-black/20  shadow-md"
                 }`}
             >
               <span>Explore Full Gallery</span>

@@ -120,7 +120,7 @@ export default function Features({ isDark }) {
 
           <div className="flex w-full md:w-auto relative z-10">
             <Link to="/order" className="w-full md:w-auto">
-              <button className={`w-full md:w-auto px-8 py-3 rounded-2xl font-medium transition-transform active:scale-95 ${isDark ? "bg-black text-white hover:bg-neutral-900" : "bg-white text-black hover:bg-neutral-100"
+              <button className={`w-full md:w-auto px-6 py-2 cursor-pointer rounded-full font-medium transition-transform active:scale-95 ${isDark ? "bg-black text-white hover:bg-neutral-900" : "bg-white text-black hover:bg-neutral-100"
                 }`}>
                 Order Now
               </button>
