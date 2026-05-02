@@ -8,15 +8,14 @@ export default function AdminSidebar({ isDark, isCollapsed, setIsCollapsed }) {
   const menuClass = (path) => {
     const isActive = location.pathname === path;
     return `
-      flex items-center gap-3 rounded-[14px] cursor-pointer font-medium text-[13px] relative group
-      transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] outline-none select-none
+      flex items-center gap-3 rounded-full cursor-pointer font-medium text-[13px] relative group border transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] outline-none select-none
       ${isActive
         ? isDark
-          ? "bg-gradient-to-br from-white/20 to-white/[0.02] backdrop-blur-[40px] backdrop-saturate-[180%] text-white shadow-xl"
-          : "bg-gradient-to-br from-white/80 to-white/30 backdrop-blur-[40px] text-black font-semibold shadow-md"
+          ? "bg-white/10 text-white border-white/20 shadow-[0_4px_15px_rgba(0,0,0,0.2)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] backdrop-blur-md"
+          : "bg-black/5 text-black border-black/10 shadow-[0_4px_15px_rgba(0,0,0,0.05)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] backdrop-blur-md shadow-md"
         : isDark
-          ? "text-gray-400 hover:text-white hover:bg-white/5"
-          : "text-gray-500 hover:text-black hover:bg-black/5"
+          ? "text-gray-400 border-transparent hover:text-white hover:bg-white/5"
+          : "text-gray-500 border-transparent hover:text-black hover:bg-black/5"
       }
       ${isCollapsed ? "justify-center w-[40px] h-[40px] mx-auto px-0" : "px-4 py-2.5 w-full"}
     `;
@@ -60,8 +59,8 @@ export default function AdminSidebar({ isDark, isCollapsed, setIsCollapsed }) {
 
       {/* Logo Area */}
       <div className={`mb-10 px-1 flex items-center gap-3 transition-all duration-500 ${isCollapsed ? "justify-center" : ""}`}>
-        <div className={`rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-500 ${isDark ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.1)]" : "bg-black text-white shadow-lg"} w-8 h-8`}>
-          <span className="text-base font-extrabold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>A</span>
+        <div className={`rounded-full font-bold flex items-center justify-center flex-shrink-0 transition-all duration-500 ${isDark ? "bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.1)]" : "bg-black text-white shadow-lg"} w-8 h-8`}>
+          <span className="text-base " style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>A</span>
         </div>
         {!isCollapsed && (
           <div className="animate-in fade-in slide-in-from-left-2 duration-500">
@@ -102,6 +101,7 @@ export default function AdminSidebar({ isDark, isCollapsed, setIsCollapsed }) {
             </div>
           );
         })}
+        
       </div>
 
       {/* Bottom Section */}

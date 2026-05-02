@@ -1,10 +1,41 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "../../Layout/AdminLayout";
-import { CopyPlus, MoreVertical, Trash2, CheckCircle, CheckCircle2, Clock, X, Eye, MapPin, IndianRupee, ExternalLink, ShoppingBag, Download, Search, Filter, ChevronDown, Star } from "lucide-react";
+import { CopyPlus, MoreVertical, Trash2, CheckCircle, CheckCircle2, Clock, X, Eye, MapPin, IndianRupee, ExternalLink, ShoppingBag, Download, Search, Filter, ChevronDown, Star, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
+
+const getStatusIcon = (status) => {
+  switch (status) {
+    case "pending": return <Clock size={14} />;
+    case "accepted": return <CheckCircle size={14} className="text-blue-500" />;
+    case "payment_done": return <IndianRupee size={14} className="text-indigo-500" />;
+    case "in_progress": return <CopyPlus size={14} className="text-purple-500" />;
+    case "completed": return <CheckCircle size={14} className="text-emerald-500" />;
+    case "out_for_delivery": return <Clock size={14} className="text-sky-500" />;
+    case "delivered": return <CheckCircle size={14} className="text-green-500" />;
+    case "cancelled": return <XCircle size={14} className="text-red-500" />;
+    default: return null;
+  }
+};
+
+const getStatusBadgeClass = (status) => {
+  const base = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase border transition-all duration-300 ";
+  switch (status) {
+    case "pending": return base + "bg-yellow-500/10 text-yellow-500 border-yellow-500/20";
+    case "accepted": return base + "bg-blue-500/10 text-blue-500 border-blue-500/20 ";
+    case "payment_done": return base + "bg-indigo-500/10 text-indigo-500 border-indigo-500/20 ";
+    case "in_progress": return base + "bg-purple-500/10 text-purple-500 border-purple-500/20 ";
+    case "completed": return base + "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 ";
+    case "out_for_delivery": return base + "bg-sky-500/10 text-sky-500 border-sky-500/20 ";
+    case "delivered": return base + "bg-green-500/10 text-green-500 border-green-500/20 ";
+    case "cancelled": return base + "bg-red-500/10 text-red-500 border-red-500/20";
+    default: return base + "bg-gray-500/10 text-gray-500 border-gray-500/20";
+  }
+};
 
 const StatusDropdown = ({ currentStatus, onStatusChange, isDark, disabled, position = "bottom" }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 });
+  const buttonRef = useState(null)[0]; // We'll use event target instead for simplicity in this one-off
 
   const statuses = [
     { value: "pending", label: "Pending", color: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" },
@@ -19,43 +50,66 @@ const StatusDropdown = ({ currentStatus, onStatusChange, isDark, disabled, posit
 
   const currentStatusObj = statuses.find(s => s.value === currentStatus) || statuses[0];
 
+  const handleToggle = (e) => {
+    if (disabled) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    setCoords({
+      top: rect.top + window.scrollY,
+      left: rect.left + window.scrollX,
+      width: rect.width,
+      bottom: rect.bottom + window.scrollY
+    });
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className="relative">
       <button
-        onClick={() => !disabled && setIsOpen(!isOpen)}
+        onClick={handleToggle}
         disabled={disabled}
-        className={`flex items-center justify-between gap-2 px-3 py-1.5 rounded-lg border text-xs transition-all cursor-pointer min-w-[140px]
-          ${isDark 
-            ? "bg-black/50 border-white/10 text-white hover:border-white/30" 
-            : "bg-white border-black/10 text-black hover:border-black/30"} 
+        className={`flex items-center justify-between gap-3 px-3 py-1.5 rounded-full border text-[10px] font-medium transition-all cursor-pointer min-w-[145px] shadow-sm uppercase tracking-wider
+          ${currentStatusObj.color} 
           ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
       >
-        <span className="truncate uppercase tracking-tight">{currentStatusObj.label}</span>
-        <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+        <div className="flex items-center gap-2 truncate">
+          <div className="flex-shrink-0">{getStatusIcon(currentStatus)}</div>
+          <span className="truncate">{currentStatusObj.label}</span>
+        </div>
+        <ChevronDown size={14} className={`transition-transform duration-300 flex-shrink-0 ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {isOpen && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)}></div>
-          <div className={`absolute z-50 w-full min-w-[160px] p-2 rounded-xl border shadow-2xl backdrop-blur-3xl animate-in fade-in zoom-in-95 duration-200
-            ${position === "top" ? "bottom-full mb-2" : "top-full mt-2"}
-            ${isDark ? "bg-black/80 border-white/20" : "bg-white/90 border-black/10 text-black"}`}
+          <div className="fixed inset-0 z-[100]" onClick={() => setIsOpen(false)}></div>
+          <div 
+            style={{ 
+              position: 'fixed',
+              top: position === 'top' ? 'auto' : `${coords.bottom + 8 - window.scrollY}px`,
+              bottom: position === 'top' ? `${window.innerHeight - (coords.top - 8) + window.scrollY}px` : 'auto',
+              left: `${coords.left - window.scrollX}px`,
+              minWidth: `${coords.width}px`
+            }}
+            className={`z-[110] w-max p-1.5 rounded-xl border shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-3xl animate-in fade-in slide-in-from-bottom-2 duration-200
+              ${isDark ? "bg-[#111] border-white/20" : "bg-white border-black/10 text-black"}`}
           >
-            {statuses.map((status) => (
-              <button
-                key={status.value}
-                onClick={() => {
-                  onStatusChange(status.value);
-                  setIsOpen(false);
-                }}
-                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium uppercase tracking-wider transition-all mb-1 last:mb-0 cursor-pointer
-                  ${currentStatus === status.value 
-                    ? status.color 
-                    : (isDark ? "hover:bg-white/5 text-gray-400 hover:text-white" : "hover:bg-black/5 text-gray-600 hover:text-black")}`}
-              >
-                {status.label}
-              </button>
-            ))}
+            <div className="max-h-[300px] overflow-y-auto no-scrollbar">
+              {statuses.map((status) => (
+                <button
+                  key={status.value}
+                  onClick={() => {
+                    onStatusChange(status.value);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-[11px] font-medium uppercase tracking-wider transition-all mb-1 last:mb-0 cursor-pointer flex items-center justify-between gap-4
+                    ${currentStatus === status.value 
+                      ? status.color 
+                      : (isDark ? "hover:bg-white/5 text-gray-400 hover:text-white" : "hover:bg-black/5 text-gray-600 hover:text-black")}`}
+                >
+                  {status.label}
+                  {currentStatus === status.value && <CheckCircle size={12} />}
+                </button>
+              ))}
+            </div>
           </div>
         </>
       )}
@@ -70,7 +124,6 @@ export default function UserOrders({ isDark }) {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState("");
@@ -225,52 +278,47 @@ export default function UserOrders({ isDark }) {
   };
 
   const deleteOrder = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this order?")) return;
-    try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.ok) {
-        setOrders(orders.filter(o => o._id !== id));
-        if (selectedOrder && selectedOrder._id === id) setSelectedOrder(null);
-      }
-    } catch (err) {
-      console.error("Failed to delete order");
-    }
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="text-xs font-medium">Delete this order forever?</p>
+        <div className="flex gap-2">
+          <button 
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const token = localStorage.getItem("adminToken");
+                const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+                  method: "DELETE",
+                  headers: { Authorization: `Bearer ${token}` },
+                });
+                if (res.ok) {
+                  setOrders(orders.filter(o => o._id !== id));
+                  if (selectedOrder && selectedOrder._id === id) setSelectedOrder(null);
+                  toast.success("Order deleted successfully");
+                } else {
+                  toast.error("Failed to delete order");
+                }
+              } catch (err) {
+                toast.error("An error occurred");
+                console.error("Failed to delete order", err);
+              }
+            }}
+            className="px-3 py-1 bg-red-500 text-white rounded text-[10px] font-bold uppercase tracking-wider"
+          >
+            Confirm
+          </button>
+          <button 
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1 bg-neutral-200 text-black rounded text-[10px] font-bold uppercase tracking-wider"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 4000, position: 'top-center' });
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "pending": return <Clock size={14} />;
-      case "accepted": return <CheckCircle size={14} className="text-blue-500" />;
-      case "payment_done": return <IndianRupee size={14} className="text-indigo-500" />;
-      case "in_progress": return <CopyPlus size={14} className="text-purple-500" />;
-      case "completed": return <CheckCircle size={14} className="text-emerald-500" />;
-      case "out_for_delivery": return <Clock size={14} className="text-sky-500" />;
-      case "delivered": return <CheckCircle size={14} className="text-green-500" />;
-      case "cancelled": return <XCircle size={14} className="text-red-500" />;
-      default: return null;
-    }
-  };
 
-  const getStatusBadgeClass = (status) => {
-    const base = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase border transition-all duration-300 ";
-    switch (status) {
-      case "pending": return base + "bg-yellow-500/10 text-yellow-500 border-yellow-500/20";
-      case "accepted": return base + "bg-blue-500/10 text-blue-500 border-blue-500/20 ";
-      case "payment_done": return base + "bg-indigo-500/10 text-indigo-500 border-indigo-500/20 ";
-      case "in_progress": return base + "bg-purple-500/10 text-purple-500 border-purple-500/20 ";
-      case "completed": return base + "bg-emerald-500/10 text-emerald-500 border-emerald-500/20 ";
-      case "out_for_delivery": return base + "bg-sky-500/10 text-sky-500 border-sky-500/20 ";
-      case "delivered": return base + "bg-green-500/10 text-green-500 border-green-500/20 ";
-      case "cancelled": return base + "bg-red-500/10 text-red-500 border-red-500/20";
-      default: return base + "bg-gray-500/10 text-gray-500 border-gray-500/20";
-    }
-  }
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
@@ -283,6 +331,18 @@ export default function UserOrders({ isDark }) {
     return matchesSearch && matchesStatus && matchesStyle;
   });
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter, styleFilter]);
+
+  const ordersPerPage = 8;
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+
+  const currentOrders = filteredOrders.slice(
+    (currentPage - 1) * ordersPerPage,
+    currentPage * ordersPerPage
+  );
+
   return (
     <div style={{ fontFamily: "Inter, sans-serif" }} className="animate-in fade-in slide-in-from-bottom-4 duration-700">
 
@@ -290,27 +350,27 @@ export default function UserOrders({ isDark }) {
       <div className={`mb-6 p-4 rounded-lg border transition-all duration-300 ${
         isDark ? "bg-white/[0.02] border-white/5 shadow-2xl" : "bg-white border-black/5 shadow-lg"
       }`}>
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* SEARCH */}
           <div className="relative flex-1 group">
             <Search className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${
-              isDark ? "text-gray-500 group-focus-within:text-orange-500" : "text-gray-400 group-focus-within:text-orange-500"
+              isDark ? "text-gray-500 group-focus-within:text-white" : "text-gray-400 group-focus-within:text-black"
             }`} size={18} />
             <input
               type="text"
-              placeholder="Search by name or Order ID..."
+              placeholder="Search orders..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-11 pr-4 py-3 rounded-lg border outline-none transition-all duration-300 text-sm ${
+              className={`w-full pl-11 pr-4 py-2 rounded-xl border outline-none transition-all duration-300 text-[13px] ${
                 isDark 
-                  ? "bg-black border-white/10 text-white focus:border-orange-500/50 focus:bg-white/[0.04]" 
-                  : "bg-gray-50 border-black/10 text-black focus:border-orange-500/50 focus:bg-white"
+                  ? "bg-black border-white/10 text-white focus:border-white/50 focus:bg-white/[0.04]" 
+                  : "bg-gray-50 border-black/10 text-black focus:border-black/50 focus:bg-white"
               }`}
             />
           </div>
 
           {/* FILTERS */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             {/* Status Filter */}
             <div className="relative w-full min-w-[170px]">
               <button
@@ -319,7 +379,7 @@ export default function UserOrders({ isDark }) {
                   setOpenStatusFilter((prev) => !prev);
                   setOpenStyleFilter(false); // close other
                 }}
-                className={`w-full px-3 py-3 rounded-lg text-sm flex justify-between items-center transition-all border
+                className={`w-full px-3 py-2 rounded-lg text-[13px] flex justify-between items-center transition-all border
                   ${isDark 
                     ? "bg-[#0a0a0a] text-white border-white/10 hover:bg-white/5" 
                     : "bg-white text-black border-black/10 hover:bg-gray-50 shadow-sm"}`}
@@ -342,7 +402,7 @@ export default function UserOrders({ isDark }) {
               </button>
 
               {openStatusFilter && (
-                <div className={`absolute mt-1.5 w-full rounded-lg shadow-2xl z-50 text-sm border overflow-hidden
+                <div className={`absolute mt-1.5 w-full rounded-lg shadow-2xl z-50 text-[12px] border overflow-hidden
                   ${isDark ? "bg-[#0a0a0a] border-white/10" : "bg-white shadow-xl border-black/10"}`}>
                   {[
                     { label: "All Statuses", value: "all" },
@@ -366,7 +426,7 @@ export default function UserOrders({ isDark }) {
                           ? "hover:bg-white/10 text-gray-200" 
                           : "hover:bg-black/5 text-gray-800"}`}
                     >
-                      <span className="font-medium">{item.label}</span>
+                      <span className="font-medium text-[12px]">{item.label}</span>
                       {statusFilter === item.value && (
                         <CheckCircle2 className={`w-4 h-4 ${isDark ? "text-blue-400" : "text-blue-600"}`} />
                       )}
@@ -384,7 +444,7 @@ export default function UserOrders({ isDark }) {
                   setOpenStyleFilter((prev) => !prev);
                   setOpenStatusFilter(false); // close other
                 }}
-                className={`w-full px-4 py-3 rounded-lg text-sm flex justify-between items-center transition-all border
+                className={`w-full px-3 py-2 rounded-lg text-[13px] flex justify-between items-center transition-all border
                   ${isDark 
                     ? "bg-[#0a0a0a] text-white border-white/10 hover:bg-white/5" 
                     : "bg-white text-black border-black/10 hover:bg-gray-50 shadow-sm"}`}
@@ -403,7 +463,7 @@ export default function UserOrders({ isDark }) {
               </button>
 
               {openStyleFilter && (
-                <div className={`absolute mt-1.5 w-full rounded-lg shadow-2xl z-50 text-sm border overflow-hidden
+                <div className={`absolute mt-1.5 w-full rounded-lg shadow-2xl z-50 text-[12px] border overflow-hidden
                   ${isDark ? "bg-[#0a0a0a] border-white/10" : "bg-white shadow-xl border-black/10"}`}>
                   {[
                     { label: "All Styles", value: "all" },
@@ -437,47 +497,137 @@ export default function UserOrders({ isDark }) {
       </div>
 
       {/* Header */}
-      <div className="mb-8 flex justify-between items-center bg-transparent backdrop-blur-sm p-4 rounded-3xl">
+      <div className={`mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 rounded-3xl transition-all duration-300
+          ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-white border border-black/5 shadow-sm"}`}>
         <div>
-          <h1 className={`text-3xl font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+          <h1 className={`text-2xl md:text-3xl font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
             Order Management
           </h1>
-          
         </div>
 
-        <button 
-          onClick={fetchOrders}
-          className={`flex items-center gap-2.5 px-5 py-2 rounded-lg text-sm  transition-all duration-300 transform  active:scale-95 shadow-2xl cursor-pointer
-            ${isDark
-            ? "bg-white text-black hover:bg-gray-100 shadow-white/5"
-            : "bg-black text-white hover:bg-neutral-800 shadow-black/10"}`}>
-          <Clock size={15} className={loading ? "animate-spin" : ""} />
-          Refresh Pipeline
-        </button>
 
-        <button 
-          onClick={exportToCSV}
-          className={`flex items-center gap-2.5 px-5 py-2 rounded-lg text-sm transition-all duration-300 transform active:scale-95 shadow-2xl cursor-pointer
-            ${isDark
-            ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white"
-            : "bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-600 hover:text-white"}`}>
-          <Download size={15} />
-          Export CSV
-        </button>
+        <div className="flex flex-wrap gap-3 w-full md:w-auto">
+          <button 
+            onClick={fetchOrders}
+            className={`flex-1 md:flex-none flex items-center justify-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-300 transform active:scale-95 shadow-2xl cursor-pointer
+              ${isDark
+              ? "bg-white text-black hover:bg-gray-100 shadow-white/5"
+              : "bg-black text-white hover:bg-neutral-800 shadow-black/10"}`}>
+            <Clock size={15} className={loading ? "animate-spin" : ""} />
+            <span className="whitespace-nowrap">Refresh Pipeline</span>
+          </button>
+
+          <button 
+            onClick={exportToCSV}
+            className={`flex-1 md:flex-none flex items-center justify-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-300 transform active:scale-95 shadow-2xl cursor-pointer
+              ${isDark
+              ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white"
+              : "bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-600 hover:text-white"}`}>
+            <Download size={15} />
+            <span className="whitespace-nowrap">Export CSV</span>
+          </button>
+        </div>
       </div>
 
-      {/* Card */}
-      <div className={`rounded-2xl overflow-hidden shadow-2xl border transition-all duration-500
+      {/* Card Container */}
+      <div className={`rounded-2xl shadow-2xl border transition-all duration-500
           ${isDark
           ? "bg-[#0a0a0a] border-white/10"
           : "bg-white border-black/5"}`}>
 
-        <div className="overflow-x-auto">
+        {/* Mobile View: Order Cards */}
+        <div className="grid grid-cols-1 gap-4 p-4 lg:hidden">
+          {loading ? (
+            <div className="py-20 text-center text-gray-500 col-span-full">
+              <div className="flex flex-col items-center gap-4">
+                <div className={`w-10 h-10 border-4 border-t-transparent ${isDark ? "border-white" : "border-black"} rounded-full animate-spin `}></div>
+                <p className="text-lg animate-pulse">Syncing orders...</p>
+              </div>
+            </div>
+          ) : currentOrders.length === 0 ? (
+            <div className="py-20 text-center col-span-full">
+              <div className="flex flex-col items-center gap-3 opacity-30">
+                <ShoppingBag size={64} className="mb-2" />
+                <p className="text-xl font-bold">No orders match your filters</p>
+              </div>
+            </div>
+          ) : (
+            currentOrders.map((order) => (
+              <div 
+                key={order._id}
+                className={`p-4 rounded-xl border flex flex-col gap-4 transition-all duration-300
+                  ${selectedIds.includes(order._id) ? (isDark ? "bg-orange-500/5 border-orange-500/30" : "bg-orange-50 border-orange-200") : (isDark ? "bg-white/[0.02] border-white/5" : "bg-gray-50 border-black/5")}`}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      className={`w-4 h-4 rounded border-gray-300 ${isDark ? "text-white focus:ring-white" : "text-black focus:ring-black"} cursor-pointer`}
+                      checked={selectedIds.includes(order._id)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedIds([...selectedIds, order._id]);
+                        } else {
+                          setSelectedIds(selectedIds.filter(id => id !== order._id));
+                        }
+                      }}
+                    />
+                    <div className="flex flex-col">
+                      <span className={`font-bold text-[15px] ${isDark ? "text-white" : "text-neutral-900"}`}>{order.name}</span>
+                      <span className={`text-[12px] opacity-50`}>{order.email}</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className={`font-black text-[17px] ${isDark ? "text-white" : "text-black"}`}>₹{order.totalPrice.toLocaleString()}</span>
+                    <span className="text-[10px] opacity-40 uppercase">#{order._id.slice(-6)}</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <span className={`px-2 py-1 rounded-md text-[10px] uppercase border ${isDark ? "bg-white/5 border-white/10 text-gray-300" : "bg-black/5 border-black/10 text-gray-600"}`}>
+                    {order.artStyle}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between py-3 border-t border-dashed border-gray-500/20">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] opacity-40 uppercase">
+                      Ordered {new Date(order.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <StatusDropdown
+                    currentStatus={order.status}
+                    onStatusChange={(newStatus) => updateStatus(order._id, newStatus)}
+                    isDark={isDark}
+                    disabled={updatingId === order._id}
+                    position="top"
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setSelectedOrder(order)}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-bold uppercase transition-all ${isDark ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" : "bg-blue-50 text-blue-600 border border-blue-100"}`}>
+                    <Eye size={16} /> Audit
+                  </button>
+                  <button 
+                    onClick={() => deleteOrder(order._id)}
+                    className={`px-3 flex items-center justify-center rounded-lg transition-all ${isDark ? "bg-red-500/10 text-red-400 border border-red-500/20" : "bg-red-50 text-red-600 border border-red-100"}`}>
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop View: Table */}
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-sm border-collapse">
 
             {/* Header */}
             <thead>
-              <tr className={`${isDark ? "bg-white/5 text-gray-400 border-b border-white/5" : "bg-neutral-100 text-black border-b border-black/5"}`}>
+              <tr className={`${isDark ? "bg-white/5 text-gray-400 border-b border-white/10" : "bg-gray-200 text-black border-b border-black/10"}`}>
                 <th className="px-6 py-4 w-10">
                   <input
                     type="checkbox"
@@ -507,12 +657,12 @@ export default function UserOrders({ isDark }) {
                 <tr>
                   <td colSpan="7" className="px-6 py-20 text-center text-gray-500">
                     <div className="flex flex-col items-center gap-4">
-                       <div className="w-10 h-10 border-4 border-t-transparent border-orange-500 rounded-full animate-spin "></div>
+                       <div className={`w-10 h-10 border-4 border-t-transparent ${isDark ? "border-white" : "border-black"} rounded-full animate-spin `}></div>
                        <p className="text-lg animate-pulse">Syncing orders...</p>
                     </div>
                   </td>
                 </tr>
-              ) : filteredOrders.length === 0 ? (
+              ) : currentOrders.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="px-6 py-20 text-center">
                     <div className="flex flex-col items-center gap-3 opacity-30">
@@ -521,10 +671,10 @@ export default function UserOrders({ isDark }) {
                     </div>
                   </td>
                 </tr>
-              ) : filteredOrders.map((order) => (
+              ) : currentOrders.map((order) => (
                 <tr
                   key={order._id}
-                  className={`group transition-all duration-300 hover:z-10 relative
+                  className={`group transition-all duration-300 relative hover:z-20
                       ${selectedIds.includes(order._id) ? (isDark ? "bg-orange-500/5 hover:bg-orange-500/10" : "bg-orange-50 hover:bg-orange-100") : ""}
                       ${isDark
                       ? "hover:bg-white/[0.03]"
@@ -533,7 +683,7 @@ export default function UserOrders({ isDark }) {
                   <td className="px-6 py-5">
                     <input
                       type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500 cursor-pointer"
+                      className={`w-4 h-4 rounded border-gray-300 ${isDark ? "text-white focus:ring-white" : "text-black focus:ring-black"} cursor-pointer`}
                       checked={selectedIds.includes(order._id)}
                       onChange={(e) => {
                         if (e.target.checked) {
@@ -561,9 +711,6 @@ export default function UserOrders({ isDark }) {
                       <span className={`px-3 py-1 w-fit rounded-lg text-[10px] uppercase border transition-all ${isDark ? "bg-white/5 border-white/10 text-gray-300 group-hover:bg-white/10" : "bg-black/5 border-black/10 text-gray-600 group-hover:bg-black/10"}`}>
                         {order.artStyle}
                       </span>
-                      <span className={`text-[10px]  opacity-30 uppercase`}>
-                        {order.frameOption === 'noframe' ? 'DIGITAL ONLY' : order.frameOption}
-                      </span>
                     </div>
                   </td>
 
@@ -578,18 +725,13 @@ export default function UserOrders({ isDark }) {
 
                   {/* STATUS BADGE & CHANGER */}
                   <td className="px-6 py-5 text-center">
-                    <div className="flex flex-col items-center gap-2 bg-transparent">
-                      <span className={getStatusBadgeClass(order.status)}>
-                        {getStatusIcon(order.status)}
-                        {order.status.replaceAll('_', ' ')}
-                      </span>
-                      
-                      {/* Advanced status changer */}
+                    <div className="flex flex-col items-center gap-2">
                       <StatusDropdown
                         currentStatus={order.status}
                         onStatusChange={(newStatus) => updateStatus(order._id, newStatus)}
                         isDark={isDark}
                         disabled={updatingId === order._id}
+                        position="top"
                       />
                     </div>
                   </td>
@@ -629,32 +771,30 @@ export default function UserOrders({ isDark }) {
           </table>
         </div>
 
-        {/* Footer */}
-        <div className={`flex justify-between items-center px-8 py-5 border-t 
-            ${isDark ? "border-white/5 bg-white/[0.02]" : "border-black/5 bg-neutral-50"}`}>
-
-          <button className={`px-3 py-1.5 text-xs  rounded-lg transition-all border
-                ${isDark 
-                  ? "bg-white/5 text-white border-white/10 hover:bg-white/10" 
-                  : "bg-white text-black border-black/10 hover:bg-gray-100 shadow-sm"} 
-                disabled:opacity-40 disabled:cursor-not-allowed`}
-            >
-              Previous
-            </button>
-
+        {/* Pagination */}
+        <div className={`flex justify-between items-center px-4 py-2.5 border-t 
+          ${isDark ? "border-white/10" : "border-black/5"}`}>
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className={`px-3 py-1.5 text-xs rounded-lg transition-all border
+              ${isDark ? "bg-white/5 text-white border-white/10 hover:bg-white/10" : "bg-white text-black border-black/10 hover:bg-gray-100 shadow-sm"} 
+              disabled:opacity-40 disabled:cursor-not-allowed`}
+          >
+            Previous
+          </button>
           <span className={`text-[11px] font-medium px-3 py-1 rounded-md ${isDark ? "bg-white/5 text-gray-400" : "bg-black/5 text-gray-600"}`}>
             Page {currentPage} of {totalPages || 1}
           </span>
-
-          <button  className={`px-3 py-1.5 text-xs  rounded-lg transition-all border
-                ${isDark 
-                  ? "bg-white/5 text-white border-white/10 hover:bg-white/10" 
-                  : "bg-white text-black border-black/10 hover:bg-gray-100 shadow-sm"} 
-                disabled:opacity-40 disabled:cursor-not-allowed`}
-            >
-              Next
-            </button>
-
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1.5 text-xs rounded-lg transition-all border
+              ${isDark ? "bg-white/5 text-white border-white/10 hover:bg-white/10" : "bg-white text-black border-black/10 hover:bg-gray-100 shadow-sm"} 
+              disabled:opacity-40 disabled:cursor-not-allowed`}
+          >
+            Next
+          </button>
         </div>
       </div>
 
@@ -666,13 +806,13 @@ export default function UserOrders({ isDark }) {
               ${isDark ? "bg-[#080808] border-white/10 text-white" : "bg-white border-black/5 text-black"}`}
           >
             {/* Header */}
-            <div className={`p-5 flex justify-between items-center border-b transition-all ${isDark ? "bg-white/[0.02] border-white/5" : "bg-neutral-50/80 border-black/5"}`}>
-              <div className="flex items-center gap-4">
-                 <div>
-                    <h2 className="text-xl font-bold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Audit Commission</h2>
-                    <div className="flex items-center gap-4 mt-1">
-                      <p className="text-xs opacity-40 tracking-wider">ORDER ID: #{selectedOrder._id.toUpperCase()}</p>
-                      <div className="flex items-center gap-1.5 opacity-50">
+            <div className={`p-4 md:p-5 flex justify-between items-center border-b transition-all ${isDark ? "bg-white/[0.02] border-white/5" : "bg-neutral-50/80 border-black/5"}`}>
+              <div className="flex items-center gap-4 overflow-hidden">
+                 <div className="overflow-hidden">
+                    <h2 className="text-lg md:text-xl font-bold truncate" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Audit Commission</h2>
+                    <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 mt-1">
+                      <p className="text-[10px] md:text-xs opacity-40 tracking-wider" style={{fontFamily: "'Fira Code', monospace"}} >ORDER ID: #{selectedOrder._id.toUpperCase()}</p>
+                      <div className="hidden md:flex items-center gap-1.5 opacity-50">
                         <span className="text-xs tracking-wider">|</span>
                         <span className="text-xs tracking-wider">
                             Ordered {new Date(selectedOrder.createdAt).toLocaleString()}
@@ -683,12 +823,12 @@ export default function UserOrders({ isDark }) {
               </div>
               <button 
                 onClick={() => setSelectedOrder(null)}
-                className={`p-3 hover:text-white ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                className={`p-2 md:p-3 hover:scale-110 transition-transform ${isDark ? "text-gray-400 hover:text-white" : "text-gray-500 hover:text-black"}`}>
                 <X size={20} />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-10">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div className="flex-1 overflow-y-auto p-4 md:p-10 custom-scrollbar">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
                 
                 {/* Left: General Info (8 cols) */}
                 <div className="lg:col-span-7 space-y-12">
@@ -708,7 +848,7 @@ export default function UserOrders({ isDark }) {
                            onClick={() => updateStatus(selectedOrder._id, s)}
                            className={`px-3 py-2 rounded-lg text-[10px] uppercase transition-all
                              ${selectedOrder.status === s 
-                               ? "bg-orange-500 text-white" 
+                               ? (isDark ? "bg-white text-black" : "bg-black text-white") 
                                : isDark ? "bg-white/5 hover:bg-white/10 text-gray-400" : "bg-black/5 hover:bg-black/10 text-gray-600"}`}
                          >
                            {s.replaceAll('_', ' ')}
@@ -718,7 +858,7 @@ export default function UserOrders({ isDark }) {
                   </div>
 
                   {/* Data Sections */}
-                  <div className="grid grid-cols-2 gap-10">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-10">
                     <section>
                       <h4 className="text-[12px] uppercase mb-4">Customer Profile</h4>
                       <div className="space-y-3">
@@ -746,7 +886,7 @@ export default function UserOrders({ isDark }) {
                          </div>
                          <div className="flex flex-col">
                             <span className="text-xs opacity-40">Frame Selection</span>
-                            <span className=" text-sm">{selectedOrder.frameOption}</span>
+                            <span className=" text-sm uppercase tracking-wide font-bold">{selectedOrder.frameOption === 'noframe' ? 'Digital Asset Only (No Frame)' : selectedOrder.frameOption}</span>
                          </div>
                          <div className="flex flex-col">
                             <span className="text-xs opacity-40">Base Revenue</span>
@@ -967,44 +1107,98 @@ export default function UserOrders({ isDark }) {
 
       {/* BULK ACTION BAR */}
       {selectedIds.length > 0 && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] animate-in slide-in-from-bottom-8 duration-500">
-          <div className={`flex items-center gap-6 px-6 py-4 rounded-lg border backdrop-blur-2xl transition-all ${
-            isDark ? "bg-black/80 border-white/20" : "bg-white/90 border-black/10"
+        <div className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-[60] w-[calc(100%-2rem)] md:w-auto animate-in slide-in-from-bottom-8 duration-500">
+          <div className={`flex flex-col md:flex-row items-center gap-4 md:gap-6 px-4 md:px-6 py-4 rounded-2xl border backdrop-blur-2xl transition-all shadow-2xl ${
+            isDark ? "bg-black/80 border-white/20 shadow-black/50" : "bg-white/90 border-black/10 shadow-black/10"
           }`}>
-            <div className="flex items-center gap-3 pr-6 border-r border-white/10">
-              <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-black text-xs">
-                {selectedIds.length}
+            <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start md:pr-6 md:border-r border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white font-black text-xs">
+                  {selectedIds.length}
+                </div>
+                <span className={`text-[10px] md:text-xs uppercase tracking-widest  ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+                  Orders Selected
+                </span>
               </div>
-              <span className={`text-xs uppercase tracking-widest ${isDark ? "text-gray-300" : "text-gray-600"}`}>
-                Orders Selected
-              </span>
+              
+              <button
+                onClick={() => setSelectedIds([])}
+                className={`md:hidden text-[10px] uppercase tracking-widest opacity-60  ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                Cancel
+              </button>
             </div>
 
-            <div className="flex items-center gap-4">
-              <StatusDropdown
-                currentStatus="none"
-                onStatusChange={(newStatus) => handleBulkStatusUpdate(newStatus)}
-                isDark={isDark}
-                position="top"
-                disabled={loading}
-              />
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="flex-1 md:flex-none">
+                <StatusDropdown
+                  currentStatus="none"
+                  onStatusChange={(newStatus) => handleBulkStatusUpdate(newStatus)}
+                  isDark={isDark}
+                  position="top"
+                  disabled={loading}
+                />
+              </div>
 
               <button
                 onClick={() => {
-                  if (window.confirm(`Delete ${selectedIds.length} orders forever?`)) {
-                    selectedIds.forEach(id => deleteOrder(id));
-                    setSelectedIds([]);
-                  }
+                  toast((t) => (
+                    <div className="flex flex-col gap-3">
+                      <p className="text-xs font-medium">Delete {selectedIds.length} orders forever?</p>
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={async () => {
+                            toast.dismiss(t.id);
+                            try {
+                              // Using Promise.all for better performance if possible, 
+                              // or just loop if the API only supports single deletes
+                              const token = localStorage.getItem("adminToken");
+                              const results = await Promise.all(selectedIds.map(id => 
+                                fetch(`http://localhost:5000/api/orders/${id}`, {
+                                  method: "DELETE",
+                                  headers: { Authorization: `Bearer ${token}` },
+                                })
+                              ));
+                              
+                              const allOk = results.every(r => r.ok);
+                              if (allOk) {
+                                setOrders(orders.filter(o => !selectedIds.includes(o._id)));
+                                setSelectedIds([]);
+                                toast.success(`Deleted ${selectedIds.length} orders successfully`);
+                              } else {
+                                toast.error("Some orders failed to delete");
+                                // Refresh to sync
+                                fetchOrders();
+                              }
+                            } catch (err) {
+                              toast.error("An error occurred during bulk deletion");
+                            }
+                          }}
+                          className="px-3 py-1 bg-red-500 text-white rounded text-[10px] font-bold uppercase tracking-wider"
+                        >
+                          Confirm
+                        </button>
+                        <button 
+                          onClick={() => toast.dismiss(t.id)}
+                          className="px-3 py-1 bg-neutral-200 text-black rounded text-[10px] font-bold uppercase tracking-wider"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ), { duration: 5000, position: 'top-center' });
                 }}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all text-xs uppercase tracking-wider"
+                className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all text-[11px] uppercase tracking-wider border border-red-500/20"
               >
                 <Trash2 size={14} />
-                Delete
+                <span className="hidden sm:inline">Delete</span>
               </button>
 
               <button
                 onClick={() => setSelectedIds([])}
-                className={`text-[10px]  uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity ml-2 ${
+                className={`hidden md:block text-[11px] uppercase tracking-widest opacity-40 hover:opacity-100  transition-opacity ml-2 ${
                   isDark ? "text-white" : "text-black"
                 }`}
               >

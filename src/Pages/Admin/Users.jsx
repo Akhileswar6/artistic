@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { RefreshCcw, Search, ChevronDown, CheckCircle2, Ban, ShieldAlert } from "lucide-react";
+import toast from "react-hot-toast";
 import AdminLayout from "../../Layout/AdminLayout";
 
 export default function Users({ isDark }) {
@@ -11,7 +12,7 @@ export default function Users({ isDark }) {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 5;
+  const usersPerPage = 8;
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -53,11 +54,15 @@ const fetchUsers = async () => {
       },
     });
 
-    const data = await res.json();
-    setUsers(data);
-
-  } catch (err) {
-    console.error(err);
+      if (res.ok) {
+        const data = await res.json();
+        setUsers(data);
+      } else {
+        toast.error("Failed to fetch users");
+      }
+    } catch (err) {
+      toast.error("An error occurred while fetching users");
+      console.error(err);
   } finally {
     setLoading(false);
   }
@@ -140,8 +145,12 @@ const fetchUsers = async () => {
         );
         setUsers(updatedUsers);
         setSelectedUser({ ...user, isBlocked: !user.isBlocked });
+        toast.success(`User ${user.isBlocked ? 'unblocked' : 'blocked'} successfully`);
+      } else {
+        toast.error("Failed to update block status");
       }
     } catch (err) {
+      toast.error("An error occurred");
       console.error(err);
     }
   };
@@ -150,10 +159,26 @@ const fetchUsers = async () => {
       <div style={{ fontFamily: "Inter, sans-serif" }} className="animate-in fade-in slide-in-from-bottom-4 duration-700">
 
         {/* Header */}
-        <div className="mb-4">
-          <h1 className={`text-xl font-semibold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-            Users
-          </h1>
+        <div className={`mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 rounded-3xl transition-all duration-300
+          ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-white border border-black/5 shadow-sm"}`}>
+          <div>
+            <h1 className={`text-2xl md:text-3xl font-semibold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+              Users
+            </h1>
+          </div>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <button
+              onClick={fetchUsers}
+              disabled={loading}    
+              className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all border
+                ${isDark 
+                  ? "bg-white text-black border-white/10 hover:bg-gray-100 shadow-white/5" 
+                  : "bg-black text-white border-black/10 hover:bg-neutral-800 shadow-lg shadow-black/10"}`}
+            >
+              <RefreshCcw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+              {loading ? "Refreshing" : "Refresh Pipeline"}
+            </button>
+          </div>
         </div>
 
         {/* Container */}
@@ -236,22 +261,8 @@ const fetchUsers = async () => {
               )}
             </div>
 
-            {/* Actions */}
             <div className="md:ml-auto flex items-center justify-end w-full md:w-auto mt-2 md:mt-0">
-
-
-              <button
-                onClick={fetchUsers}
-                disabled={loading}    
-                className={`px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-all border
-                  ${isDark 
-                    ? "bg-white/5 text-white border-white/10 hover:bg-white/10" 
-                    : "bg-white text-black border-black/10 hover:bg-gray-50 shadow-sm"}
-                  ${loading && "opacity-50 cursor-not-allowed"}`}
-              >
-                <RefreshCcw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-                {loading ? "Refreshing" : "Refresh"}
-              </button>
+              {/* Optional secondary actions can go here */}
             </div>
 
           </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { RefreshCcw, Search, ChevronDown, CheckCircle2, Trash2, Mail, MessageSquare, ShieldAlert } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function Messages({ isDark }) {
   const dropdownRef = useRef(null);
@@ -33,8 +34,11 @@ export default function Messages({ isDark }) {
       const data = await res.json();
       if (Array.isArray(data)) {
         setMessages(data);
+      } else {
+        toast.error("Failed to fetch messages");
       }
     } catch (err) {
+      toast.error("Network error while fetching messages");
       console.error(err);
     } finally {
       setLoading(false);
@@ -42,20 +46,42 @@ export default function Messages({ isDark }) {
   };
 
   const deleteMessage = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this message?")) return;
-    try {
-      const res = await fetch(`http://localhost:5000/api/admin/messages/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: localStorage.getItem("adminToken"),
-        },
-      });
-      if (res.ok) {
-        setMessages(messages.filter((m) => m._id !== id));
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="text-xs font-medium">Delete this message forever?</p>
+        <div className="flex gap-2">
+          <button 
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const res = await fetch(`http://localhost:5000/api/admin/messages/${id}`, {
+                  method: "DELETE",
+                  headers: { Authorization: localStorage.getItem("adminToken") },
+                });
+                if (res.ok) {
+                  setMessages(messages.filter((m) => m._id !== id));
+                  toast.success("Message deleted successfully");
+                } else {
+                  toast.error("Failed to delete message");
+                }
+              } catch (err) {
+                toast.error("An error occurred");
+                console.error(err);
+              }
+            }}
+            className="px-3 py-1 bg-red-500 text-white rounded text-[10px] font-bold uppercase tracking-wider"
+          >
+            Confirm
+          </button>
+          <button 
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1 bg-neutral-200 text-black rounded text-[10px] font-bold uppercase tracking-wider"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 4000, position: 'top-center' });
   };
 
   const filteredMessages = messages
@@ -102,10 +128,26 @@ export default function Messages({ isDark }) {
     <div style={{ fontFamily: "Inter, sans-serif" }} className="animate-in fade-in slide-in-from-bottom-4 duration-700">
 
       {/* Header */}
-      <div className="mb-4">
-        <h1 className={`text-xl font-semibold  ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-          Messages
-        </h1>
+      <div className={`mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 rounded-3xl transition-all duration-300
+        ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-white border border-black/5 shadow-sm"}`}>
+        <div>
+          <h1 className={`text-2xl md:text-3xl font-semibold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+            Messages
+          </h1>
+        </div>
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <button
+            onClick={fetchMessages}
+            disabled={loading}    
+            className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all border
+              ${isDark 
+                ? "bg-white text-black border-white/10 hover:bg-gray-100 shadow-white/5" 
+                : "bg-black text-white border-black/10 hover:bg-neutral-800 shadow-lg shadow-black/10"}`}
+          >
+            <RefreshCcw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+            {loading ? "Refreshing" : "Refresh Pipeline"}
+          </button>
+        </div>
       </div>
 
       {/* Container */}
@@ -113,7 +155,7 @@ export default function Messages({ isDark }) {
         ${isDark ? "bg-black border-white/10" : "bg-white border-black/5"}`}>
 
         {/* Search + Filters */}
-        <div className={`flex flex-col md:flex-row gap-4 px-4 py-3 border-b 
+        <div className={`flex flex-col md:flex-row items-center gap-4 px-4 py-3 border-b 
           ${isDark ? "border-white/10" : "border-black/5"}`}>
 
           {/* Search Input */}
@@ -146,11 +188,13 @@ export default function Messages({ isDark }) {
                   ? "bg-white/5 text-white border-white/10 hover:bg-white/10" 
                   : "bg-white text-black border-black/10 hover:bg-gray-50 shadow-sm"}`}
             >
-              {dateFilter === "all" && "All Time"}
-              {dateFilter === "24h" && "Last 24 Hours"}
-              {dateFilter === "7d" && "Last Week"}
-              {dateFilter === "30d" && "Last Month"}
-              <ChevronDown className="w-3.5 h-3.5 opacity-50" />
+              <span className="truncate">
+                {dateFilter === "all" && "All Time"}
+                {dateFilter === "24h" && "Last 24 Hours"}
+                {dateFilter === "7d" && "Last Week"}
+                {dateFilter === "30d" && "Last Month"}
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 opacity-50 flex-shrink-0" />
             </button>
 
             {openFilter && (
@@ -184,25 +228,56 @@ export default function Messages({ isDark }) {
             )}
           </div>
 
-          {/* Refresh Button */}
-          <div className="ml-auto flex items-center gap-3">
-            <button
-              onClick={fetchMessages}
-              disabled={loading}    
-              className={`px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-all border
-                ${isDark 
-                  ? "bg-white/5 text-white border-white/10 hover:bg-white/10" 
-                  : "bg-white text-black border-black/10 hover:bg-gray-50 shadow-sm"}
-                ${loading && "opacity-50 cursor-not-allowed"}`}
-            >
-              <RefreshCcw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-              {loading ? "Refreshing" : "Refresh"}
-            </button>
+          <div className="flex items-center gap-3 w-full md:w-auto md:ml-auto">
+            {/* Optional secondary actions */}
           </div>
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto">
+        {/* Mobile Card Layout */}
+        <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
+          {currentMessages.length > 0 ? (
+            currentMessages.map((msg) => (
+              <div key={msg._id} className={`p-4 rounded-xl border flex flex-col gap-3 transition-colors duration-200 ${isDark ? "bg-white/5 border-white/10" : "bg-gray-50 border-black/5"}`}>
+                <div className="flex justify-between items-start">
+                  <div className="flex flex-col min-w-0">
+                    <span className={`font-bold text-[15px] truncate ${isDark ? "text-gray-100" : "text-gray-900"}`}>{msg.fullName}</span>
+                    <span className={`text-[12px] truncate ${isDark ? "text-gray-400" : "text-gray-600"}`}>{msg.email}</span>
+                  </div>
+                  <span className={`text-[11px] font-medium opacity-60 whitespace-nowrap ${isDark ? "text-gray-500" : "text-gray-500"}`}>
+                    {new Date(msg.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                
+                <div className={`text-[13px] line-clamp-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                  <span className="font-semibold opacity-70">Subject:</span> {msg.subject || "(No Subject)"}
+                </div>
+
+                <div className="flex justify-between items-center pt-3 border-t border-dashed border-gray-500/20">
+                  <button
+                    onClick={() => openMessage(msg)}
+                    className={`text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-lg transition-all ${isDark ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20" : "bg-blue-50 text-blue-600 hover:bg-blue-100"}`}
+                  >
+                    View Details
+                  </button>
+                  <button
+                    onClick={() => deleteMessage(msg._id)}
+                    className={`p-2 rounded-lg transition-all ${isDark ? "text-red-400 hover:bg-red-500/10" : "text-red-600 hover:bg-red-50"}`}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className={`text-center py-10 ${isDark ? "text-gray-500" : "text-gray-400"}`}>
+              <MessageSquare size={32} className="mx-auto mb-3 opacity-20" />
+              <p className="text-sm font-medium">No messages found</p>
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table Layout */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className={`${isDark ? "bg-[#0d0d0d] text-gray-400 border-b border-white/10" : "bg-gray-200 text-black border-b border-black/10"}`}>
@@ -295,8 +370,8 @@ export default function Messages({ isDark }) {
 
       {/* Message Modal */}
       {selectedMessage && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-in fade-in duration-200">
-          <div className={`w-[450px] rounded-2xl p-6 shadow-2xl border relative overflow-hidden animate-in zoom-in-95 duration-200
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className={`w-full max-w-[450px] rounded-2xl p-6 shadow-2xl border relative overflow-hidden animate-in zoom-in-95 duration-200
             ${isDark ? "bg-black border-white/10 text-white" : "bg-white border-black/10 text-black"}`}>
             
             <h2 className="text-xl tracking-tight mb-4" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
@@ -306,23 +381,23 @@ export default function Messages({ isDark }) {
             <div className="space-y-4">
               <div className={`p-4 rounded-xl border ${isDark ? "bg-white/5 border-white/5" : "bg-gray-50 border-black/5"}`}>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDark ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-600"}`}>
+                  <div className={`w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center ${isDark ? "bg-blue-500/20 text-blue-400" : "bg-blue-100 text-blue-600"}`}>
                     <Mail size={18} />
                   </div>
-                  <div>
-                    <h3 className="text-sm ">{selectedMessage.fullName}</h3>
-                    <p className={`text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`}>{selectedMessage.email}</p>
+                  <div className="min-w-0">
+                    <h3 className="text-sm truncate font-semibold">{selectedMessage.fullName}</h3>
+                    <p className={`text-xs truncate ${isDark ? "text-gray-400" : "text-gray-500"}`}>{selectedMessage.email}</p>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <div>
                     <span className={`text-[11px] uppercase tracking-wider font-bold ${isDark ? "text-gray-500" : "text-gray-400"}`}>Subject</span>
-                    <p className="text-sm mt-0.5">{selectedMessage.subject || "(No Subject)"}</p>
+                    <p className="text-sm mt-0.5 break-words">{selectedMessage.subject || "(No Subject)"}</p>
                   </div>
                   <div>
                     <span className={`text-[11px] uppercase tracking-wider font-bold ${isDark ? "text-gray-500" : "text-gray-400"}`}>Message</span>
-                    <p className={`text-sm mt-1 leading-relaxed ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                    <p className={`text-sm mt-1 leading-relaxed break-words max-h-[200px] overflow-y-auto pr-2 custom-scrollbar ${isDark ? "text-gray-300" : "text-gray-700"}`}>
                       {selectedMessage.message}
                     </p>
                   </div>
@@ -337,7 +412,7 @@ export default function Messages({ isDark }) {
 
             <button
               onClick={closeMessage}
-              className={`mt-6 w-full py-1 rounded-xl cursor-pointer text-[14px] transition-all duration-300 relative z-10
+              className={`mt-6 w-full py-2.5 rounded-xl cursor-pointer text-[14px] font-semibold transition-all duration-300 relative z-10
                 ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-neutral-800"}`}
             >
               Close

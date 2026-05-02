@@ -32,8 +32,10 @@ import {
 } from "recharts";
 
 export default function Dashboard({ isDark }) {
+  const navigate = useNavigate();
   const [counts, setCounts] = useState({ users: 0, messages: 0, orders: 0, revenue: 0 });
   const [recentOrders, setRecentOrders] = useState([]);
+  const [adminName, setAdminName] = useState("Admin");
   const [analytics, setAnalytics] = useState({
     revenueTrends: [],
     artStyles: [],
@@ -49,10 +51,25 @@ export default function Dashboard({ isDark }) {
     fetchRecentOrders();
     fetchAnalytics();
     fetchActivities();
+    fetchAdminProfile();
     // Delay chart rendering until layout is painted
     const timer = setTimeout(() => setChartReady(true), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  const fetchAdminProfile = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/admin/profile", {
+        headers: { Authorization: localStorage.getItem("adminToken") },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.fullName) setAdminName(data.fullName);
+      }
+    } catch (err) {
+      console.error("Failed to fetch admin profile");
+    }
+  };
 
   const fetchStats = async () => {
     try {
@@ -120,9 +137,9 @@ export default function Dashboard({ isDark }) {
   };
 
   const stats = [
-    { title: "Total Users", value: counts.users.toLocaleString(), icon: <Users size={22} />, color: "blue", gradient: "from-blue-500/20 to-blue-500/5", border: "border-blue-500/20", textColor: "text-blue-400", iconBg: "bg-blue-500/10" },
-    { title: "Messages", value: counts.messages.toLocaleString(), icon: <MessageCircle size={22} />, color: "purple", gradient: "from-purple-500/20 to-purple-500/5", border: "border-purple-500/20", textColor: "text-purple-400", iconBg: "bg-purple-500/10" },
-    { title: "Total Orders", value: counts.orders.toLocaleString(), icon: <ShoppingBag size={22} />, color: "indigo", gradient: "from-indigo-500/20 to-indigo-500/5", border: "border-indigo-500/20", textColor: "text-indigo-400", iconBg: "bg-indigo-500/10" },
+    { title: "Total Users", value: counts.users.toLocaleString(), icon: <Users size={22} />, color: "blue", gradient: "from-blue-500/20 to-blue-500/5", border: "border-blue-500/20", textColor: "text-blue-400", iconBg: "bg-blue-500/10", path: "/admin/users" },
+    { title: "Messages", value: counts.messages.toLocaleString(), icon: <MessageCircle size={22} />, color: "purple", gradient: "from-purple-500/20 to-purple-500/5", border: "border-purple-500/20", textColor: "text-purple-400", iconBg: "bg-purple-500/10", path: "/admin/messages" },
+    { title: "Total Orders", value: counts.orders.toLocaleString(), icon: <ShoppingBag size={22} />, color: "indigo", gradient: "from-indigo-500/20 to-indigo-500/5", border: "border-indigo-500/20", textColor: "text-indigo-400", iconBg: "bg-indigo-500/10", path: "/admin/userOrders" },
     { title: "Revenue", value: `₹${counts.revenue.toLocaleString()}`, icon: <IndianRupee size={22} />, color: "emerald", gradient: "from-emerald-500/20 to-emerald-500/5", border: "border-emerald-500/20", textColor: "text-emerald-400", iconBg: "bg-emerald-500/10" },
   ];
 
@@ -140,17 +157,31 @@ export default function Dashboard({ isDark }) {
     <div style={{ fontFamily: "Inter, sans-serif" }} className="animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
 
       {/* HEADER */}
-      <div className="mb-8">
-
-        <p className={` text-[14px] flex items-center gap-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
-          Welcome back, <span className=" text-blue-500  underline underline-offset-4 decoration-white/10">Akhileswar👋</span>
-        </p>
+      <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <p className={`text-[14px] flex items-center gap-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+            Welcome back, <span className={`${adminName.toLowerCase().includes("shalini") ? "text-pink-500" : "text-blue-500"} underline underline-offset-4 decoration-white/10`}>{adminName} <img src="/hi.png" alt="hi" className="w-5 h-5 inline-block mb-1 animate-bounce" /></span>
+          </p>
+          <h1 className={`text-2xl md:text-3xl font-bold mt-1 ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+            Overview
+          </h1>
+        </div>
+        <div className={`px-3 py-1 rounded-lg border flex items-center gap-2 ${isDark ? "bg-white/5 border-white/10" : "bg-gray-100 border-black/5"}`}>
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span className={`text-[10px] font-bold uppercase tracking-wider ${isDark ? "text-emerald-400" : "text-emerald-600"}`}>System Live</span>
+        </div>
       </div>
 
       {/* STATS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((item, index) => (
-          <div key={index} className={`relative group p-4 rounded-[20px] border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden ${isDark ? `bg-gradient-to-br ${item.gradient} backdrop-blur-[30px] ${item.border}` : `bg-white border-black/5 shadow-md shadow-black/5 backdrop-blur-xl`}`}>
+          <div
+            key={index}
+            onClick={() => item.path && navigate(item.path)}
+            className={`relative group p-4 rounded-[20px] border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden 
+              ${item.path ? "cursor-pointer" : ""}
+              ${isDark ? `bg-gradient-to-br ${item.gradient} backdrop-blur-[30px] ${item.border}` : `bg-white border-black/5 shadow-md shadow-black/10 backdrop-blur-3xl`}`}
+          >
             <div className="relative z-10 flex flex-col">
               <div className={`w-9 h-9 flex items-center justify-center rounded-xl mb-3 border transition-transform duration-500 group-hover:scale-105 shadow-inner ${isDark ? `${item.iconBg} ${item.border} ${item.textColor}` : `bg-white border-black/5 shadow-sm ${item.textColor}`}`}>
                 {React.cloneElement(item.icon, { size: 18 })}
@@ -202,22 +233,24 @@ export default function Dashboard({ isDark }) {
             </h3>
             <span className="text-xs text-gray-400 uppercase tracking-widest underline decoration-emerald-500/20 underline-offset-4 decoration-2">Order Types</span>
           </div>
-          <div className="h-[250px] w-full flex items-center justify-center">
-            {chartReady && <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie data={analytics.artStyles} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" nameKey="_id">
-                  {analytics.artStyles.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={{ backgroundColor: isDark ? '#000' : '#fff', border: isDark ? '1px solid #ffffff1a' : '1px solid #0000001a', borderRadius: '12px', fontSize: '12px' }} />
-              </PieChart>
-            </ResponsiveContainer>}
-            <div className="flex flex-col gap-2 ml-4">
+          <div className="h-auto w-full flex flex-col sm:flex-row items-center justify-center gap-6">
+            <div className="h-[250px] w-full max-w-[250px]">
+              {chartReady && <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie data={analytics.artStyles} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" nameKey="_id">
+                    {analytics.artStyles.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ backgroundColor: isDark ? '#000' : '#fff', border: isDark ? '1px solid #ffffff1a' : '1px solid #0000001a', borderRadius: '12px', fontSize: '12px' }} />
+                </PieChart>
+              </ResponsiveContainer>}
+            </div>
+            <div className="flex flex-wrap sm:flex-col gap-3 justify-center">
               {analytics.artStyles.map((entry, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                  <span className="text-xs font-medium text-gray-400">{entry._id}</span>
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-tight">{entry._id}</span>
                 </div>
               ))}
             </div>
@@ -298,20 +331,52 @@ export default function Dashboard({ isDark }) {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
 
-        {/* RECENT ORDERS TABLE (WIDER) */}
+        {/* RECENT ORDERS (WIDER) */}
         <div className={`xl:col-span-2 rounded-xl border overflow-hidden ${isDark ? "bg-black/40 border-white/10 shadow-2xl" : "bg-white border-black/5 shadow-lg"}`}>
           <div className={`px-5 py-4 border-b flex items-center justify-between ${isDark ? "border-white/10" : "border-black/5"}`}>
-            <h2 className={`text-lg ${isDark ? "text-white" : "text-black"}`}>Recent Orders</h2>
-            <button onClick={() => navigate("/admin/userOrders")} className="text-[12px] text-blue-500  hover:underline">View All</button>
+            <h2 className={`text-lg font-bold ${isDark ? "text-white" : "text-black"}`}>Recent Orders</h2>
+            <button onClick={() => navigate("/admin/userOrders")} className="text-[12px] font-bold text-blue-500 hover:underline">View All</button>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Mobile Card View for Recent Orders */}
+          <div className="lg:hidden divide-y divide-white/5">
+            {recentOrders.map((order) => (
+              <div key={order._id} className="p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${isDark ? "bg-white/10 text-white" : "bg-black/10 text-black"}`}>
+                      {order.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold">{order.name}</p>
+                      <p className="text-[10px] text-gray-500 truncate max-w-[150px]">{order.email}</p>
+                    </div>
+                  </div>
+                  <span className="font-bold text-sm">₹{order.totalPrice}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-medium opacity-60 uppercase">{order.artStyle}</span>
+                    <span className="text-[9px] opacity-30 font-mono tracking-tighter uppercase">#{order._id.slice(-6)}</span>
+                  </div>
+                  <span className={`px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-black 
+                    ${isDark ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" : "bg-blue-50 text-blue-700 border border-blue-100"}`}>
+                    {order.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className={`text-[13px] font-normal  ${isDark ? "text-gray-500 " : "text-gray-400 bg-gray-50/50"}`}>
-                  <th className="px-5 py-3">Customer</th>
-                  <th className="px-5 py-3">Project</th>
-                  <th className="px-5 py-3">Status</th>
-                  <th className="px-5 py-3 text-right">Price</th>
+                <tr className={`text-[11px] font-bold uppercase tracking-widest ${isDark ? "text-gray-500 " : "text-black bg-gray-200 border-b border-black/10"}`}>
+                  <th className="px-5 py-4">Customer</th>
+                  <th className="px-5 py-4">Project</th>
+                  <th className="px-5 py-4 text-center">Status</th>
+                  <th className="px-5 py-4 text-right">Price</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -320,27 +385,27 @@ export default function Dashboard({ isDark }) {
                   const style = statusStyles[status] || statusStyles["Pending"];
                   return (
                     <tr key={order._id} className={`${isDark ? "hover:bg-white/5" : "hover:bg-gray-50"} transition-colors`}>
-                      <td className="px-5 py-3.5">
+                      <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[13px] ${isDark ? "bg-white/10 text-white" : "bg-black/10 text-black"}`}>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isDark ? "bg-white/10 text-white" : "bg-black/10 text-black"}`}>
                             {order.name.charAt(0)}
                           </div>
                           <div>
-                            <p className="text-sm font-medium">{order.name}</p>
-                            <p className="text-[11px] text-gray-500 truncate max-w-[120px]">{order.email}</p>
+                            <p className="text-sm font-bold">{order.name}</p>
+                            <p className="text-[11px] text-gray-500">{order.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-5 py-3.5">
-                        <p className="text-sm font-medium">{order.artStyle}</p>
-                        <p className="text-[10px] text-gray-500 uppercase">#{order._id.slice(-6)}</p>
+                      <td className="px-5 py-4">
+                        <p className="text-sm font-bold">{order.artStyle}</p>
+                        <p className="text-[10px] text-gray-500 uppercase tracking-tighter font-mono">#{order._id.slice(-10)}</p>
                       </td>
-                      <td className="px-5 py-3.5">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider ${isDark ? style.dark : style.light}`}>
+                      <td className="px-5 py-4 text-center">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] uppercase font-black tracking-widest ${isDark ? style.dark : style.light}`}>
                           {style.icon} {order.status}
                         </span>
                       </td>
-                      <td className="px-5 py-3.5 text-right font-bold text-sm">₹{order.totalPrice}</td>
+                      <td className="px-5 py-4 text-right font-black text-sm">₹{order.totalPrice.toLocaleString()}</td>
                     </tr>
                   )
                 })}
