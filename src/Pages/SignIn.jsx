@@ -373,12 +373,12 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     whileTap={{ scale: 0.99 }}
                     onClick={handleGoogleSignIn}
                     disabled={loading}
-                    className={`w-full h-12 rounded-xl flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 font-medium ${isDark
+                    className={`w-full h-11 rounded-full text-[14px] flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 font-medium ${isDark
                         ? "border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:border-neutral-700 text-white"
                         : "border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-black shadow-sm"
                       }`}
                   >
-                    <FcGoogle size={24} />
+                    <FcGoogle size={20} />
                     Continue with Google
                   </motion.button>
 
@@ -396,7 +396,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                       localStorage.setItem("authType", "login");
                       setStep("email");
                     }}
-                   className={`w-full h-12 rounded-xl flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 font-medium ${isDark
+                   className={`w-full h-11 rounded-full text-[14px] flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 font-medium ${isDark
                         ? "border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:border-neutral-700 text-white"
                         : "border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-black shadow-sm"
                       }`}
@@ -424,7 +424,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     </span>
                   </motion.p>
 
-                  <motion.p variants={itemVariants} className={`text-[11px] text-center leading-relaxed ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>
+                  <motion.p variants={itemVariants} className={`text-[11px] text-center leading-relaxed ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
                     By continuing, you agree to our{" "}
                     <Link to="/terms" onClick={onClose} className={`underline hover:text-neutral-400 ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-neutral-700"}`}>Terms</Link>
                     {" "}and{" "}
@@ -641,7 +641,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     />
                     <label htmlFor="terms" className={`text-sm leading-relaxed font-medium cursor-pointer ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
                       <p className={`mb-1 ${isDark ? "text-neutral-300" : "text-neutral-900"}`}>Accept Terms and Conditions</p>
-                      <p className={`text-xs ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>By checking this, you agree to our <Link to="/terms" className="underline hover:text-black">Terms of Service</Link> and <Link to="/privacy-policy" className="underline hover:text-black">Privacy Policy</Link>.</p>
+                      <p className={`text-xs ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>By checking this, you agree to our <Link to="/terms" className={`underline ${isDark ? "hover:text-white" : "hover:text-black"}`}>Terms of Service</Link> and <Link to="/privacy-policy" className={`underline ${isDark ? "hover:text-white" : "hover:text-black"}`}>Privacy Policy</Link>.</p>
                     </label>
                   </div>
 
@@ -741,7 +741,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                       onFocus={() => setFocusedField("loginEmail")}
                       onBlur={() => setFocusedField(null)}
                       className={`w-full h-10 px-4 rounded-lg text-sm border transition-all duration-300 focus:outline-none ${isDark
-                          ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-500"
+                          ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-700"
                           : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-1 focus:ring-black/20 shadow-sm placeholder:text-neutral-400"
                         }`}
                       value={email}
