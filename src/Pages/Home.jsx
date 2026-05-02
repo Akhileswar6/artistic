@@ -126,7 +126,7 @@ export default function Home({ isDark }) {
             }}
             transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
             className={`${isDark ? "text-white" : "text-neutral-700"} text-4xl sm:text-5xl font-semibold leading-tight`}
-            style={{ fontFamily: "'Scope One', sans-serif" }}
+            style={{ fontFamily: "'Scope One', serif" }}
           >
             Turn Your Photos Into <br className="hidden md:block" />
             <span className="relative inline-block mt-2 md:mt-0 px-2 py-1">

@@ -56,7 +56,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
   useEffect(() => {
     if (step === "otp") {
       setOtp(Array(6).fill(""));
-      setResendTimer(5);
+      setResendTimer(60);
     }
 
   }, [step]);
