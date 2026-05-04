@@ -7,6 +7,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    profilePic: String,
+    isBlocked: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now
