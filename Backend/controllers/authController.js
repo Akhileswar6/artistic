@@ -4,6 +4,7 @@ const Notification = require("../models/Notification");
 
 const crypto = require("crypto");
 const admin = require("../firebaseAdmin");
+const jwt = require("jsonwebtoken");
 
 // 🔥 fetch for Node
 const fetch = (...args) =>
@@ -93,17 +94,12 @@ const sendOtpEmail = async (email, otp) => {
       }),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      console.error("Brevo Error Response:", data);
       throw new Error("Email sending failed");
     }
 
-    console.log("Brevo success:", data);
-
+    
   } catch (error) {
-    console.error("Brevo Error:", error);
     throw error;
   }
 };
@@ -122,12 +118,13 @@ exports.googleAuth = async (req, res) => {
     const { email, name, picture } = decoded;
 
     let user = await User.findOne({ email });
+    const profilePicUrl = picture || `https://unavatar.io/${email.toLowerCase().trim()}`;
 
     if (!user) {
       user = await User.create({
         email,
         fullName: name,
-        profilePic: picture,
+        profilePic: profilePicUrl,
         provider: "google",
       });
 
@@ -136,15 +133,28 @@ exports.googleAuth = async (req, res) => {
         title: "Welcome to Artistic",
         message: "We’re excited to have you here!",
       });
+    } else {
+      // Sync profile pic from Google if missing or if it's a google provider
+      user = await User.findOneAndUpdate(
+        { email },
+        { $set: { profilePic: profilePicUrl } },
+        { returnDocument: "after" }
+      );
     }
+
+    const userToken = jwt.sign(
+      { id: user._id, email: user.email, role: "user" },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
 
     res.json({
       message: "Google login successful",
       user,
+      token: userToken,
     });
 
   } catch (error) {
-    console.error("Google Auth Error:", error);
     res.status(401).json({ message: "Invalid Google token" });
   }
 };
@@ -190,7 +200,6 @@ exports.sendOtp = async (req, res) => {
     res.json({ message: "OTP sent" });
 
   } catch (err) {
-    console.error("SEND OTP ERROR:", err);
     res.status(500).json({ message: "Failed to send OTP" });
   }
 };
@@ -224,7 +233,9 @@ exports.verifyOtp = async (req, res) => {
         });
       }
 
-      user = await User.create({ email, fullName });
+      const profilePic = `https://unavatar.io/${email.toLowerCase().trim()}`;
+
+      user = await User.create({ email, fullName, profilePic });
 
       await Notification.create({
         userId: user._id,
@@ -239,17 +250,76 @@ exports.verifyOtp = async (req, res) => {
           message: "No account found. Please signup",
         });
       }
+
+      // Ensure profile pic exists or update it
+      if (!user.profilePic) {
+        user = await User.findOneAndUpdate(
+          { email },
+          { $set: { profilePic: `https://unavatar.io/${email.toLowerCase().trim()}` } },
+          { returnDocument: "after" }
+        );
+      }
     }
 
     await Otp.deleteMany({ email });
 
+    const userToken = jwt.sign(
+      { id: user._id, email: user.email, role: "user" },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+
     res.json({
       message: "Success",
       user,
+      token: userToken,
     });
 
   } catch (err) {
-    console.error("VERIFY OTP ERROR:", err);
     res.status(500).json({ message: "Verification failed" });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { userId, fullName } = req.body;
+    let { profilePic } = req.body;
+
+    // If a file was uploaded, use the Cloudinary URL from req.file
+    if (req.file) {
+      profilePic = req.file.path;
+    }
+
+    const User = require("../models/User");
+    
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: { fullName, profilePic } },
+      { returnDocument: "after" }
+    );
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ message: "Profile updated successfully", user });
+  } catch (err) {
+    console.error("Update Error:", err);
+    res.status(500).json({ message: "Error updating profile" });
+  }
+};
+
+exports.getUserStats = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const Order = require("../models/Order");
+    
+    const notificationsCount = await Notification.countDocuments({ userId });
+    const ordersCount = await Order.countDocuments({ user: userId }); 
+
+    res.json({
+      notifications: notificationsCount,
+      orders: ordersCount
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching stats" });
   }
 };
