@@ -12,7 +12,6 @@ router.get("/:userId", async (req, res) => {
 
     res.json(notifications);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: "Error fetching notifications" });
   }
 });
