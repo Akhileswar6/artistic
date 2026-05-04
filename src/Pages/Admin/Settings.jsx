@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../../config";
+
 import { User, Lock, Save, LogOut, Shield, Activity as ActivityIcon, ShieldCheck, RefreshCcw, ShieldUser } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +35,7 @@ export default function Settings({ isDark }) {
 
   const fetchMyIdentity = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/admin/profile", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/profile`, {
         headers: { Authorization: localStorage.getItem("adminToken") },
       });
       if (res.ok) {
@@ -49,7 +51,7 @@ export default function Settings({ isDark }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/admin/profile", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +75,7 @@ export default function Settings({ isDark }) {
 
   const fetchAdmins = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/admin/all-admins", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/all-admins`, {
         headers: { Authorization: localStorage.getItem("adminToken") },
       });
       if (res.ok) {
@@ -89,7 +91,7 @@ export default function Settings({ isDark }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/admin/add-admin", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/add-admin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +123,7 @@ export default function Settings({ isDark }) {
             onClick={async () => {
               toast.dismiss(t.id);
               try {
-                const res = await fetch(`http://localhost:5000/api/admin/remove-admin/${id}`, {
+                const res = await fetch(`${API_BASE_URL}/api/admin/remove-admin/${id}`, {
                   method: "DELETE",
                   headers: { Authorization: localStorage.getItem("adminToken") },
                 });
@@ -160,7 +162,7 @@ export default function Settings({ isDark }) {
     }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/admin/change-password", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/change-password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../config";
+
 import AdminLayout from "../../Layout/AdminLayout";
 import { useNavigate } from "react-router-dom";
 import {
@@ -59,7 +61,7 @@ export default function Dashboard({ isDark }) {
 
   const fetchAdminProfile = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/admin/profile", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/profile`, {
         headers: { Authorization: localStorage.getItem("adminToken") },
       });
       if (res.ok) {
@@ -74,7 +76,7 @@ export default function Dashboard({ isDark }) {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch("http://localhost:5000/api/admin/stats-summary", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/stats-summary`, {
         headers: { Authorization: token },
       });
       if (res.ok) {
@@ -94,7 +96,7 @@ export default function Dashboard({ isDark }) {
   const fetchRecentOrders = async () => {
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch("http://localhost:5000/api/orders/all", {
+      const res = await fetch(`${API_BASE_URL}/api/orders/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -109,7 +111,7 @@ export default function Dashboard({ isDark }) {
   const fetchAnalytics = async () => {
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch("http://localhost:5000/api/admin/analytics", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/analytics`, {
         headers: { Authorization: token },
       });
       if (res.ok) {
@@ -124,7 +126,7 @@ export default function Dashboard({ isDark }) {
   const fetchActivities = async () => {
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch("http://localhost:5000/api/admin/activities", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/activities`, {
         headers: { Authorization: token },
       });
       if (res.ok) {

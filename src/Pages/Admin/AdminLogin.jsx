@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../../config";
+
 import ThemeToggle from "../../Components/ThemeToggle";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Eye, EyeOff, LockIcon } from "lucide-react";
@@ -44,7 +46,7 @@ export default function AdminLogin({ isDark, setIsDark }) {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/admin/login", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

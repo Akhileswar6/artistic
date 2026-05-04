@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../config";
+
 
 import instagramImg from "../assets/instagram_dark.png";
 import facebookImg from "../assets/facebook_dark.png";
@@ -50,7 +52,7 @@ export default function Contact() {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/contact", {
+      const res = await fetch(`${API_BASE_URL}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

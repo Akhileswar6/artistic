@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from "react";
+import { API_BASE_URL } from "../../config";
+
 import { RefreshCcw, Search, ChevronDown, CheckCircle2, Ban, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
 import AdminLayout from "../../Layout/AdminLayout";
@@ -48,7 +50,7 @@ const fetchUsers = async () => {
   try {
     setLoading(true);
 
-    const res = await fetch("http://localhost:5000/api/admin/users", {
+    const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
       },
@@ -129,7 +131,7 @@ const fetchUsers = async () => {
 
   const toggleBlockStatus = async (user) => {
     try {
-      const res = await fetch("http://localhost:5000/api/admin/block-users", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/block-users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

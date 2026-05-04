@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "../../config";
+
 import AdminLayout from "../../Layout/AdminLayout";
 import { CopyPlus, MoreVertical, Trash2, CheckCircle, CheckCircle2, Clock, X, Eye, MapPin, IndianRupee, ExternalLink, ShoppingBag, Download, Search, Filter, ChevronDown, Star, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
@@ -163,7 +165,7 @@ export default function UserOrders({ isDark }) {
       // For now, we loop through and update each one. 
       // In a production app, we'd add a bulk endpoint on the backend.
       for (const id of selectedIds) {
-        const res = await fetch(`http://localhost:5000/api/orders/status/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/orders/status/${id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -215,7 +217,7 @@ export default function UserOrders({ isDark }) {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch("http://localhost:5000/api/orders/all", {
+      const res = await fetch(`${API_BASE_URL}/api/orders/all`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -241,7 +243,7 @@ export default function UserOrders({ isDark }) {
     setUpdatingId(id);
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`http://localhost:5000/api/orders/status/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/orders/status/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -287,7 +289,7 @@ export default function UserOrders({ isDark }) {
               toast.dismiss(t.id);
               try {
                 const token = localStorage.getItem("adminToken");
-                const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+                const res = await fetch(`${API_BASE_URL}/api/orders/${id}`, {
                   method: "DELETE",
                   headers: { Authorization: `Bearer ${token}` },
                 });
@@ -1156,7 +1158,7 @@ export default function UserOrders({ isDark }) {
                               // or just loop if the API only supports single deletes
                               const token = localStorage.getItem("adminToken");
                               const results = await Promise.all(selectedIds.map(id => 
-                                fetch(`http://localhost:5000/api/orders/${id}`, {
+                                fetch(`${API_BASE_URL}/api/orders/${id}`, {
                                   method: "DELETE",
                                   headers: { Authorization: `Bearer ${token}` },
                                 })

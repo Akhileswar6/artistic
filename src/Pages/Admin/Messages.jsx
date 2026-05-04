@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from "react";
+import { API_BASE_URL } from "../../config";
+
 import { RefreshCcw, Search, ChevronDown, CheckCircle2, Trash2, Mail, MessageSquare, ShieldAlert } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -26,7 +28,7 @@ export default function Messages({ isDark }) {
   const fetchMessages = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/admin/messages", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/messages`, {
         headers: {
           Authorization: localStorage.getItem("adminToken"),
         },
@@ -54,7 +56,7 @@ export default function Messages({ isDark }) {
             onClick={async () => {
               toast.dismiss(t.id);
               try {
-                const res = await fetch(`http://localhost:5000/api/admin/messages/${id}`, {
+                const res = await fetch(`${API_BASE_URL}/api/admin/messages/${id}`, {
                   method: "DELETE",
                   headers: { Authorization: localStorage.getItem("adminToken") },
                 });

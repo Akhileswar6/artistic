@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../config";
+
 import AdminLayout from "../../Layout/AdminLayout";
 import { Activity, User, ShoppingBag, Settings, Search, Clock, ShieldCheck, Trash2, ArrowUpDown, RefreshCcw } from "lucide-react";
 
@@ -12,7 +14,7 @@ export default function ActivityLog({ isDark }) {
     setLoading(true);
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch("http://localhost:5000/api/admin/activities", {
+      const res = await fetch(`${API_BASE_URL}/api/admin/activities`, {
         headers: { Authorization: token },
       });
       if (res.ok) {

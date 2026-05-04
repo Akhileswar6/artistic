@@ -6,6 +6,8 @@ import SignIn from "../Pages/SignIn";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/logo.png";
+import { API_BASE_URL } from "../config";
+
 
 const navLinks = [
   { label: "Home", path: "/", icon: <Home size={20} /> },
@@ -34,7 +36,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
         if (!user) return;
         const token = localStorage.getItem("token");
         const res = await fetch(
-          `http://localhost:5000/api/notifications/${user._id}`,
+          `${API_BASE_URL}/api/notifications/${user._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`

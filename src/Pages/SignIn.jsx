@@ -8,6 +8,8 @@ import PencilSketch from "../assets/Pencil.webp";
 import CharcoalSketch from "../assets/Charcoal.jpg";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/logo.png";
+import { API_BASE_URL } from "../config";
+
 
 const containerVariants = {
   hidden: { opacity: 0, x: 20 },
@@ -48,7 +50,9 @@ export default function SignIn({ onClose, isDark, setUser }) {
   const [focusedField, setFocusedField] = useState(null);
 
 
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+
+
 
 
 
@@ -77,7 +81,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
     setLoading(true);
     try {
       const type = localStorage.getItem("authType") || "login";
-      const res = await fetch(`${BASE_URL}/api/auth/send-otp`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, type })
@@ -160,7 +164,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
       const storedType = localStorage.getItem("authType");
       const isSignup = storedType === "signup";
 
-      const res = await fetch(`${BASE_URL}/api/auth/verify-otp`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/verify-otp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -217,7 +221,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
       const token = await user.getIdToken();
 
       // Send token to backend
-      const res = await fetch(`${BASE_URL}/api/auth/google`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/google`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -562,7 +566,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                       }
                       setLoading(true);
                       try {
-                        const res = await fetch(`${BASE_URL}/api/auth/send-otp`, {
+                        const res = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({ email, type: "signup" }),
@@ -706,7 +710,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     if (!/\S+@\S+\.\S+/.test(email)) { toast.error("Please enter a valid email"); return; }
                     setLoading(true);
                     try {
-                      const res = await fetch(`${BASE_URL}/api/auth/send-otp`, {
+                      const res = await fetch(`${API_BASE_URL}/api/auth/send-otp`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ email, type: "login" }),

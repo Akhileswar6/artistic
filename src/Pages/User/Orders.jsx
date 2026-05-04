@@ -1,6 +1,8 @@
 import { ShoppingBag, ArrowRight, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../config";
+
 import axios from "axios";
 import toast from "react-hot-toast";
 import { OrderSkeleton } from "../../Components/Skeleton";
@@ -18,7 +20,7 @@ export default function Orders({ isDark }) {
         navigate("/");
         return;
       }
-      const response = await axios.get("http://localhost:5000/api/orders/my-orders", {
+      const response = await axios.get(`${API_BASE_URL}/api/orders/my-orders`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setOrders(response.data);

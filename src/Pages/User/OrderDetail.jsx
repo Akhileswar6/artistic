@@ -1,6 +1,8 @@
 import { ShoppingBag, ArrowLeft, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../config";
+
 import axios from "axios";
 import toast from "react-hot-toast";
 import { OrderSkeleton } from "../../Components/Skeleton";
@@ -24,7 +26,7 @@ export default function OrderDetail({ isDark }) {
         navigate("/");
         return;
       }
-      const response = await axios.get(`http://localhost:5000/api/orders/${id}`, {
+      const response = await axios.get(`${API_BASE_URL}/api/orders/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setOrder(response.data);
@@ -54,7 +56,7 @@ export default function OrderDetail({ isDark }) {
     setSubmittingPayment(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`http://localhost:5000/api/orders/payment/${id}`,
+      await axios.put(`${API_BASE_URL}/api/orders/payment/${id}`,
         { transactionId, paymentType: type },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,7 +80,7 @@ export default function OrderDetail({ isDark }) {
     setSubmittingFeedback(true);
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`http://localhost:5000/api/orders/feedback/${id}`,
+      await axios.put(`${API_BASE_URL}/api/orders/feedback/${id}`,
         { rating, feedback: feedbackText },
         { headers: { Authorization: `Bearer ${token}` } }
       );

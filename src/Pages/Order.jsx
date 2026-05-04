@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../config";
+
 import axios from "axios";
 import { Clock, Package, Info, Check, X, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -135,7 +137,7 @@ export default function Order({ isDark }) {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/orders/create",
+        `${API_BASE_URL}/api/orders/create`,
         formData,
         {
           headers: {

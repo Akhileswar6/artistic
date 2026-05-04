@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../config";
+
 import { User, Mail, Calendar, ShieldCheck, Settings, ShoppingBag, Bell, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -16,7 +18,7 @@ export default function Account({ isDark }) {
   const fetchStats = async (userId) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/auth/stats/${userId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/stats/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

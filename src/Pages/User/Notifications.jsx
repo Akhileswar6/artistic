@@ -1,5 +1,7 @@
 import { CheckCheck, Bell, Info, Calendar, Filter } from "lucide-react";
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../config";
+
 
 export default function Notifications({ isDark }) {
   const [notifications, setNotifications] = useState([]);
@@ -11,7 +13,7 @@ export default function Notifications({ isDark }) {
     const fetchNotifications = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/notifications/${user._id}`
+          `${API_BASE_URL}/api/notifications/${user._id}`
         );
         const data = await res.json();
         setNotifications(data);
@@ -30,7 +32,7 @@ export default function Notifications({ isDark }) {
 
   const markAllAsRead = async () => {
     try {
-      await fetch(`http://localhost:5000/api/notifications/mark-all/${user._id}`, {
+      await fetch(`${API_BASE_URL}/api/notifications/mark-all/${user._id}`, {
         method: "PUT",
       });
       const updated = notifications.map((n) => ({ ...n, read: true }));
@@ -42,7 +44,7 @@ export default function Notifications({ isDark }) {
 
   const markAsRead = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/notifications/${id}`, {
+      await fetch(`${API_BASE_URL}/api/notifications/${id}`, {
         method: "PUT",
       });
       setNotifications((prev) =>
