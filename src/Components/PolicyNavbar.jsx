@@ -1,7 +1,8 @@
 import { NavLink, useLocation, Outlet } from "react-router-dom";
 import { Sun, Moon, Menu, X, ArrowLeft, FileText, Shield, RotateCcw, AlertTriangle, Home } from "lucide-react";
 import { useState, useEffect } from "react";
-import logo from "../assets/logo.png";
+import { motion, AnimatePresence } from "framer-motion";
+const logo = "/artisticLogo.png";
 
 export default function PolicyNavbar({ isDark, setIsDark }) {
   const [open, setOpen] = useState(false);
@@ -36,8 +37,8 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
       {/* NAVBAR CONTAINER */}
       <div
         className={`sticky top-0 z-40 w-full backdrop-blur-md border-b transition-colors duration-500 ${isDark
-            ? "bg-[#080808]/80 border-white/5"
-            : "bg-white/80 border-neutral-200"
+          ? "bg-[#080808]/80 border-white/5"
+          : "bg-white/80 border-neutral-200"
           }`}
         style={{ fontFamily: "Inter, serif" }}
       >
@@ -59,12 +60,62 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
             </button>
 
             {/* LOGO */}
-            <NavLink to="/">
+            <NavLink to="/" className="flex items-center gap-1">
               <img
                 src={logo}
                 alt="artistic"
-                className="h-10 w-auto object-contain"
+                className="h-12 w-auto object-contain"
               />
+              <div className="relative group -mt-1 -ml-2">
+                <span
+                  className="inline-block translate-y-1 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#F4B028] via-[#D97A9A] to-[#6B3FA0]"
+                  style={{ fontFamily: "'Scope One', serif", backgroundSize: "200% auto" }}
+                >
+                  artistic
+                </span>
+                <svg
+                  viewBox="0 0 100 6"
+                  className="absolute -bottom-1.5 left-0 w-full opacity-70"
+                  fill="none"
+                >
+                  <motion.path
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                    d="M2 3 C20 1, 80 5, 98 3"
+                    stroke="#F4B028"
+                    strokeWidth="0.6"
+                    strokeLinecap="round"
+                  />
+                  <motion.path
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 0.8 }}
+                    transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }}
+                    d="M5 4 C30 2, 70 6, 95 4"
+                    stroke="#D97A9A"
+                    strokeWidth="0.5"
+                    strokeLinecap="round"
+                  />
+                  <motion.path
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 0.6 }}
+                    transition={{ duration: 1.4, delay: 0.9, ease: "easeOut" }}
+                    d="M3 5 C40 3, 60 7, 97 5"
+                    stroke="#6B3FA0"
+                    strokeWidth="0.4"
+                    strokeLinecap="round"
+                  />
+                  <motion.path
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 0.4 }}
+                    transition={{ duration: 1.6, delay: 1.1, ease: "easeOut" }}
+                    d="M8 2 C45 0, 55 4, 92 2"
+                    stroke="#3A3A3A"
+                    strokeWidth="0.3"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
             </NavLink>
           </div>
 
@@ -72,8 +123,8 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
           <button
             onClick={() => setIsDark(!isDark)}
             className={`md:hidden p-1.5 rounded-full transition-colors duration-300 ${isDark
-                ? "text-white hover:text-neutral-300"
-                : "text-black hover:text-neutral-600"
+              ? "text-white hover:text-neutral-300"
+              : "text-black hover:text-neutral-600"
               }`}
             aria-label="Toggle theme"
           >
@@ -103,8 +154,8 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
             <button
               onClick={() => setIsDark(!isDark)}
               className={`p-1.5 rounded-full transition-colors duration-300 cursor-pointer ${isDark
-                  ? "text-white"
-                  : "text-black"
+                ? "text-white"
+                : "text-black"
                 }`}
               aria-label="Toggle theme"
             >
@@ -123,12 +174,62 @@ export default function PolicyNavbar({ isDark, setIsDark }) {
       >
         {/* DRAWER HEADER */}
         <div className={`p-5 border-b flex items-center justify-between ${isDark ? "border-white/5 bg-black/60" : "border-neutral-100 bg-white"}`}>
-          <NavLink to="/" onClick={() => setOpen(false)}>
+          <NavLink to="/" onClick={() => setOpen(false)} className="flex items-center gap-1">
             <img
               src={logo}
               alt="artistic"
-              className="h-10 w-auto object-contain"
+              className="h-12 w-auto object-contain"
             />
+            <div className="relative group -mt-1 -ml-2">
+              <span
+                className="inline-block translate-y-1 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#F4B028] via-[#D97A9A] to-[#6B3FA0]"
+                style={{ fontFamily: "'Scope One', serif", backgroundSize: "200% auto" }}
+              >
+                artistic
+              </span>
+              <svg
+                viewBox="0 0 100 6"
+                className="absolute -bottom-1.5 left-0 w-full opacity-70"
+                fill="none"
+              >
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                  d="M2 3 C20 1, 80 5, 98 3"
+                  stroke="#F4B028"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.8 }}
+                  transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }}
+                  d="M5 4 C30 2, 70 6, 95 4"
+                  stroke="#D97A9A"
+                  strokeWidth="0.5"
+                  strokeLinecap="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.6 }}
+                  transition={{ duration: 1.4, delay: 0.9, ease: "easeOut" }}
+                  d="M3 5 C40 3, 60 7, 97 5"
+                  stroke="#6B3FA0"
+                  strokeWidth="0.4"
+                  strokeLinecap="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.4 }}
+                  transition={{ duration: 1.6, delay: 1.1, ease: "easeOut" }}
+                  d="M8 2 C45 0, 55 4, 92 2"
+                  stroke="#3A3A3A"
+                  strokeWidth="0.3"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
           </NavLink>
           <button
             onClick={() => setOpen(false)}

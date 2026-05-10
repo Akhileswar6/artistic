@@ -7,7 +7,7 @@ import EmailIcon from "../assets/email.png";
 import PencilSketch from "../assets/Pencil.webp";
 import CharcoalSketch from "../assets/Charcoal.jpg";
 import { motion, AnimatePresence } from "framer-motion";
-import logo from "../assets/logo.png";
+const logo = "/artisticLogo.png";
 import { API_BASE_URL } from "../config";
 
 
@@ -276,8 +276,8 @@ export default function SignIn({ onClose, isDark, setUser }) {
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className={`w-full max-w-[440px] md:max-w-4xl min-h-[500px] flex flex-col md:flex-row rounded-3xl overflow-hidden relative shadow-2xl transition-colors duration-500 ${isDark
-            ? "bg-[#0a0a0a] text-white shadow-black/90 border border-white/5"
-            : "bg-white text-black shadow-2xl border border-black/5"
+          ? "bg-[#0a0a0a] text-white shadow-black/90 border border-white/5"
+          : "bg-white text-black shadow-2xl border border-black/5"
           }`}
       >
 
@@ -285,7 +285,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
         <div className="hidden md:flex md:w-[45%] relative overflow-hidden bg-[#050505]">
           <motion.img
             initial={{ scale: 1.1 }}
-            animate={{ 
+            animate={{
               scale: [1.1, 1.15, 1.1],
               rotate: [0, 1, 0]
             }}
@@ -301,14 +301,14 @@ export default function SignIn({ onClose, isDark, setUser }) {
           {/* Advanced Gradient Overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-80" />
           <div className={`absolute inset-0 bg-gradient-to-r ${isDark
-                ? "from-transparent via-transparent to-[#0a0a0a]"
-                : "from-transparent via-transparent to-white"
-              }`}
+            ? "from-transparent via-transparent to-[#0a0a0a]"
+            : "from-transparent via-transparent to-white"
+            }`}
           />
-          
+
           {/* Floating Artistic Elements */}
           <div className="absolute top-10 left-10 w-20 h-20 border border-white/10 rounded-full blur-2xl animate-pulse" />
-          
+
           {/* Overlay Content */}
           <div className="absolute inset-0 flex flex-col justify-end p-10 z-10">
             <motion.div
@@ -316,7 +316,59 @@ export default function SignIn({ onClose, isDark, setUser }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
             >
-                <img src={logo} alt="artistic" className="h-14 w-auto object-contain mb-4" />
+              <div className="flex items-center gap-1 mb-4">
+                <img src={logo} alt="artistic" className="h-12 w-auto object-contain" />
+                <div className="relative group -mt-1 -ml-2">
+                  <span
+                    className="inline-block translate-y-1 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#F4B028] via-[#D97A9A] to-[#6B3FA0]"
+                    style={{ fontFamily: "'Scope One', serif", backgroundSize: "200% auto" }}
+                  >
+                    artistic
+                  </span>
+                  <svg
+                    viewBox="0 0 100 6"
+                    className="absolute -bottom-1.5 left-0 w-full opacity-70"
+                    fill="none"
+                  >
+                    <motion.path
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      animate={{ pathLength: 1, opacity: 1 }}
+                      transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                      d="M2 3 C20 1, 80 5, 98 3"
+                      stroke="#F4B028"
+                      strokeWidth="0.6"
+                      strokeLinecap="round"
+                    />
+                    <motion.path
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      animate={{ pathLength: 1, opacity: 0.8 }}
+                      transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }}
+                      d="M5 4 C30 2, 70 6, 95 4"
+                      stroke="#D97A9A"
+                      strokeWidth="0.5"
+                      strokeLinecap="round"
+                    />
+                    <motion.path
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      animate={{ pathLength: 1, opacity: 0.6 }}
+                      transition={{ duration: 1.4, delay: 0.9, ease: "easeOut" }}
+                      d="M3 5 C40 3, 60 7, 97 5"
+                      stroke="#6B3FA0"
+                      strokeWidth="0.4"
+                      strokeLinecap="round"
+                    />
+                    <motion.path
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      animate={{ pathLength: 1, opacity: 0.4 }}
+                      transition={{ duration: 1.6, delay: 1.1, ease: "easeOut" }}
+                      d="M8 2 C45 0, 55 4, 92 2"
+                      stroke="#3A3A3A"
+                      strokeWidth="0.3"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </div>
               <p className={`text-[15px] leading-relaxed max-w-[85%] font-medium ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
                 Where every sketch breathes
               </p>
@@ -328,16 +380,65 @@ export default function SignIn({ onClose, isDark, setUser }) {
         <div className="w-full md:w-[55%] p-6 sm:p-10 md:p-12 relative flex flex-col justify-center min-h-[500px]">
 
           {/* Mobile Header (Hidden on Desktop) */}
-          <div className="md:hidden mb-8">
-              <img src={logo} alt="artistic" className="h-10 w-auto object-contain" />
+          <div className="md:hidden mb-8 flex items-center gap-1">
+            <img src={logo} alt="artistic" className="h-12 w-auto object-contain" />
+            <div className="relative group -mt-1 -ml-2">
+              <span
+                className="inline-block translate-y-1 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#F4B028] via-[#D97A9A] to-[#6B3FA0]"
+                style={{ fontFamily: "'Scope One', serif", backgroundSize: "200% auto" }}
+              >
+                artistic
+              </span>
+              <svg
+                viewBox="0 0 100 6"
+                className="absolute -bottom-1.5 left-0 w-full opacity-70"
+                fill="none"
+              >
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                  d="M2 3 C20 1, 80 5, 98 3"
+                  stroke="#F4B028"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.8 }}
+                  transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }}
+                  d="M5 4 C30 2, 70 6, 95 4"
+                  stroke="#D97A9A"
+                  strokeWidth="0.5"
+                  strokeLinecap="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.6 }}
+                  transition={{ duration: 1.4, delay: 0.9, ease: "easeOut" }}
+                  d="M3 5 C40 3, 60 7, 97 5"
+                  stroke="#6B3FA0"
+                  strokeWidth="0.4"
+                  strokeLinecap="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.4 }}
+                  transition={{ duration: 1.6, delay: 1.1, ease: "easeOut" }}
+                  d="M8 2 C45 0, 55 4, 92 2"
+                  stroke="#3A3A3A"
+                  strokeWidth="0.3"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
           </div>
 
           {/* Close Button */}
           <button
             onClick={onClose}
-            className={`absolute top-6 right-6 p-2 rounded-full transition-all duration-300 z-50 ${
-              isDark 
-                ? "text-gray-500 hover:text-white hover:bg-white/5" 
+            className={`absolute top-6 right-6 p-2 rounded-full transition-all duration-300 z-50 ${isDark
+                ? "text-gray-500 hover:text-white hover:bg-white/5"
                 : "text-gray-400 hover:text-black hover:bg-black/5"
               }`}
           >
@@ -363,7 +464,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                   >
                     Welcome back
                   </motion.h2>
-                  <motion.p 
+                  <motion.p
                     variants={itemVariants}
                     className={`text-sm ${isDark ? "text-neutral-500" : "text-neutral-500"}`}
                   >
@@ -378,8 +479,8 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     onClick={handleGoogleSignIn}
                     disabled={loading}
                     className={`w-full h-11 rounded-full text-[14px] flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 font-medium ${isDark
-                        ? "border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:border-neutral-700 text-white"
-                        : "border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-black shadow-sm"
+                      ? "border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:border-neutral-700 text-white"
+                      : "border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-black shadow-sm"
                       }`}
                   >
                     <FcGoogle size={20} />
@@ -400,9 +501,9 @@ export default function SignIn({ onClose, isDark, setUser }) {
                       localStorage.setItem("authType", "login");
                       setStep("email");
                     }}
-                   className={`w-full h-11 rounded-full text-[14px] flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 font-medium ${isDark
-                        ? "border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:border-neutral-700 text-white"
-                        : "border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-black shadow-sm"
+                    className={`w-full h-11 rounded-full text-[14px] flex items-center justify-center gap-3 cursor-pointer transition-all duration-300 font-medium ${isDark
+                      ? "border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:border-neutral-700 text-white"
+                      : "border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 text-black shadow-sm"
                       }`}
                   >
                     <div className={`p-1 rounded-md ${isDark ? "bg-black/5" : "bg-white/10"}`}>
@@ -449,7 +550,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 className="space-y-8"
               >
                 <div className="space-y-3">
-                   <motion.button
+                  <motion.button
                     whileHover={{ x: -3 }}
                     onClick={() => setStep(authType === 'signup' ? 'signup-email' : 'email')}
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}
@@ -461,7 +562,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     Verify code
                   </motion.h2>
                   <motion.p variants={itemVariants} className={`text-sm leading-relaxed ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
-                    We've sent a 6-digit verification code to <br/>
+                    We've sent a 6-digit verification code to <br />
                     <span className={` ${isDark ? "text-white" : "text-black"}`}>{email}</span>
                   </motion.p>
                 </div>
@@ -487,8 +588,8 @@ export default function SignIn({ onClose, isDark, setUser }) {
                         onChange={(e) => handleOtpChange(e.target.value, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         className={`w-full h-14 text-center text-xl font-bold border rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 ${isDark
-                            ? "border-neutral-800 bg-neutral-900/50 text-white focus:ring-white/20 focus:border-white/30"
-                            : "border-gray-200 bg-white text-black focus:ring-black/5 focus:border-black/20 shadow-sm"
+                          ? "border-neutral-800 bg-neutral-900/50 text-white focus:ring-white/20 focus:border-white/30"
+                          : "border-gray-200 bg-white text-black focus:ring-black/5 focus:border-black/20 shadow-sm"
                           }`}
                       />
                     ))}
@@ -500,8 +601,8 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     type="submit"
                     disabled={loading}
                     className={`w-full h-10 text-[15px] rounded-lg transition-all duration-300 cursor-pointer shadow-lg ${isDark
-                        ? "bg-white text-black hover:bg-neutral-200"
-                        : "bg-black text-white hover:bg-neutral-800"
+                      ? "bg-white text-black hover:bg-neutral-200"
+                      : "bg-black text-white hover:bg-neutral-800"
                       } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     {loading ? "Verifying..." : "Verify Identity"}
@@ -515,13 +616,13 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     </p>
                   ) : (
                     <p className={`text-sm ${isDark ? "text-neutral-500" : "text-neutral-500"} `}>Didn't receive code?{" "}
-                    <button
-                      onClick={handleResendOTP}
-                      className={`text-sm underline cursor-pointer transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-black"
-                        }`}
-                    >
+                      <button
+                        onClick={handleResendOTP}
+                        className={`text-sm underline cursor-pointer transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-500 hover:text-black"
+                          }`}
+                      >
                         Resend
-                    </button>
+                      </button>
                     </p>
                   )}
                 </div>
@@ -538,8 +639,8 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 exit="exit"
                 className="space-y-8"
               >
-                 <div className="space-y-3">
-                   <motion.button
+                <div className="space-y-3">
+                  <motion.button
                     whileHover={{ x: -3 }}
                     onClick={() => setStep("options")}
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}
@@ -591,19 +692,18 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 >
                   <div className="space-y-4">
                     <div className="space-y-1.5">
-                      <label className={`text-xs uppercase ml-1 transition-colors duration-200 ${
-                        focusedField === "fullName" 
-                          ? (isDark ? "text-white" : "text-black") 
+                      <label className={`text-xs uppercase ml-1 transition-colors duration-200 ${focusedField === "fullName"
+                          ? (isDark ? "text-white" : "text-black")
                           : (isDark ? "text-neutral-500" : "text-neutral-400")
-                      }`}>Full Name</label>
+                        }`}>Full Name</label>
                       <input
                         type="text"
                         placeholder="John Doe"
                         onFocus={() => setFocusedField("fullName")}
                         onBlur={() => setFocusedField(null)}
                         className={`w-full h-10 px-4 rounded-lg text-sm border transition-all duration-300 focus:outline-none ${isDark
-                            ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-700"
-                            : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-2 focus:ring-black/5 shadow-sm placeholder:text-neutral-400"
+                          ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-700"
+                          : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-2 focus:ring-black/5 shadow-sm placeholder:text-neutral-400"
                           }`}
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
@@ -613,19 +713,18 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className={`text-xs uppercase ml-1 transition-colors duration-200 ${
-                        focusedField === "email" 
-                          ? (isDark ? "text-white" : "text-black") 
+                      <label className={`text-xs uppercase ml-1 transition-colors duration-200 ${focusedField === "email"
+                          ? (isDark ? "text-white" : "text-black")
                           : (isDark ? "text-neutral-500" : "text-neutral-400")
-                      }`}>Email Address</label>
+                        }`}>Email Address</label>
                       <input
                         type="email"
                         placeholder="name@example.com"
                         onFocus={() => setFocusedField("email")}
                         onBlur={() => setFocusedField(null)}
                         className={`w-full h-10 px-4 rounded-lg text-sm border transition-all duration-300 focus:outline-none ${isDark
-                            ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-700"
-                            : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-2 focus:ring-black/5 shadow-sm placeholder:text-neutral-400"
+                          ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-700"
+                          : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-2 focus:ring-black/5 shadow-sm placeholder:text-neutral-400"
                           }`}
                         value={email}
                         onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
@@ -655,8 +754,8 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     type="submit"
                     disabled={loading}
                     className={`w-full h-10 text-sm rounded-lg transition-all duration-300 cursor-pointer shadow-lg ${isDark
-                        ? "bg-white text-black hover:bg-neutral-200"
-                        : "bg-black text-white hover:bg-neutral-800"
+                      ? "bg-white text-black hover:bg-neutral-200"
+                      : "bg-black text-white hover:bg-neutral-800"
                       } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     {loading ? "Creating Account..." : "Create Account"}
@@ -687,7 +786,7 @@ export default function SignIn({ onClose, isDark, setUser }) {
                 className="space-y-8"
               >
                 <div className="space-y-3">
-                   <motion.button
+                  <motion.button
                     whileHover={{ x: -3 }}
                     onClick={() => setStep("options")}
                     className={`flex items-center gap-2 text-sm font-medium transition-colors ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}
@@ -733,11 +832,10 @@ export default function SignIn({ onClose, isDark, setUser }) {
                   className="space-y-6"
                 >
                   <div className="space-y-1.5">
-                    <label className={`text-xs uppercase ml-1 transition-colors duration-200 ${
-                      focusedField === "loginEmail" 
-                        ? (isDark ? "text-white" : "text-black") 
+                    <label className={`text-xs uppercase ml-1 transition-colors duration-200 ${focusedField === "loginEmail"
+                        ? (isDark ? "text-white" : "text-black")
                         : (isDark ? "text-neutral-500" : "text-neutral-400")
-                    }`}>Email Address</label>
+                      }`}>Email Address</label>
                     <input
                       type="email"
                       placeholder="name@example.com"
@@ -745,8 +843,8 @@ export default function SignIn({ onClose, isDark, setUser }) {
                       onFocus={() => setFocusedField("loginEmail")}
                       onBlur={() => setFocusedField(null)}
                       className={`w-full h-10 px-4 rounded-lg text-sm border transition-all duration-300 focus:outline-none ${isDark
-                          ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-700"
-                          : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-1 focus:ring-black/20 shadow-sm placeholder:text-neutral-400"
+                        ? "border-neutral-800 bg-neutral-900/50 text-white focus:border-white/30 placeholder:text-neutral-700"
+                        : "border-gray-200 bg-white text-black focus:border-black/20 focus:ring-1 focus:ring-black/20 shadow-sm placeholder:text-neutral-400"
                         }`}
                       value={email}
                       onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
@@ -761,8 +859,8 @@ export default function SignIn({ onClose, isDark, setUser }) {
                     type="submit"
                     disabled={loading}
                     className={`w-full h-10 text-[15px]  rounded-lg transition-all duration-300 cursor-pointer shadow-lg ${isDark
-                        ? "bg-white text-black hover:bg-neutral-200"
-                        : "bg-black text-white hover:bg-neutral-800"
+                      ? "bg-white text-black hover:bg-neutral-200"
+                      : "bg-black text-white hover:bg-neutral-800"
                       } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     {loading ? "Sending Code..." : "Send Login Code"}
