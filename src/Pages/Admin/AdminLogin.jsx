@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { API_BASE_URL } from "../../config";
 
 import ThemeToggle from "../../Components/ThemeToggle";
@@ -118,7 +119,60 @@ export default function AdminLogin({ isDark, setIsDark }) {
 
         {/* Header Section */}
         <div className="flex flex-col items-center mb-6">
-          <h1 className="text-3xl font-bold text-center tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+          <div className="flex items-center gap-1 mb-4">
+            <img src="/artisticLogo.png" alt="logo" className="h-12 w-auto object-contain" />
+            <div className="relative group -mt-1 -ml-2">
+              <span
+                className="inline-block translate-y-1 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#F4B028] via-[#D97A9A] to-[#6B3FA0]"
+                style={{ fontFamily: "'Scope One', serif", backgroundSize: "200% auto" }}
+              >
+                artistic
+              </span>
+              <svg
+                viewBox="0 0 100 6"
+                className="absolute -bottom-1.5 left-0 w-full opacity-70"
+                fill="none"
+              >
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+                  d="M2 3 C20 1, 80 5, 98 3"
+                  stroke="#F4B028"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.8 }}
+                  transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }}
+                  d="M5 4 C30 2, 70 6, 95 4"
+                  stroke="#D97A9A"
+                  strokeWidth="0.5"
+                  strokeLinecap="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.6 }}
+                  transition={{ duration: 1.4, delay: 0.9, ease: "easeOut" }}
+                  d="M3 5 C40 3, 60 7, 97 5"
+                  stroke="#6B3FA0"
+                  strokeWidth="0.4"
+                  strokeLinecap="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 0.4 }}
+                  transition={{ duration: 1.6, delay: 1.1, ease: "easeOut" }}
+                  d="M8 2 C45 0, 55 4, 92 2"
+                  stroke="#3A3A3A"
+                  strokeWidth="0.3"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold text-center tracking-tight opacity-60" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
             Admin Portal
           </h1>
           <p className={`text-center text-[13px] mt-2 font-medium ${isDark ? "text-gray-400" : "text-gray-500"}`}>
@@ -129,78 +183,78 @@ export default function AdminLogin({ isDark, setIsDark }) {
         {/* Login Card */}
         <div
           className={`p-7 rounded-[24px] backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border transition-all duration-300 ${isDark
-              ? "bg-[#111]/80 border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.5)]"
-              : "bg-white/90 border-white/50 border-t-white/80 shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
+            ? "bg-[#111]/80 border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.5)]"
+            : "bg-white/90 border-white/50 border-t-white/80 shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
             }`}
         >
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
 
             {step === 1 && (
               <>
-            {/* Email */}
-            <div>
-              <label className={`text-[14px]  ml-1 ${isDark ? "text-gray-300" : "text-gray-700"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Email Address</label>
-              <input
-                type="email"
-                placeholder="admin@artistic.com"
-                className={`w-full py-2.5 px-3 mt-1.5 rounded-lg text-[13px] 
+                {/* Email */}
+                <div>
+                  <label className={`text-[14px]  ml-1 ${isDark ? "text-gray-300" : "text-gray-700"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Email Address</label>
+                  <input
+                    type="email"
+                    placeholder="admin@artistic.com"
+                    className={`w-full py-2.5 px-3 mt-1.5 rounded-lg text-[13px] 
   transition-all duration-200 outline-none border
   ${isDark
-                    ? "border-white/10 bg-black/40 text-white focus:border-neutral-300/50"
-                    : "border-gray-300 bg-gray-50 text-black focus:border-gray-400"
-                  }`}
+                        ? "border-white/10 bg-black/40 text-white focus:border-neutral-300/50"
+                        : "border-gray-300 bg-gray-50 text-black focus:border-gray-400"
+                      }`}
 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
 
-              {errors.email && (
-                <p className="text-xs mt-1 ml-1 text-red-500">
-                  {errors.email}
-                </p>
-              )}
-            </div>
+                  {errors.email && (
+                    <p className="text-xs mt-1 ml-1 text-red-500">
+                      {errors.email}
+                    </p>
+                  )}
+                </div>
 
 
 
-            {/* Password */}
-            <div>
-              <label className={`text-[14px]  ml-1 ${isDark ? "text-gray-300" : "text-gray-700"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Password</label>
-              <div className="relative mt-1.5 group">
+                {/* Password */}
+                <div>
+                  <label className={`text-[14px]  ml-1 ${isDark ? "text-gray-300" : "text-gray-700"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Password</label>
+                  <div className="relative mt-1.5 group">
 
-                <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className={`w-full py-2.5 pl-3 pr-10 rounded-lg text-[13px] 
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      className={`w-full py-2.5 pl-3 pr-10 rounded-lg text-[13px] 
   transition-all duration-200 outline-none border
   ${isDark
-                      ? "border-white/10 bg-black/40 text-white focus:border-neutral-300/50"
-                      : "border-gray-300 bg-gray-50 text-black focus:border-gray-400"
-                    }`}
+                          ? "border-white/10 bg-black/40 text-white focus:border-neutral-300/50"
+                          : "border-gray-300 bg-gray-50 text-black focus:border-gray-400"
+                        }`}
 
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    setErrors((prev) => ({ ...prev, password: "" }));
-                  }}
-                />
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setErrors((prev) => ({ ...prev, password: "" }));
+                      }}
+                    />
 
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer transition-colors duration-200 
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className={`absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer transition-colors duration-200 
                     ${isDark ? "text-gray-500 hover:text-white" : "text-gray-400 hover:text-black"}`}
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="text-xs mt-1 ml-1 text-red-500">
-                  {errors.password}
-                </p>
-              )}
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="text-xs mt-1 ml-1 text-red-500">
+                      {errors.password}
+                    </p>
+                  )}
 
-            </div>
+                </div>
               </>
             )}
 
