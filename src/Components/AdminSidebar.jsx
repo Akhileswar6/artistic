@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { ShoppingBag, Image, Settings, MessageCircle, Users, ChartColumnIncreasing, LogOut, ChevronLeft, ChevronRight, Activity } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function AdminSidebar({ isDark, isCollapsed, setIsCollapsed }) {
   const navigate = useNavigate();
