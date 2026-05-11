@@ -243,7 +243,7 @@ export default function ArtPhoto({
             onClick={(e) => {
               if (handleInteraction()) e.preventDefault();
             }}
-            className={`group border-2 border-dashed rounded-2xl p-10 flex flex-col items-center cursor-pointer transition-all duration-300 ${isDark ? "border-white/20 hover:border-white/40 bg-white/[0.02] hover:bg-white/[0.04]" : "border-black/20 hover:border-black/40 bg-black/[0.02] hover:bg-black/[0.04]"
+            className={`group border-2 border-dashed rounded-2xl p-6 md:p-10 flex flex-col items-center cursor-pointer transition-all duration-300 ${isDark ? "border-white/20 hover:border-white/40 bg-white/[0.02] hover:bg-white/[0.04]" : "border-black/20 hover:border-black/40 bg-black/[0.02] hover:bg-black/[0.04]"
             }`}>
             <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-5 transition-transform duration-300 group-hover:-translate-y-2 ${isDark ? "bg-white/10 text-white" : "bg-black/5 text-black"}`}>
               <Upload size={24} />
@@ -313,11 +313,11 @@ export default function ArtPhoto({
 
 
       {/* BUTTONS */}
-      <div className="grid grid-cols-2 gap-4 md:gap-6 pt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6 pt-4">
 
         <button
           onClick={() => setStep(1)}
-          className={`group px-6 py-2.5 text-[14px]  uppercase  rounded-lg transition-all cursor-pointer flex items-center justify-center gap-3 ${isDark
+          className={`group px-6 py-3 md:py-3.5 text-[13px] md:text-[14px] uppercase font-bold rounded-lg md:rounded-xl transition-all cursor-pointer flex items-center justify-center gap-3 ${isDark
               ? "bg-[#141416] text-white border border-white/10 hover:bg-neutral-800"
               : "bg-white text-black border border-black/10 shadow-sm hover:bg-neutral-50"
             }`}
@@ -334,7 +334,7 @@ export default function ArtPhoto({
             if (!handleInteraction()) setStep(3);
           }}
           disabled={user && !orderData.photo}
-          className={`px-6 py-2.5 text-[14px] uppercase rounded-lg transition-all duration-300 flex items-center justify-center gap-3 group cursor-pointer ${isDark
+          className={`px-6 py-3 md:py-3.5 text-[13px] md:text-[14px] uppercase font-bold rounded-lg md:rounded-xl transition-all duration-300 flex items-center justify-center gap-3 group cursor-pointer ${isDark
             ? "bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed"
             : "bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed"
             }`}
