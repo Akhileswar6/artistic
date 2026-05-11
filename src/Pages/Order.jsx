@@ -166,7 +166,7 @@ export default function Order({ isDark }) {
 
   return (
     <div
-      className={`min-h-[calc(100vh-64px)] pt-28 md:pt-32 pb-12 md:pb-20 px-4 md:px-8 transition-colors duration-500 relative overflow-hidden ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"
+      className={`min-h-[calc(100vh-64px)] pt-24 md:pt-32 pb-12 md:pb-20 px-4 md:px-8 transition-colors duration-500 relative overflow-hidden ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"
         }`}
       style={{ fontFamily: "Inter, sans-serif" }}
     >
@@ -182,15 +182,15 @@ export default function Order({ isDark }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16"
         >
           <h1
-            className="text-3xl md:text-4xl font-bold tracking-tight mb-3"
+            className="text-2xl md:text-4xl font-bold tracking-tight mb-2 md:mb-3"
             style={{ fontFamily: "Bricolage Grotesque" }}
           >
             Start Your <span className="text-neutral-500 font-bold">Masterpiece</span>
           </h1>
-          <p className={`max-w-xl mx-auto text-[14px] leading-relaxed ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+          <p className={`max-w-xl mx-auto text-[12px] md:text-[14px] leading-relaxed ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
             Order your custom portrait now and get it delivered to your doorstep
           </p>
         </motion.div>
@@ -200,7 +200,7 @@ export default function Order({ isDark }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center items-center gap-2 md:gap-8 mb-10 md:mb-12"
+          className="flex justify-center items-center gap-2 md:gap-8 mb-8 md:mb-12"
         >
           {[
             { num: 1, label: "Details" },
@@ -209,15 +209,15 @@ export default function Order({ isDark }) {
           ].map((s, index) => (
             <div key={s.num} className="flex items-center gap-2 md:gap-8">
               <div className="flex flex-col md:flex-row items-center gap-1.5 md:gap-3 group cursor-pointer" onClick={() => step > s.num && setStep(s.num)}>
-                <div className={`w-6 h-6 md:w-8 md:h-8 text-[11px] md:text-[14px] rounded-full flex items-center justify-center transition-all duration-300 ${step > s.num
+                <div className={`w-6 h-6 md:w-8 md:h-8 text-[10px] md:text-[14px] rounded-full flex items-center justify-center transition-all duration-300 ${step > s.num
                   ? "bg-green-500 text-white"
                   : step === s.num
-                    ? "bg-neutral-700 text-white scale-110"
+                    ? "bg-neutral-700 text-white scale-110 shadow-lg"
                     : isDark ? "bg-[#141416] text-neutral-600 border border-white/5" : "bg-white text-neutral-400 border border-black/5 shadow-sm"
                   }`}>
-                  {step > s.num ? <Check size={14} className="md:w-[18px]" strokeWidth={3} /> : s.num}
+                  {step > s.num ? <Check size={12} className="md:w-[18px]" strokeWidth={3} /> : s.num}
                 </div>
-                <span className={`text-[10px] md:text-[13px] uppercase tracking-wider md:tracking-widest transition-colors ${step >= s.num ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-600" : "text-neutral-400")
+                <span className={`text-[9px] md:text-[13px] uppercase font-bold tracking-tight md:tracking-widest transition-colors ${step >= s.num ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-600" : "text-neutral-400")
                   }`}>
                   {s.label}
                 </span>
@@ -230,10 +230,10 @@ export default function Order({ isDark }) {
         </motion.div>
 
         {/* MAIN GRID */}
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* LEFT SIDE (Steps Content) */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 order-2 lg:order-1">
             <AnimatePresence mode="wait">
               <motion.div
                 key={step}
@@ -288,7 +288,7 @@ export default function Order({ isDark }) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col gap-6 lg:sticky lg:top-28 self-start lg:col-span-4"
+            className="flex flex-col gap-6 lg:sticky lg:top-28 self-start lg:col-span-4 order-1 lg:order-2"
           >
             {/* ORDER SUMMARY */}
             <div
@@ -297,55 +297,55 @@ export default function Order({ isDark }) {
                 : "bg-white/80 backdrop-blur-xl border-black/5 shadow-2xl "
                 }`}
             >
-              <h3 className="mb-6 text-xl" style={{ fontFamily: "Bricolage Grotesque" }}>
+              <h3 className="mb-6 text-lg md:text-xl font-bold" style={{ fontFamily: "Bricolage Grotesque" }}>
                 Commission Summary
               </h3>
 
-              <div className="space-y-5">
-                <div className="flex justify-between items-start text-sm">
+              <div className="space-y-4 md:space-y-5">
+                <div className="flex justify-between items-start text-xs md:text-sm">
                   <div className="flex flex-col gap-1">
-                    <span className=" text-[15px]">{styleLabels[orderData.artStyle]}</span>
-                    <span className="text-[11px]  uppercase text-neutral-500">Art Style</span>
+                    <span className="text-sm md:text-[15px] font-medium">{styleLabels[orderData.artStyle]}</span>
+                    <span className="text-[10px] md:text-[11px] uppercase text-neutral-500 font-bold">Art Style</span>
                   </div>
-                  <span className="text-[15px]">₹{basePrice.toLocaleString()}</span>
+                  <span className="text-sm md:text-[15px] font-bold">₹{basePrice.toLocaleString()}</span>
                 </div>
 
                 {orderData.frameOption !== "noframe" && (
-                  <div className="flex justify-between items-start text-sm">
+                  <div className="flex justify-between items-start text-xs md:text-sm">
                     <div className="flex flex-col gap-1">
-                      <span className="text-[14px]">{frameLabels[orderData.frameOption]}</span>
-                      <span className="text-[11px]  uppercase tracking-widest text-neutral-500">Frame</span>
+                      <span className="text-sm md:text-[14px] font-medium">{frameLabels[orderData.frameOption]}</span>
+                      <span className="text-[10px] md:text-[11px] uppercase tracking-widest text-neutral-500 font-bold">Frame</span>
                     </div>
-                    <span className={`${isDark ? "text-white" : "text-black"}`}>+₹{framePrice.toLocaleString()}</span>
+                    <span className={`text-sm md:text-base font-bold ${isDark ? "text-white" : "text-black"}`}>+₹{framePrice.toLocaleString()}</span>
                   </div>
                 )}
 
                 <div className={`h-[1px] w-full ${isDark ? "bg-white/10" : "bg-black/10"}`} />
 
                 <div className="flex justify-between items-center py-2">
-                  <span className="text-sm  uppercase ">Total Amount</span>
-                  <span className="text-xl" style={{ fontFamily: "Bricolage Grotesque" }}>₹{totalPrice.toLocaleString()}</span>
+                  <span className="text-xs md:text-sm uppercase font-black opacity-50">Total Amount</span>
+                  <span className="text-lg md:text-xl font-black" style={{ fontFamily: "Bricolage Grotesque" }}>₹{totalPrice.toLocaleString()}</span>
                 </div>
 
                 <div className={`p-4 rounded-xl flex flex-col gap-2 relative overflow-hidden ${isDark ? "bg-white/5 border border-white/10" : "bg-black/5 border border-black/10"}`}>
-                  <ShieldCheck className={`absolute -bottom-4 -right-4 w-20 h-20 opacity-10 ${isDark ? "text-white" : "text-black"}`} />
+                  <ShieldCheck className={`absolute -bottom-4 -right-4 w-16 md:w-20 h-16 md:h-20 opacity-10 ${isDark ? "text-white" : "text-black"}`} />
                   <div className="flex justify-between items-center relative z-10">
-                    <span className={`text-[12px] uppercase ${isDark ? "text-neutral-400" : "text-neutral-600"}`} >Advance Payment (25%)</span>
-                    <span className={`text-lg  ${isDark ? "text-white" : "text-black"}`}>₹{advanceAmount.toLocaleString()}</span>
+                    <span className={`text-[10px] md:text-[12px] uppercase font-bold ${isDark ? "text-neutral-400" : "text-neutral-600"}`} >Advance (25%)</span>
+                    <span className={`text-base md:text-lg font-black ${isDark ? "text-white" : "text-black"}`}>₹{advanceAmount.toLocaleString()}</span>
                   </div>
-                  <p className={`text-[11px] font-medium leading-relaxed relative z-10 ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
-                    Advance payment is required to confirm your order, and the remaining amount will be collected after the final artwork is delivered.
+                  <p className={`text-[10px] md:text-[11px] font-medium leading-relaxed relative z-10 ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
+                    Required to confirm order. Balance collected after delivery.
                   </p>
                 </div>
 
-                <div className="space-y-4 mt-6 pt-6 border-t border-dashed border-gray-500/30">
-                  <div className={`flex items-center gap-3 text-sm font-medium ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
-                    <Clock size={16} className="text-neutral-500 shrink-0" />
-                    <span className="text-[12px]">Execution: 3-5 business days</span>
+                <div className="space-y-3 mt-6 pt-6 border-t border-dashed border-gray-500/30">
+                  <div className={`flex items-center gap-3 text-xs font-medium ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+                    <Clock size={14} className="text-neutral-500 shrink-0" />
+                    <span>Execution: 3-5 business days</span>
                   </div>
-                  <div className={`flex items-center gap-3 text-sm font-medium ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
-                    <Package size={16} className="text-neutral-500 shrink-0" />
-                    <span className="text-[12px]">Archival-grade packaging included</span>
+                  <div className={`flex items-center gap-3 text-xs font-medium ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+                    <Package size={14} className="text-neutral-500 shrink-0" />
+                    <span>Archival-grade packaging</span>
                   </div>
                 </div>
               </div>
@@ -353,17 +353,17 @@ export default function Order({ isDark }) {
 
             {/* PAYMENT INFO */}
             <div
-              className={`p-5 rounded-2xl border transition-all shadow-md ${isDark
+              className={`p-4 md:p-5 rounded-2xl border transition-all shadow-md ${isDark
                 ? "bg-[#141416]/50 border-white/5"
                 : "bg-white/50 border-black/5"
                 }`}
             >
-              <div className="flex items-center gap-2 mb-3 text-[14px]">
+              <div className="flex items-center gap-2 mb-2 text-sm font-bold">
                 <Info size={16} className={isDark ? "text-white" : "text-black"} />
                 Payment Information
               </div>
-              <p className={`text-[12px] leading-relaxed font-medium ${isDark ? "text-neutral-500" : "text-neutral-600"}`}>
-                Once Artist confirms the order, a secure UPI payment link for the advance amount will be sent to your dashboard.
+              <p className={`text-[11px] md:text-[12px] leading-relaxed font-medium ${isDark ? "text-neutral-500" : "text-neutral-600"}`}>
+                A secure UPI payment link will be sent to your dashboard after artist confirmation.
               </p>
             </div>
 
@@ -404,5 +404,6 @@ export default function Order({ isDark }) {
 
 
     </div>
+
   );
 }
