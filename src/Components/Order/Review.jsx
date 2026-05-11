@@ -147,11 +147,11 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
 
       </div>
 
-      <div className="grid grid-cols-2 gap-4 md:gap-6 pt-4 pb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6 pt-4 pb-10">
 
         <button
           onClick={() => setStep(2)}
-          className={`group px-6 py-3 text-[14px]  uppercase  rounded-xl transition-all cursor-pointer flex items-center justify-center gap-3 ${isDark
+          className={`group px-6 py-3 md:py-3.5 text-[13px] md:text-[14px] uppercase font-bold rounded-lg md:rounded-xl transition-all cursor-pointer flex items-center justify-center gap-3 ${isDark
               ? "bg-[#141416] text-white border border-white/10 hover:bg-neutral-800"
               : "bg-white text-black border border-black/10 shadow-sm hover:bg-neutral-50"
             }`}
@@ -168,7 +168,7 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
           whileTap={{ scale: 0.98 }}
           onClick={handleSubmit}
           disabled={loading}
-          className={`px-6 py-3 text-[14px]  uppercase cursor-pointer rounded-xl shadow-2xl flex items-center justify-center gap-3 
+          className={`px-6 py-3 md:py-3.5 text-[13px] md:text-[14px] uppercase font-bold cursor-pointer rounded-lg md:rounded-xl shadow-2xl flex items-center justify-center gap-3 
             ${loading 
               ? (isDark ? "bg-white/50 text-black/50" : "bg-black/50 text-white/50") 
               : (isDark ? "bg-white text-black hover:bg-neutral-200" : "bg-black text-white hover:bg-neutral-800")}
