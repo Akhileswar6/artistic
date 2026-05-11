@@ -46,25 +46,25 @@ export default function Account({ isDark }) {
   }
 
   return (
-    <div className={`min-h-screen pt-28 md:pt-32 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className={`min-h-screen pt-24 md:pt-32 pb-24 px-4 md:px-6 transition-colors duration-300 ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
+      <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
 
 
         {/* Account Information */}
-        <div className={`p-8 rounded-3xl border transition-all duration-300 ${isDark ? "bg-[#111111] border-white/5" : "bg-white border-black/5 shadow-sm"
+        <div className={`p-6 md:p-8 rounded-2xl md:rounded-3xl border transition-all duration-300 ${isDark ? "bg-[#111111] border-white/5" : "bg-white border-black/5 shadow-sm"
           }`}>
-          <h3 className="text-[20px] mb-8  gap-3" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+          <h3 className="text-lg md:text-[20px] mb-6 md:mb-8 gap-3" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
             Account Details
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             <div className="flex items-center gap-4">
               <div className={`p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-gray-100"}`}>
                 <User size={20} className="opacity-60" />
               </div>
               <div>
-                <p className={`text-[11px] uppercase tracking-wider  opacity-40`}>Full Name</p>
-                <p className="text-[16px] capitalize font-medium">{user.fullName}</p>
+                <p className={`text-[11px] uppercase tracking-wider opacity-40`}>Full Name</p>
+                <p className="text-sm md:text-[16px] capitalize font-medium">{user.fullName}</p>
               </div>
             </div>
 
@@ -72,9 +72,9 @@ export default function Account({ isDark }) {
               <div className={`p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-gray-100"}`}>
                 <Mail size={20} className="opacity-60" />
               </div>
-              <div>
-                <p className={`text-[11px] uppercase tracking-wider  opacity-40`}>Email Address</p>
-                <p className="text-[16px] font-medium">{user.email}</p>
+              <div className="overflow-hidden">
+                <p className={`text-[11px] uppercase tracking-wider opacity-40`}>Email Address</p>
+                <p className="text-sm md:text-[16px] font-medium truncate">{user.email}</p>
               </div>
             </div>
 
@@ -83,38 +83,36 @@ export default function Account({ isDark }) {
                 <Calendar size={20} className="opacity-60" />
               </div>
               <div>
-                <p className={`text-[11px] uppercase tracking-wider  opacity-40`}>Member Since</p>
-                <p className="text-[16px] font-medium">{new Date(user.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+                <p className={`text-[11px] uppercase tracking-wider opacity-40`}>Member Since</p>
+                <p className="text-sm md:text-[16px] font-medium">{new Date(user.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
           {[
             { label: "Total Orders", value: stats.orders, icon: ShoppingBag, color: "text-blue-500", desc: "Manage your art commissions" },
             { label: "Notifications", value: stats.notifications, icon: Bell, color: "text-purple-500", desc: "Stay updated on your progress" }
           ].map((item, i) => (
-            <div key={i} className={`p-7 rounded-3xl border transition-all duration-300 hover:scale-[1.02] ${isDark ? "bg-[#111111] border-white/5" : "bg-white border-black/5 shadow-sm"}`}>
-              <div className="flex justify-between items-start mb-6">
-                <div className={`${item.color}`}>
-                  <item.icon size={24} />
-                </div>
-                <p className="text-4xl " style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{item.value}</p>
+            <div key={i} className={`p-5 md:p-7 rounded-2xl md:rounded-3xl border transition-all duration-300 hover:scale-[1.01] md:hover:scale-[1.02] ${isDark ? "bg-[#111111] border-white/5" : "bg-white border-black/5 shadow-sm"}`}>
+              <div className="flex justify-between items-start mb-4 md:mb-6">
+                  <item.icon size={22} />
+                <p className="text-3xl md:text-4xl" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{item.value}</p>
               </div>
               <div>
-                <p className="text-[14px] uppercase tracking-wider mb-1">{item.label}</p>
-                <p className="text-xs opacity-30">{item.desc}</p>
+                <p className="text-xs md:text-[14px] uppercase tracking-wider mb-1">{item.label}</p>
+                <p className="text-[10px] md:text-xs opacity-30">{item.desc}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* Security & Preferences */}
-        <div className={`p-8 rounded-3xl border transition-all duration-300 ${isDark ? "bg-[#111111] border-white/5" : "bg-white border-black/5 shadow-sm"
+        <div className={`p-6 md:p-8 rounded-2xl md:rounded-3xl border transition-all duration-300 ${isDark ? "bg-[#111111] border-white/5" : "bg-white border-black/5 shadow-sm"
           }`}>
-          <h3 className="text-[20px] mb-6  gap-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+          <h3 className="text-lg md:text-[20px] mb-6 gap-2" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
             Security & Preferences
           </h3>
 
@@ -122,11 +120,9 @@ export default function Account({ isDark }) {
             <button onClick={() => toast("Security settings are currently managed via OTP", { icon: '🛡️' })} className={`p-4 rounded-xl flex items-center justify-between group transition-all cursor-pointer ${isDark ? "bg-white/5 hover:bg-white/10" : "bg-gray-50 hover:bg-gray-100"
               }`}>
               <div className="flex items-center gap-4">
-                <div className={`p-2 rounded-lg bg-blue-500/10 text-blue-500`}>
-                  <ShieldCheck size={22} />
-                </div>
+                  <ShieldCheck size={20} />
                 <div className="text-left">
-                  <p className="text-sm ">Password & Security</p>
+                  <p className="text-sm">Password & Security</p>
                   <p className="text-[11px] opacity-40">Manage your login methods</p>
                 </div>
               </div>
@@ -138,11 +134,9 @@ export default function Account({ isDark }) {
             <button onClick={() => toast.success("Preferences saved (simulation)")} className={`p-4 rounded-xl flex items-center justify-between group transition-all cursor-pointer ${isDark ? "bg-white/5 hover:bg-white/10" : "bg-gray-50 hover:bg-gray-100"
               }`}>
               <div className="flex items-center gap-4">
-                <div className={`p-2 rounded-lg bg-neutral-500/10 text-neutral-500`}>
-                  <Settings size={20} />
-                </div>
+                  <Settings size={18} />
                 <div className="text-left">
-                  <p className="text-sm ">Preferences</p>
+                  <p className="text-sm">Preferences</p>
                   <p className="text-[11px] opacity-40">Customize your experience</p>
                 </div>
               </div>
@@ -152,13 +146,14 @@ export default function Account({ isDark }) {
             </button>
           </div>
 
-          <div className={`mt-8 p-4 rounded-xl border border-dashed ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-gray-50"}`}>
-            <p className="text-[12px] opacity-50 leading-relaxed text-center">
+          <div className={`mt-6 md:mt-8 p-4 rounded-xl border border-dashed ${isDark ? "border-white/10 bg-white/5" : "border-black/10 bg-gray-50"}`}>
+            <p className="text-[11px] md:text-[12px] opacity-50 leading-relaxed text-center">
               Your privacy is important to us. We never share your personal data with third parties.
             </p>
           </div>
         </div>
       </div>
     </div>
+
   );
 }
