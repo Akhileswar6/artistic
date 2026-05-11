@@ -62,13 +62,13 @@ export default function Orders({ isDark }) {
   ];
 
   return (
-    <div className={`min-h-screen pt-28 md:pt-32 pb-24 px-6 transition-colors duration-300 ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className={`min-h-screen pt-24 md:pt-32 pb-24 px-4 md:px-6 transition-colors duration-300 ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
+      <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
 
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-6">
+          <div className="text-left">
+            <div className="flex items-center gap-3">
               <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
                 My Orders
               </h1>
@@ -79,7 +79,7 @@ export default function Orders({ isDark }) {
 
           <button
             onClick={() => navigate("/order")}
-            className={`w-full md:w-auto px-4 py-3 md:py-2 rounded-lg  text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-neutral-800"
+            className={`w-full sm:w-auto px-4 py-2.5 md:py-2 rounded-lg text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-neutral-800"
               }`}
           >
             New Commission
@@ -88,67 +88,67 @@ export default function Orders({ isDark }) {
         </div>
 
         {loading ? (
-          <div className="grid gap-6">
+          <div className="grid gap-4 md:gap-6">
             <OrderSkeleton />
             <OrderSkeleton />
             <OrderSkeleton />
           </div>
         ) : orders.length > 0 ? (
-          <div className="grid gap-6">
+          <div className="grid gap-4 md:gap-6">
             {orders.map((order) => {
               const statusInfo = getStatusInfo(order.status);
               return (
                 <div
                   key={order._id}
-                  className={`group rounded-2xl p-4 border transition-all duration-500 hover:shadow-2xl  ${isDark
+                  className={`group rounded-2xl p-4 border transition-all duration-500 hover:shadow-xl ${isDark
                     ? "bg-[#111111] border-white/5 hover:border-white/10 "
                     : "bg-white border-black/5 hover:border-black/15 shadow-lg "
                     }`}
                 >
-                  <div className="flex flex-col md:flex-row gap-5 items-center">
+                  <div className="flex flex-col sm:flex-row gap-4 md:gap-5 items-start sm:items-center">
                     {/* Compact Image Preview */}
-                    <div className="w-full md:w-32 h-32 rounded-lg overflow-hidden shrink-0 border border-white/5 shadow-xl relative group-hover:scale-105 transition-transform duration-500">
+                    <div className="w-full sm:w-28 md:w-32 h-40 sm:h-28 md:h-32 rounded-xl overflow-hidden shrink-0 border border-white/5 shadow-xl relative group-hover:scale-[1.02] transition-transform duration-500">
                       <OptimizedImage src={order.photo} alt="Commission" className="w-full h-full object-cover" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>
 
-                    <div className="flex-1 w-full space-y-4">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="flex-1 w-full space-y-3 md:space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                         <div className="space-y-1.5">
                           <div className="flex items-center gap-3">
-                            <h3 className="font-bold text-[17px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                            <h3 className="font-bold text-base md:text-[17px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
                               {order.artStyle.charAt(0).toUpperCase() + order.artStyle.slice(1)} Portrait
                             </h3>
-                            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${statusInfo.color.replace('bg-', 'bg-opacity-10 border-').replace('/10', '/20')
+                            <span className={`px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest border ${statusInfo.color.replace('bg-', 'bg-opacity-10 border-').replace('/10', '/20')
                               }`}>
                               {statusInfo.label}
                             </span>
                           </div>
-                          <div className="flex items-center gap-4 opacity-40">
-                            <p className="text-[13px] flex items-center gap-1.5 ">
+                          <div className="flex flex-wrap items-center gap-3 md:gap-4 opacity-40">
+                            <p className="text-[12px] md:text-[13px] flex items-center gap-1.5 ">
                               <Clock size={12} /> {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                             </p>
-                            <div className="w-1 h-1 rounded-full bg-current opacity-30"></div>
-                            <p className="text-[13px] flex items-center gap-1.5 ">
+                            <div className="hidden md:block w-1 h-1 rounded-full bg-current opacity-30"></div>
+                            <p className="text-[12px] md:text-[13px] flex items-center gap-1.5 ">
                               <Package size={12} /> #{order._id.slice(-6).toUpperCase()}
                             </p>
                           </div>
                         </div>
 
-                        <div className="text-right">
-                          <div className={`px-3 py-1.5 rounded-lg border ${isDark ? "bg-white/5 border-white/5" : "bg-gray-50 border-black/5"}`}>
-                            <p className="text-base font-black flex items-center justify-end gap-0.5 tracking-tighter">
+                        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
+                          <div className={`px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg border ${isDark ? "bg-white/5 border-white/5" : "bg-gray-50 border-black/5"}`}>
+                            <p className="text-sm md:text-base font-black flex items-center gap-0.5 tracking-tighter">
                               <IndianRupee size={14} /> {order.totalPrice.toLocaleString()}
                             </p>
                           </div>
-                          <p className="text-[13px]  opacity-30 mt-1">Total Value</p>
+                          <p className="text-[11px] md:text-[13px] opacity-30">Total Value</p>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-end pt-2 border-t border-white/5">
                         <button
                           onClick={() => navigate(`/orders/${order._id}`)}
-                          className={`group/btn flex items-center gap-2 text-[13px]  cursor-pointer transition-all px-3 py-1.5 rounded-lg ${isDark
+                          className={`group/btn flex items-center gap-2 text-[12px] md:text-[13px] font-medium cursor-pointer transition-all px-3 py-1.5 rounded-lg ${isDark
                             ? "text-blue-400 hover:bg-blue-400/10"
                             : "text-blue-600 hover:bg-blue-50"
                             }`}
@@ -165,23 +165,23 @@ export default function Orders({ isDark }) {
           </div>
         ) : (
           /* Empty State */
-          <div className={`min-h-[400px] flex flex-col items-center justify-center rounded-[32px] border border-dashed transition-all duration-300 ${isDark ? "bg-[#111111] border-white/10" : "bg-white border-black/10"
+          <div className={`min-h-[350px] md:min-h-[400px] flex flex-col items-center justify-center rounded-2xl md:rounded-[32px] border border-dashed transition-all duration-300 ${isDark ? "bg-[#111111] border-white/10" : "bg-white border-black/10"
             }`}>
             <div className="text-center space-y-6 max-w-sm px-6">
-              <div className={`w-20 h-20 mx-auto rounded-3xl flex items-center justify-center rotate-6 transition-transform hover:rotate-0 duration-500 ${isDark ? "bg-white/5" : "bg-black/5"}`}>
-                <ShoppingBag size={40} className="opacity-20" />
+              <div className="w-12 h-12 md:w-16 md:h-16 mx-auto rounded-full flex items-center justify-center mb-4 md:mb-6">
+                <ShoppingBag size={32} className="opacity-20" />
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-xl font-bold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>No orders found</h2>
-                <p className="text-sm opacity-50 leading-relaxed">
+                <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>No orders found</h2>
+                <p className="text-xs md:text-sm opacity-50 leading-relaxed">
                   It looks like you haven't placed any orders yet. Start exploring our gallery to find something you love!
                 </p>
               </div>
 
               <button
                 onClick={() => navigate("/order")}
-                className={`inline-flex items-center gap-2 text-sm font-semibold transition-colors ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"
+                className={`inline-flex items-center gap-2 text-xs md:text-sm font-semibold transition-colors ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"
                   }`}
               >
                 <Package size={18} />
@@ -192,15 +192,15 @@ export default function Orders({ isDark }) {
         )}
 
         {/* Helpful Info */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 border-t border-white/5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-10 md:pt-12 border-t border-white/5">
           {[
             { title: "Artisan Quality", desc: "Hand-drawn with premium materials" },
             { title: "Safe Shipping", desc: "Special packaging for fragile art" },
             { title: "Updates", desc: "Receive photo updates as we draw" }
           ].map((item, i) => (
-            <div key={i} className="text-center md:text-left space-y-2">
-              <h4 className="text-md" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{item.title}</h4>
-              <p className="text-[12px] opacity-40 leading-relaxed">{item.desc}</p>
+            <div key={i} className="text-center sm:text-left space-y-1.5 md:space-y-2">
+              <h4 className="text-sm md:text-md font-bold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{item.title}</h4>
+              <p className="text-[11px] md:text-[12px] opacity-40 leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
