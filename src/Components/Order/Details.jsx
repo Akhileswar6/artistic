@@ -18,8 +18,8 @@ export default function Details({ isDark, setStep, orderData, handleInputChange,
         : "border-black/5 bg-white/80 backdrop-blur-xl shadow-2xl shadow-black/5"
         }`}
     >
-      <div className="flex items-center gap-3 mb-8">
-        <h2 className="text-lg md:text-xl" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Shipping Details</h2>
+      <div className="flex items-center gap-3 mb-6 md:mb-8">
+        <h2 className="text-lg md:text-xl font-bold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Shipping Details</h2>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -133,7 +133,7 @@ export default function Details({ isDark, setStep, orderData, handleInputChange,
           }
         }}
         disabled={user && (!orderData.name || !isEmailValid || orderData.phone.length !== 10 || !orderData.address)}
-        className={`mt-10 w-full px-5 py-3 text-[14px]  uppercase  rounded-lg transition-all duration-300 flex items-center justify-center gap-3 group cursor-pointer ${isDark
+        className={`mt-8 md:mt-10 w-full px-5 py-3 md:py-3.5 text-[13px] md:text-[14px] uppercase font-bold rounded-lg md:rounded-xl transition-all duration-300 flex items-center justify-center gap-3 group cursor-pointer ${isDark
           ? "bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed"
           : "bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed"
           }`}
