@@ -5,9 +5,9 @@ import { AnimatePresence, motion } from "framer-motion";
 
 // Layouts
 import Layout from "./Layout/Layout";
-import PolicyNavbar from "./Components/PolicyNavbar";
+import PolicyNavbar from "./Layout/PolicyNavbar";
 import AdminLayout from "./Layout/AdminLayout";
-import AdminRoute from "./Components/AdminRoute";
+import AdminRoute from "./Components/Admin/AdminRoute";
 
 // Lazy Loaded Admin Pages
 const Dashboard = lazy(() => import("./Pages/Admin/Dashboard"));
@@ -153,221 +153,221 @@ export default function App() {
           }`}
       >
         <Suspense fallback={<PageLoader />}>
-            <Routes location={location}>
-              {/* Admin Routes */}
-              <Route
-                path="/admin"
-                element={<AdminLogin isDark={isDark} setIsDark={setIsDark} />}
-              />
-              <Route
-                path="/admin/dashboard"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <PageTransition>
-                        <Dashboard />
-                      </PageTransition>
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/users"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <PageTransition>
-                        <Users />
-                      </PageTransition>
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/messages"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <PageTransition>
-                        <Messages />
-                      </PageTransition>
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/settings"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <PageTransition>
-                        <Settings />
-                      </PageTransition>
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/activities"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <PageTransition>
-                        <ActivityLog />
-                      </PageTransition>
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/userOrders"
-                element={
-                  <AdminRoute>
-                    <AdminLayout>
-                      <PageTransition>
-                        <UserOrders />
-                      </PageTransition>
-                    </AdminLayout>
-                  </AdminRoute>
-                }
-              />
+          <Routes location={location}>
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={<AdminLogin isDark={isDark} setIsDark={setIsDark} />}
+            />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <PageTransition>
+                      <Dashboard />
+                    </PageTransition>
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <PageTransition>
+                      <Users />
+                    </PageTransition>
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/messages"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <PageTransition>
+                      <Messages />
+                    </PageTransition>
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <PageTransition>
+                      <Settings />
+                    </PageTransition>
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/activities"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <PageTransition>
+                      <ActivityLog />
+                    </PageTransition>
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/userOrders"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <PageTransition>
+                      <UserOrders />
+                    </PageTransition>
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
 
-              {/* Main Website Routes */}
+            {/* Main Website Routes */}
+            <Route
+              element={
+                <Layout
+                  isDark={isDark}
+                  setIsDark={setIsDark}
+                  user={user}
+                  setUser={setUser}
+                  showSignIn={showSignIn}
+                  setShowSignIn={setShowSignIn}
+                />
+              }
+            >
               <Route
+                path="/"
                 element={
-                  <Layout
-                    isDark={isDark}
-                    setIsDark={setIsDark}
-                    user={user}
-                    setUser={setUser}
-                    showSignIn={showSignIn}
-                    setShowSignIn={setShowSignIn}
-                  />
+                  <PageTransition>
+                    <Home isDark={isDark} />
+                  </PageTransition>
                 }
-              >
-                <Route
-                  path="/"
-                  element={
-                    <PageTransition>
-                      <Home isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/gallery"
-                  element={
-                    <PageTransition>
-                      <Gallery isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/process"
-                  element={
-                    <PageTransition>
-                      <Process isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/order"
-                  element={
-                    <PageTransition>
-                      <Order isDark={isDark} setShowSignIn={setShowSignIn} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/about"
-                  element={
-                    <PageTransition>
-                      <About isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/contact"
-                  element={
-                    <PageTransition>
-                      <Contact isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/account"
-                  element={
-                    <PageTransition>
-                      <Account isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/orders"
-                  element={
-                    <PageTransition>
-                      <Orders isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/orders/:id"
-                  element={
-                    <PageTransition>
-                      <OrderDetail isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/notifications"
-                  element={
-                    <PageTransition>
-                      <Notifications isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-              </Route>
+              />
+              <Route
+                path="/gallery"
+                element={
+                  <PageTransition>
+                    <Gallery isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/process"
+                element={
+                  <PageTransition>
+                    <Process isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/order"
+                element={
+                  <PageTransition>
+                    <Order isDark={isDark} setShowSignIn={setShowSignIn} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <PageTransition>
+                    <About isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <PageTransition>
+                    <Contact isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/account"
+                element={
+                  <PageTransition>
+                    <Account isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <PageTransition>
+                    <Orders isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/orders/:id"
+                element={
+                  <PageTransition>
+                    <OrderDetail isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/notifications"
+                element={
+                  <PageTransition>
+                    <Notifications isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+            </Route>
 
 
-              {/* Policy Routes */}
+            {/* Policy Routes */}
+            <Route
+              element={
+                <PolicyNavbar isDark={isDark} setIsDark={setIsDark} />
+              }
+            >
               <Route
+                path="/terms"
                 element={
-                  <PolicyNavbar isDark={isDark} setIsDark={setIsDark} />
+                  <PageTransition>
+                    <Terms isDark={isDark} />
+                  </PageTransition>
                 }
-              >
-                <Route
-                  path="/terms"
-                  element={
-                    <PageTransition>
-                      <Terms isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/privacy-policy"
-                  element={
-                    <PageTransition>
-                      <PrivacyPolicy isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/refund-policy"
-                  element={
-                    <PageTransition>
-                      <RefundPolicy isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-                <Route
-                  path="/cancellation-policy"
-                  element={
-                    <PageTransition>
-                      <CancellationPolicy isDark={isDark} />
-                    </PageTransition>
-                  }
-                />
-              </Route>
-            </Routes>
+              />
+              <Route
+                path="/privacy-policy"
+                element={
+                  <PageTransition>
+                    <PrivacyPolicy isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/refund-policy"
+                element={
+                  <PageTransition>
+                    <RefundPolicy isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/cancellation-policy"
+                element={
+                  <PageTransition>
+                    <CancellationPolicy isDark={isDark} />
+                  </PageTransition>
+                }
+              />
+            </Route>
+          </Routes>
         </Suspense>
       </div>
     </>
