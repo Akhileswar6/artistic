@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import React from "react";
-import AdminSidebar from "../Components/AdminSidebar";
+import AdminSidebar from "../Components/Admin/AdminSidebar";
 import ThemeToggle from "../Components/ThemeToggle";
 import { Menu } from "lucide-react";
 
