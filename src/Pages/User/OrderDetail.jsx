@@ -1,4 +1,4 @@
-import { ShoppingBag, ArrowLeft, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star } from "lucide-react";
+import { ShoppingBag, ArrowLeft, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../config";
@@ -15,9 +15,34 @@ export default function OrderDetail({ isDark }) {
   const [loading, setLoading] = useState(true);
   const [submittingPayment, setSubmittingPayment] = useState(false);
   const [transactionId, setTransactionId] = useState("");
+  const [balanceTransactionId, setBalanceTransactionId] = useState("");
   const [rating, setRating] = useState(0);
   const [feedbackText, setFeedbackText] = useState("");
   const [submittingFeedback, setSubmittingFeedback] = useState(false);
+  const [showPaymentHub, setShowPaymentHub] = useState(() => {
+    const saved = localStorage.getItem("showPaymentHub");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+  const [showFeedbackHub, setShowFeedbackHub] = useState(() => {
+    const saved = localStorage.getItem("showFeedbackHub");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  const togglePaymentHub = () => {
+    setShowPaymentHub(prev => {
+      const next = !prev;
+      localStorage.setItem("showPaymentHub", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const toggleFeedbackHub = () => {
+    setShowFeedbackHub(prev => {
+      const next = !prev;
+      localStorage.setItem("showFeedbackHub", JSON.stringify(next));
+      return next;
+    });
+  };
 
   const fetchOrder = async () => {
     try {
@@ -32,12 +57,12 @@ export default function OrderDetail({ isDark }) {
       setOrder(response.data);
       if (response.data.rating) {
         setRating(response.data.rating);
+      }
+      if (response.data.feedback) {
         setFeedbackText(response.data.feedback);
       }
     } catch (err) {
-      console.error("Failed to fetch order details:", err);
-      toast.error("Order not found or access denied");
-      navigate("/orders");
+      toast.error("Failed to load order details");
     } finally {
       setLoading(false);
     }
@@ -45,23 +70,23 @@ export default function OrderDetail({ isDark }) {
 
   useEffect(() => {
     fetchOrder();
-    const interval = setInterval(fetchOrder, 10000);
-    return () => clearInterval(interval);
   }, [id]);
 
   const handlePaymentSubmit = async (e, type = 'advance') => {
     e.preventDefault();
-    if (!transactionId.trim()) return;
+    const idValue = type === 'advance' ? transactionId : balanceTransactionId;
+    if (!idValue.trim()) return;
 
     setSubmittingPayment(true);
     try {
       const token = localStorage.getItem("token");
       await axios.put(`${API_BASE_URL}/api/orders/payment/${id}`,
-        { transactionId, paymentType: type },
+        { transactionId: idValue, paymentType: type },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success(`${type === 'advance' ? 'Advance' : 'Balance'} Transaction ID submitted successfully! Admin will verify soon.`);
-      setTransactionId("");
+      if (type === 'advance') setTransactionId("");
+      else setBalanceTransactionId("");
       fetchOrder();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to submit payment info");
@@ -168,13 +193,13 @@ export default function OrderDetail({ isDark }) {
 
               <div className="relative px-2 overflow-x-auto no-scrollbar pb-4 md:pb-0">
                 <div className="min-w-[500px] md:min-w-0 relative">
-                   <div className={`absolute top-[10px] left-0 w-full h-[2px] ${isDark ? "bg-white/10" : "bg-black/5"}`}></div>
+                   <div className={`absolute top-4 md:top-[18px] left-0 w-full h-[2px] ${isDark ? "bg-white/10" : "bg-black/5"}`}></div>
                    <div
-                     className="absolute top-[10px] left-0 h-[2px] bg-emerald-500 transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                     className="absolute top-4 md:top-[18px] left-0 h-[2px] bg-emerald-500 transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(16,185,129,0.5)]"
                      style={{ width: `${(getStatusInfo(order.status).step / (steps.length - 1)) * 100}%` }}
                    ></div>
 
-                   <div className="relative flex justify-between">
+                   <div className="relative flex justify-between pt-2">
                      {steps.map((step, idx) => {
                        const currentStep = getStatusInfo(order.status).step;
                        const isCompleted = idx < currentStep;
@@ -192,7 +217,7 @@ export default function OrderDetail({ isDark }) {
                              {isCurrent && <div className="w-1 md:w-1.5 h-1 md:h-1.5 bg-emerald-500 rounded-full animate-pulse" />}
                            </div>
 
-                           <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-tighter transition-all duration-300 ${isCurrent
+                           <span className={`text-[8px] md:text-[10px]  uppercase  transition-all duration-300 ${isCurrent
                              ? "text-emerald-500"
                              : isCompleted
                                ? "opacity-60"
@@ -212,7 +237,7 @@ export default function OrderDetail({ isDark }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
               <div className="space-y-6 md:space-y-8">
                 <div>
-                  <h3 className="text-sm md:text-[15px] font-bold mb-4 flex items-center gap-2">
+                  <h3 className="text-sm md:text-[15px] mb-4 flex items-center gap-2">
                     <Package size={18} className="text-blue-500" />
                     Commission Info
                   </h3>
@@ -243,7 +268,7 @@ export default function OrderDetail({ isDark }) {
                 </div>
 
                 <div>
-                  <h3 className="text-sm md:text-[15px] font-bold mb-4 flex items-center gap-2">
+                  <h3 className="text-sm md:text-[15px] mb-4 flex items-center gap-2">
                     <MapPin size={18} className="text-rose-500" />
                     Delivery Details
                   </h3>
@@ -270,7 +295,7 @@ export default function OrderDetail({ isDark }) {
                 </div>
 
                 <div>
-                  <h3 className="text-sm md:text-[15px] font-bold mb-4">Special Instructions</h3>
+                  <h3 className="text-sm md:text-[15px] mb-4">Special Instructions</h3>
                   <div className={`text-xs md:text-sm p-4 md:p-5 rounded-xl border min-h-[100px] ${isDark ? "bg-white/5 border-white/5 opacity-80" : "bg-gray-50 border-black/5 shadow-sm opacity-80"}`}>
                     {order.instructions || "No special instructions provided."}
                   </div>
@@ -279,7 +304,7 @@ export default function OrderDetail({ isDark }) {
 
               <div className="space-y-6 md:space-y-8">
                 <div>
-                  <h3 className="text-sm md:text-[15px] font-bold mb-4 flex items-center gap-2">
+                  <h3 className="text-sm md:text-[15px] mb-4 flex items-center gap-2">
                     <ExternalLink size={18} className="text-purple-500" />
                     Reference Photo
                   </h3>
@@ -322,18 +347,28 @@ export default function OrderDetail({ isDark }) {
                 <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-emerald-400/10 blur-[80px] rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
 
                 <div className="relative z-10 space-y-6 md:space-y-8">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center transition-transform hover:scale-105 duration-500 shadow-md 
-                      ${isDark ? "bg-emerald-500/20 border border-emerald-500/30" : "bg-emerald-100 border border-emerald-200"}`}>
-                      <IndianRupee size={26} className="text-emerald-500" />
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-8 h-8 md:w-10 md:h-10 rounded-2xl flex items-center justify-center transition-transform hover:scale-105 duration-500 shadow-md 
+                        ${isDark ? "bg-emerald-500/20 border border-emerald-500/30" : "bg-emerald-100 border border-emerald-200"}`}>
+                        <IndianRupee size={20} className="text-emerald-500" />
+                      </div>
+                      <div>
+                        <h4 className="text-md md:text-xl" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Payment Hub</h4>
+                        <p className="text-[10px] md:text-xs opacity-50">Complete your payment to proceed with the artwork</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-lg md:text-xl font-bold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Payment Hub</h4>
-                      <p className="text-[10px] md:text-xs opacity-50">Complete your payment to proceed with the artwork</p>
-                    </div>
+                    <button 
+                      onClick={togglePaymentHub} 
+                      className={`p-2 rounded-xl transition-all ${isDark ? "hover:bg-white/10 text-gray-400" : "hover:bg-black/5 text-gray-600"}`}
+                      title={showPaymentHub ? "Collapse Payment Hub" : "Expand Payment Hub"}
+                    >
+                      {showPaymentHub ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
                   </div>
 
-                  <div className="flex flex-col lg:flex-row gap-8 md:gap-10 items-center lg:items-start text-left">
+                  {showPaymentHub && (
+                    <div className="flex flex-col lg:flex-row gap-8 md:gap-10 items-center lg:items-start text-left">
                     {!order.isFullPaid && (
                       <div className="shrink-0 space-y-4 w-full sm:w-auto flex flex-col items-center">
                         <div className={`group relative p-3 rounded-2xl transition-all duration-500 hover:scale-[1.02] shadow-2xl
@@ -366,26 +401,26 @@ export default function OrderDetail({ isDark }) {
                       {/* Stage 1: Advance */}
                       <div className={`p-4 md:p-6 rounded-2xl border transition-all duration-500 relative overflow-hidden group
                         ${order.isAdvancePaid
-                          ? (isDark ? "bg-emerald-500/10 border-emerald-500/30 opacity-60" : "bg-emerald-50 border-emerald-200 opacity-80")
+                          ? (isDark ? "bg-neutral-900/60 border-white/10 opacity-90" : "bg-neutral-50/80 border-black/5 opacity-90")
                           : (isDark ? "bg-white/5 border-white/10" : "bg-white border-black/5 shadow-sm")}`}>
 
                         <div className="relative z-10 flex justify-between items-center mb-4">
                           <div className="space-y-1">
-                            <h5 className="text-sm md:text-base font-bold flex items-center gap-2">
+                            <h5 className="text-sm md:text-base flex items-center gap-2">
                               01. Advance (25%)
                               {order.isAdvancePaid && <CheckCircle size={14} className="text-emerald-500" />}
                             </h5>
                             <p className="text-[10px] md:text-xs opacity-50">Required to start the artwork</p>
                           </div>
-                          <span className="text-xl md:text-2xl font-black text-emerald-500">₹{order.advanceAmount.toLocaleString()}</span>
+                          <span className={`text-xl md:text-2xl ${isDark ? "text-white" : "text-black"}`}>₹{order.advanceAmount.toLocaleString()}</span>
                         </div>
 
                         <div className="relative z-10">
                           {!order.isAdvancePaid ? (
                             order.transactionId ? (
-                              <div className="text-[10px] md:text-xs p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center gap-3 backdrop-blur-md">
+                              <div className={`text-[10px] md:text-xs p-3 rounded-xl flex items-center gap-3 backdrop-blur-md ${isDark ? "bg-white/5 border border-white/10 text-gray-400" : "bg-black/5 border border-black/10 text-gray-600"}`}>
                                 <Clock size={16} className="animate-pulse" />
-                                <span className="font-bold uppercase tracking-wide">Verification Pending: {order.transactionId}</span>
+                                <span className="uppercase tracking-wide">Verification Pending: {order.transactionId}</span>
                               </div>
                             ) : (
                               <form onSubmit={(e) => handlePaymentSubmit(e, 'advance')} className="flex flex-col sm:flex-row gap-3">
@@ -396,12 +431,13 @@ export default function OrderDetail({ isDark }) {
                                   onChange={(e) => setTransactionId(e.target.value)}
                                   className={`flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-emerald-500 transition-all ${isDark ? "text-white" : "text-black bg-gray-50 border-black/5"}`}
                                   required
+                                  style={{ colorScheme: "dark" }}
                                 />
-                                <button type="submit" className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-3 rounded-xl text-[10px] md:text-xs font-bold cursor-pointer transition-all active:scale-95">SUBMIT</button>
+                                <button type="submit" className={`w-full sm:w-auto px-5 py-3 sm:py-1.5 rounded-xl text-[12px] md:text-sm cursor-pointer transition-all active:scale-95 backdrop-blur-md border shadow-lg ${isDark ? "bg-white/10 hover:bg-white/5 text-white border-white/10" : "bg-white/60 hover:bg-white text-black border-black/10"}`}>SUBMIT</button>
                               </form>
                             )
                           ) : (
-                            <div className="text-[9px] md:text-[11px] font-black text-emerald-500 bg-emerald-500/10 py-2 px-4 rounded-full inline-block border border-emerald-500/20 uppercase tracking-wide">
+                            <div className={`text-[10px] md:text-[11px] py-2 px-4 rounded-full inline-block border uppercase tracking-wide ${isDark ? "bg-white/5 border-white/10 text-gray-400" : "bg-black/5 border border-black/10 text-gray-600"}`}>
                               Ref: {order.transactionId} (VERIFIED)
                             </div>
                           )}
@@ -411,43 +447,44 @@ export default function OrderDetail({ isDark }) {
                       {/* Stage 2: Balance */}
                       <div className={`p-4 md:p-6 rounded-2xl border transition-all duration-500 relative overflow-hidden group
                         ${order.isFullPaid
-                          ? (isDark ? "bg-emerald-500/10 border-emerald-500/40" : "bg-emerald-50 border-emerald-500/30")
+                          ? (isDark ? "bg-neutral-900/60 border-white/10" : "bg-neutral-50/80 border-black/5")
                           : (isDark ? "bg-white/5 border-white/10" : "bg-white border-black/5 shadow-sm")} 
                         ${!order.isAdvancePaid ? "opacity-20 pointer-events-none grayscale" : ""}`}>
 
                         <div className="relative z-10 flex justify-between items-center mb-4">
                           <div className="space-y-1">
-                            <h5 className="text-sm md:text-base font-bold flex items-center gap-2">
+                            <h5 className="text-sm md:text-base flex items-center gap-2">
                               02. Final Balance (75%)
                               {order.isFullPaid && <CheckCircle size={14} className="text-emerald-500" />}
                             </h5>
                             <p className="text-[10px] md:text-xs opacity-50">Required before dispatch</p>
                           </div>
-                          <span className="text-xl md:text-2xl font-black text-emerald-500">₹{(order.totalPrice - order.advanceAmount).toLocaleString()}</span>
+                          <span className={`text-xl md:text-2xl ${isDark ? "text-white" : "text-black"}`}>₹{(order.totalPrice - order.advanceAmount).toLocaleString()}</span>
                         </div>
 
                         <div className="relative z-10">
                           {!order.isFullPaid ? (
                             order.balanceTransactionId ? (
-                              <div className="text-[10px] md:text-xs p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center gap-3 backdrop-blur-md">
+                              <div className={`text-[10px] md:text-xs p-3 rounded-xl flex items-center gap-3 backdrop-blur-md ${isDark ? "bg-white/5 border border-white/10 text-gray-400" : "bg-black/5 border border-black/10 text-gray-600"}`}>
                                 <Clock size={16} className="animate-pulse" />
-                                <span className="font-bold uppercase tracking-wide">Verification Pending: {order.balanceTransactionId}</span>
+                                <span className="uppercase tracking-wide">Verification Pending: {order.balanceTransactionId}</span>
                               </div>
                             ) : (
                               <form onSubmit={(e) => handlePaymentSubmit(e, 'balance')} className="flex flex-col sm:flex-row gap-3">
                                 <input
                                   type="text"
                                   placeholder="Balance Ref ID"
-                                  value={transactionId}
-                                  onChange={(e) => setTransactionId(e.target.value)}
+                                  value={balanceTransactionId}
+                                  onChange={(e) => setBalanceTransactionId(e.target.value)}
                                   className={`flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-emerald-500 transition-all ${isDark ? "text-white" : "text-black bg-gray-50 border-black/5"}`}
                                   required
+                                  style={{ colorScheme: "dark" }}
                                 />
-                                <button type="submit" className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-3 rounded-xl text-[10px] md:text-xs font-bold cursor-pointer transition-all active:scale-95">SUBMIT</button>
+                                <button type="submit" className={`w-full sm:w-auto px-5 py-3 sm:py-1.5 rounded-xl text-[12px] md:text-sm cursor-pointer transition-all active:scale-95 backdrop-blur-md border shadow-lg ${isDark ? "bg-white/10 hover:bg-white/5 text-white border-white/10" : "bg-white/60 hover:bg-white text-black border-black/10"}`}>SUBMIT</button>
                               </form>
                             )
                           ) : (
-                            <div className="text-[9px] md:text-[11px] font-black text-emerald-500 bg-emerald-500/10 py-2 px-4 rounded-full inline-block border border-emerald-500/20 uppercase tracking-wide">
+                            <div className={`text-[10px] md:text-[11px] py-2 px-4 rounded-full inline-block border uppercase tracking-wide ${isDark ? "bg-white/5 border-white/10 text-gray-400" : "bg-black/5 border border-black/10 text-gray-600"}`}>
                               Ref: {order.balanceTransactionId} (VERIFIED SUCCESSFUL)
                             </div>
                           )}
@@ -455,14 +492,7 @@ export default function OrderDetail({ isDark }) {
                       </div>
                     </div>
                   </div>
-
-                  {order.isFullPaid && (
-                    <div className="pt-6 border-t border-white/5 text-center">
-                      <div className="inline-flex items-center gap-3 px-6 py-3 bg-emerald-500 text-white rounded-xl text-xs md:text-sm font-bold shadow-lg shadow-emerald-500/20">
-                        <CheckCircle2 size={20} strokeWidth={3} /> FULLY PAID & VERIFIED
-                      </div>
-                    </div>
-                  )}
+                )}
                 </div>
               </div>
             )}
@@ -476,7 +506,7 @@ export default function OrderDetail({ isDark }) {
                     <Clock size={36} className="text-emerald-500 animate-spin-slow" />
                   </div>
                   <div className="max-w-md space-y-2 md:space-y-3">
-                    <h4 className="text-lg md:text-xl font-bold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Awaiting Artist Approval</h4>
+                    <h4 className="text-lg md:text-xl" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Awaiting Artist Approval</h4>
                     <p className="text-xs md:text-sm opacity-60 leading-relaxed">
                       Your commission request has been received! Once the artist reviews your reference photo and instructions, they will accept the order and provide the QR code for the advance payment here.
                     </p>
@@ -493,18 +523,30 @@ export default function OrderDetail({ isDark }) {
                 <div className="absolute -top-16 -right-16 w-32 h-32 bg-amber-500/10 blur-[60px] rounded-full animate-pulse"></div>
 
                 <div className="relative z-10 space-y-6 md:space-y-8">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center transition-transform hover:scale-105 duration-500 shadow-md 
-                      ${isDark ? "bg-amber-500/20 border border-amber-500/30" : "bg-amber-100 border border-amber-200"}`}>
-                      <Star size={26} className="text-amber-500 fill-amber-500" />
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-8 h-8 md:w-10 md:h-10 rounded-2xl flex items-center justify-center transition-transform hover:scale-105 duration-500 shadow-md 
+                        ${isDark ? "bg-amber-500/20 border border-amber-500/30" : "bg-amber-100 border border-amber-200"}`}>
+                        <Star size={20} className="text-amber-500 fill-amber-500" />
+                      </div>
+
+                      <div>
+                        <h4 className="text-lg md:text-xl " style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Feedback Hub</h4>
+                        <p className="text-[10px] md:text-xs opacity-50 font-medium">Share your experience with the artwork</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-lg md:text-xl font-black tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Feedback Hub</h4>
-                      <p className="text-[10px] md:text-xs opacity-50 font-medium">Share your experience with the artwork</p>
-                    </div>
+                    <button 
+                      type="button"
+                      onClick={toggleFeedbackHub} 
+                      className={`p-2 rounded-xl transition-all ${isDark ? "hover:bg-white/10 text-gray-400" : "hover:bg-black/5 text-gray-600"}`}
+                      title={showFeedbackHub ? "Collapse Feedback Hub" : "Expand Feedback Hub"}
+                    >
+                      {showFeedbackHub ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    </button>
                   </div>
 
-                  {(order.rating > 0) ? (
+                  {showFeedbackHub && (
+                    (order.rating > 0) ? (
                     <div className="space-y-4 md:space-y-6">
                       <div className="flex gap-1.5 md:gap-2">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -520,12 +562,12 @@ export default function OrderDetail({ isDark }) {
                           "{order.feedback || "Verified service with no comments."}"
                         </p>
                       </div>
-                      <p className="text-[9px] md:text-[10px] opacity-40 font-bold uppercase tracking-[0.2em]">Submitted on {new Date(order.feedbackDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                      <p className="text-[9px] md:text-[10px] opacity-40  uppercase ">Submitted on {new Date(order.feedbackDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                     </div>
                   ) : (
                     <form onSubmit={handleFeedbackSubmit} className="space-y-5 md:space-y-6">
                       <div className="space-y-2 md:space-y-3">
-                        <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-50">Rate the Experience</p>
+                        <p className="text-[10px] md:text-xs  uppercase tracking-wider opacity-50">Rate the Experience</p>
                         <div className="flex gap-2 md:gap-3">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <button
@@ -544,7 +586,7 @@ export default function OrderDetail({ isDark }) {
                       </div>
 
                       <div className="space-y-2 md:space-y-3">
-                        <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-50">Your Thoughts</p>
+                        <p className="text-[10px] md:text-xs uppercase tracking-wider opacity-50">Your Thoughts</p>
                         <textarea
                           value={feedbackText}
                           onChange={(e) => setFeedbackText(e.target.value)}
@@ -557,29 +599,21 @@ export default function OrderDetail({ isDark }) {
                       <button
                         type="submit"
                         disabled={submittingFeedback}
-                        className="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 md:py-4 rounded-xl text-xs md:text-sm font-bold uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-amber-500/20"
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 md:py-4 rounded-xl text-xs md:text-sm uppercase tracking-widest transition-all active:scale-[0.98] "
                       >
                         {submittingFeedback ? "Submitting..." : "Submit Review"}
                       </button>
                     </form>
-                  )}
+                  ))}
                 </div>
               </div>
             )}
 
             {/* HELP & SUPPORT */}
-            <div className="pt-8 md:pt-10 border-t border-white/5 opacity-50 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="pt-8 md:pt-10 border-t border-white/5 opacity-50 flex items-center justify-center md:justify-start">
               <div className="flex items-center gap-3 text-[10px] md:text-xs font-medium">
                 <Clock size={16} />
                 <span>Delivery: 3-5 Business Days after Final Payment</span>
-              </div>
-              <div className="flex items-center gap-4 md:gap-6">
-                <button className="flex items-center gap-2 text-[10px] md:text-xs font-bold hover:text-white transition-colors uppercase tracking-wider">
-                  <AlertCircle size={16} /> Report
-                </button>
-                <button className="flex items-center gap-2 text-[10px] md:text-xs font-bold hover:text-white transition-colors uppercase tracking-wider">
-                  <ExternalLink size={16} /> Support
-                </button>
               </div>
             </div>
           </div>
