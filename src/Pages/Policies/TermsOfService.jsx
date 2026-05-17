@@ -113,7 +113,7 @@ Phone: +91 9392822250
 
   return (
     <div
-      className={`relative w-full min-h-screen py-10 sm:py-16 px-6 sm:px-12 overflow-hidden transition-colors duration-500 ${isDark ? "bg-[#080808]" : "bg-[#faf9f6]"
+      className={`relative w-full min-h-screen pt-24 pb-10 sm:pt-32 sm:pb-16 px-6 sm:px-12 overflow-hidden transition-colors duration-500 ${isDark ? "bg-[#0f1115]" : "bg-white"
         }`}
       style={{ fontFamily: "Inter, serif" }}
     >
@@ -231,8 +231,8 @@ Phone: +91 9392822250
           variants={itemVariants}
           onClick={downloadPDF}
           className={`mt-10 px-3 py-2.5 rounded-xl text-xs  shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer border ${isDark
-              ? "bg-white text-black hover:bg-gray-100 border-white"
-              : "bg-black text-white hover:bg-gray-900 border-black"
+            ? "bg-white text-black hover:bg-gray-100 border-white"
+            : "bg-black text-white hover:bg-gray-900 border-black"
             }`}
         >
           Download Terms as PDF
