@@ -1,7 +1,7 @@
 import { Heart, Award, Star, Clock, MapPin, CheckCircle, Palette, Sparkles, User, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import akhil from "../assets/Akhil.JPG";
+import akhil from "../assets/Akhil.jpg";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -52,7 +52,7 @@ export default function About({ isDark }) {
                 src={akhil}
                 alt="Akhileswar Kamale"
                 loading="eager"
-                className="w-full h-[450px] object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-[450px] object-cover transition-transform duration-700 group-hover:scale-105 group-hover:rotate-2"
               />
             </div>
           </motion.div>
