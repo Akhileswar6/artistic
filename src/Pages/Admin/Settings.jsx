@@ -209,25 +209,25 @@ export default function Settings({ isDark }) {
     <div style={{ fontFamily: "Inter, sans-serif" }} className="animate-in fade-in slide-in-from-bottom-6 duration-1000 ease-out pb-20">
       
       {/* Editorial Header */}
-      <div className={`mb-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 p-6 rounded-3xl transition-all duration-300
+      <div className={`mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 rounded-2xl transition-all duration-300
           ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-white border border-black/5 shadow-sm"}`}>
-        <div className="max-w-2xl">
-          <h1 className={`text-2xl md:text-3xl font-semibold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+        <div>
+          <h1 className={`text-lg md:text-xl ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
             Admin Access & Security
           </h1>
         </div>
-        <div className={`hidden md:flex items-center gap-4 px-5 py-3 rounded-2xl border ${isDark ? "bg-white/[0.05] border-white/10" : "bg-gray-50 border-black/5"}`}>
+        <div className={`hidden md:flex items-center gap-3 px-3 py-2 rounded-xl border ${isDark ? "bg-white/[0.05] border-white/10" : "bg-gray-50 border-black/5"}`}>
            <div className="text-right">
-              <p className={`text-[10px] font-black uppercase tracking-widest ${isDark ? "text-gray-500" : "text-gray-400"}`}>System Status</p>
-              <p className={`text-xs  ${isDark ? "text-blue-400" : "text-black"}`}>Multi-Admin Enabled</p>
+              <p className={`text-[9px] font-normal uppercase tracking-widest ${isDark ? "text-gray-500" : "text-gray-400"}`}>System Status</p>
+              <p className={`text-[11px] ${isDark ? "text-blue-400" : "text-black"}`}>Multi-Admin Enabled</p>
            </div>
-           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDark ? "bg-blue-500/10 text-blue-400" : "bg-blue-50 text-blue-600"}`}>
-              <Shield size={20} />
+           <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDark ? "bg-blue-500/10 text-blue-400" : "bg-blue-50 text-blue-600"}`}>
+              <Shield size={16} />
            </div>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-5">
         
         {/* Navigation Sidebar */}
         <div className="lg:w-[240px] flex-shrink-0">
@@ -240,7 +240,7 @@ export default function Settings({ isDark }) {
         </div>
 
         {/* Dynamic Content Surface */}
-        <div className={`flex-1 rounded-2xl p-4 md:p-10 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.3)] border transition-all duration-700 relative overflow-hidden
+        <div className={`flex-1 rounded-2xl p-4 md:p-6 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.3)] border transition-all duration-700 relative overflow-hidden
           ${isDark 
             ? "bg-[#080808] border-white/10 shadow-white/[0.01]" 
             : "bg-white border-black/5"}`}>
@@ -248,40 +248,40 @@ export default function Settings({ isDark }) {
           <div className="max-w-4xl relative z-10">
             {/* ADMIN ACCESS SECTION */}
             {activeTab === "profile" && (
-              <div className="animate-in fade-in slide-in-from-bottom-10 duration-700 space-y-10">
-                <div className="space-y-1.5">
-                   <h3 className={`text-2xl font-medium ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Access List</h3>
-                   <p className={`text-[13px] font-medium ${isDark ? "text-gray-500" : "text-gray-400"}`}>Manage administrative personnel with full system access.</p>
+              <div className="animate-in fade-in slide-in-from-bottom-10 duration-700 space-y-6">
+                <div className="space-y-1">
+                   <h3 className={`text-lg ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Access List</h3>
+                   <p className={`text-[12px] font-normal ${isDark ? "text-gray-500" : "text-gray-400"}`}>Manage administrative personnel with full system access.</p>
                 </div>
 
                 {/* Admin List */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {admins.map((admin) => (
-                    <div key={admin._id} className={`p-4 rounded-xl border flex items-center justify-between group transition-all duration-300 ${isDark ? "bg-white/[0.02] border-white/5 hover:bg-white/[0.05]" : "bg-gray-50 border-black/5 hover:bg-gray-100"}`}>
-                       <div className="flex items-center gap-3.5">
-                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-sm ${isDark ? "bg-white/10 text-white" : "bg-black/10 text-black"}`}>
+                    <div key={admin._id} className={`p-3 rounded-xl border flex items-center justify-between group transition-all duration-300 ${isDark ? "bg-white/[0.02] border-white/5 hover:bg-white/[0.05]" : "bg-gray-50 border-black/5 hover:bg-gray-100"}`}>
+                       <div className="flex items-center gap-3">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs ${isDark ? "bg-white/10 text-white" : "bg-black/10 text-black"}`}>
                              {admin.fullName.charAt(0)}
                           </div>
                           <div>
-                             <p className="text-[14px] font-black">{admin.fullName}</p>
-                             <p className="text-[11px] opacity-50 font-medium">{admin.email}</p>
+                             <p className="text-[13px] font-normal">{admin.fullName}</p>
+                             <p className="text-[11px] opacity-50 font-normal">{admin.email}</p>
                           </div>
                        </div>
                        <button 
                         onClick={() => handleRemoveAdmin(admin._id)}
                         className="opacity-0 group-hover:opacity-100 p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                        >
-                          <LogOut size={16} />
+                          <LogOut size={14} />
                        </button>
                     </div>
                   ))}
                 </div>
 
                 {/* Add New Admin Form */}
-                <form onSubmit={handleAddAdmin} className={`p-6 md:p-8 rounded-2xl border space-y-6 ${isDark ? "bg-white/[0.01] border-white/5" : "bg-neutral-50 border-black/5"}`}>
-                  <div className="space-y-1.5">
-                    <h4 className="text-lg " style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Grant New Access</h4>
-                    <p className={`text-[10px] uppercase tracking-widest font-black ${isDark ? "text-gray-600" : "text-gray-400"}`}>Account Initialization</p>
+                <form onSubmit={handleAddAdmin} className={`p-4 md:p-6 rounded-xl border space-y-5 ${isDark ? "bg-white/[0.01] border-white/5" : "bg-neutral-50 border-black/5"}`}>
+                  <div className="space-y-1">
+                    <h4 className="text-[15px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Grant New Access</h4>
+                    <p className={`text-[10px] uppercase tracking-widest font-normal ${isDark ? "text-gray-600" : "text-gray-400"}`}>Account Initialization</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -350,10 +350,10 @@ export default function Settings({ isDark }) {
 
             {/* MY IDENTITY SECTION */}
             {activeTab === "identity" && (
-              <form onSubmit={handleIdentityUpdate} className="animate-in fade-in slide-in-from-bottom-10 duration-700 space-y-10">
-                <div className="space-y-1.5">
-                   <h3 className={`text-2xl  ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Personal Identity</h3>
-                   <p className={`text-[13px] font-medium ${isDark ? "text-gray-500" : "text-gray-400"}`}>Update your public administrative name displayed across the system.</p>
+              <form onSubmit={handleIdentityUpdate} className="animate-in fade-in slide-in-from-bottom-10 duration-700 space-y-6">
+                <div className="space-y-1">
+                   <h3 className={`text-lg ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Personal Identity</h3>
+                   <p className={`text-[12px] font-normal ${isDark ? "text-gray-500" : "text-gray-400"}`}>Update your public administrative name displayed across the system.</p>
                 </div>
 
                 <div className="space-y-6">
@@ -401,10 +401,10 @@ export default function Settings({ isDark }) {
 
             {/* SECURITY SECTION */}
             {activeTab === "security" && (
-              <form onSubmit={handlePasswordChange} className="animate-in fade-in slide-in-from-bottom-10 duration-700 space-y-10">
-                <div className="space-y-1.5">
-                   <h3 className={`text-2xl  ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>My Security</h3>
-                   <p className={`text-[13px] font-medium ${isDark ? "text-gray-500" : "text-gray-400"}`}>Rotate your cryptographic access keys to maintain system integrity.</p>
+              <form onSubmit={handlePasswordChange} className="animate-in fade-in slide-in-from-bottom-10 duration-700 space-y-6">
+                <div className="space-y-1">
+                   <h3 className={`text-lg ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>My Security</h3>
+                   <p className={`text-[12px] font-normal ${isDark ? "text-gray-500" : "text-gray-400"}`}>Rotate your cryptographic access keys to maintain system integrity.</p>
                 </div>
                 
                 <div className={`p-5 rounded-xl flex flex-col md:flex-row items-center gap-5 transition-all duration-700 ${isDark ? "bg-amber-500/5 border border-amber-500/10 shadow-[0_0_50px_rgba(245,158,11,0.03)]" : "bg-amber-50 border border-amber-200 shadow-lg shadow-amber-500/5"}`}>
