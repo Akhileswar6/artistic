@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { API_BASE_URL } from "../config";
 
 import axios from "axios";
-import { Clock, Package, Info, Check, X, ShieldCheck } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Clock, Package, Info, Check, X, ShieldCheck, Lock } from "lucide-react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -13,9 +13,10 @@ import Review from "../Components/Order/Review";
 
 export default function Order({ isDark }) {
   const navigate = useNavigate();
+  const { user, setShowSignIn } = useOutletContext();
 
   const [step, setStep] = useState(1);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Form State
   const [orderData, setOrderData] = useState({
@@ -30,6 +31,16 @@ export default function Order({ isDark }) {
     rawFile: null,
     metadata: null,
   });
+
+  useEffect(() => {
+    if (user) {
+      setOrderData(prev => ({
+        ...prev,
+        name: user.fullName || "",
+        email: user.email || ""
+      }));
+    }
+  }, [user]);
 
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(false);
@@ -249,7 +260,7 @@ export default function Order({ isDark }) {
                     orderData={orderData}
                     handleInputChange={handleInputChange}
                     user={user}
-                    setShowAuthModal={() => setShowSignIn(true)}
+                    setShowAuthModal={() => setShowAuthModal(true)}
 
                   />
                 )}
@@ -264,7 +275,7 @@ export default function Order({ isDark }) {
                     removePhoto={removePhoto}
                     setZoom={setZoom}
                     user={user}
-                    setShowAuthModal={() => setShowSignIn(true)}
+                    setShowAuthModal={() => setShowAuthModal(true)}
 
                   />
                 )}
@@ -399,6 +410,57 @@ export default function Order({ isDark }) {
               </button>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Auth Modal */}
+      <AnimatePresence>
+        {showAuthModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAuthModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className={`relative w-full max-w-sm p-8 rounded-xl text-center shadow-2xl border ${isDark ? "bg-[#141416] border-white/10" : "bg-white border-black/5"
+                }`}
+            >
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-6 ${isDark ? "bg-white/10" : "bg-black/5"
+                }`}>
+                <Lock size={22} className={isDark ? "text-white" : "text-black"} />
+              </div>
+              <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: "Bricolage Grotesque" }}>Signin Required</h3>
+              <p className={`text-sm mb-8 ${isDark ? "text-white/60" : "text-black/60"}`}>
+                Please login to place your order.
+              </p>
+              <div className="space-y-3">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setShowAuthModal(false);
+                    setShowSignIn(true);
+                  }}
+                  className={`w-full py-2 rounded-lg text-sm transition-all ${isDark ? "bg-white text-black hover:bg-neutral-200" : "bg-black text-white hover:bg-neutral-800"
+                    }`}
+                >
+                  Login to Continue
+                </motion.button>
+                <button
+                  onClick={() => setShowAuthModal(false)}
+                  className={`text-sm font-medium opacity-50 hover:opacity-100 transition-opacity ${isDark ? "text-white" : "text-black"}`}
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
