@@ -14,7 +14,7 @@ export default function Users({ isDark }) {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 8;
+  const usersPerPage = 20;
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -161,25 +161,107 @@ const fetchUsers = async () => {
       <div style={{ fontFamily: "Inter, sans-serif" }} className="animate-in fade-in slide-in-from-bottom-4 duration-700">
 
         {/* Header */}
-        <div className={`mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 rounded-3xl transition-all duration-300
+        <div className={`mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 rounded-2xl transition-all duration-300
           ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-white border border-black/5 shadow-sm"}`}>
           <div>
-            <h1 className={`text-2xl md:text-3xl font-semibold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+            <h1 className={`text-lg md:text-xl  ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
               Users
             </h1>
           </div>
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               onClick={fetchUsers}
               disabled={loading}    
-              className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all border
+              className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px]  uppercase transition-all duration-300 transform active:scale-95 shadow-sm cursor-pointer
                 ${isDark 
-                  ? "bg-white text-black border-white/10 hover:bg-gray-100 shadow-white/5" 
-                  : "bg-black text-white border-black/10 hover:bg-neutral-800 shadow-lg shadow-black/10"}`}
+                  ? "bg-white text-black hover:bg-gray-100" 
+                  : "bg-black text-white hover:bg-neutral-800"}`}
             >
-              <RefreshCcw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+              <RefreshCcw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
               {loading ? "Refreshing" : "Refresh Pipeline"}
             </button>
+          </div>
+        </div>
+
+        {/* SEARCH AND FILTERS BAR */}
+        <div className={`mb-4 p-2.5 rounded-xl border transition-all duration-300 ${isDark ? "bg-white/[0.02] border-white/5 shadow-2xl" : "bg-white border-black/5 shadow-lg"
+          }`}>
+          <div className="flex flex-col lg:flex-row gap-2.5">
+            {/* SEARCH */}
+            <div className="relative flex-1 group">
+              <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-300 ${isDark ? "text-gray-500 group-focus-within:text-white" : "text-gray-400 group-focus-within:text-black"
+                }`} size={16} />
+              <input
+                type="text"
+                placeholder="Search by name or email"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className={`w-full pl-10 pr-4 py-2 md:py-2.5 rounded-lg border outline-none transition-all duration-300 text-[13px] ${isDark
+                    ? "bg-black border-white/10 text-white focus:border-white/50 focus:bg-white/[0.04]"
+                    : "bg-gray-50 border-black/10 text-black focus:border-black/50 focus:bg-white"
+                  }`}
+              />
+            </div>
+
+            {/* FILTERS */}
+            <div className="flex flex-col sm:flex-row gap-2.5">
+              {/* Status Filter */}
+              <div ref={dropdownRef} className="relative w-full min-w-[145px]">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();   
+                    setOpenFilter((prev) => !prev);
+                  }}
+                  className={`w-full px-2.5 py-1.5 rounded-lg text-[11px] flex justify-between items-center transition-all border cursor-pointer
+                    ${isDark 
+                      ? "bg-[#0a0a0a] text-white border-white/10 hover:bg-white/5" 
+                      : "bg-white text-black border-black/10 hover:bg-gray-50 shadow-sm"}`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    {statusFilter === "all" && "All Users"}
+                    {statusFilter === "24h" && "Last 24 Hours"}
+                    {statusFilter === "3d" && "Last 3 Days"}
+                    {statusFilter === "7d" && "Last 1 Week"}
+                    {statusFilter === "30d" && "Last 1 Month"}
+                  </span>
+                  <ChevronDown className="w-3.5 h-3.5 opacity-50 ml-1" />
+                </button>
+
+                {openFilter && (
+                  <div className={`absolute mt-1.5 w-full rounded-lg shadow-2xl z-50 text-[12px] border overflow-hidden
+                    ${isDark ? "bg-[#0a0a0a] border-white/10" : "bg-white shadow-xl border-black/10"}`}>
+                    {[
+                      { label: "All Users", value: "all" },
+                      { label: "Last 24 Hours", value: "24h" },
+                      { label: "Last 3 Days", value: "3d" },
+                      { label: "Last 1 Week", value: "7d" },
+                      { label: "Last 1 Month", value: "30d" },
+                    ].map((item) => (
+                      <div
+                        key={item.value}
+                        onClick={() => {
+                          setStatusFilter(item.value);
+                          setCurrentPage(1);
+                          setOpenFilter(false);
+                        }}
+                        className={`flex justify-between items-center px-4 py-2.5 cursor-pointer transition-colors
+                          ${isDark 
+                            ? "hover:bg-white/10 text-gray-200" 
+                            : "hover:bg-black/5 text-gray-800"}`}
+                      >
+                        <span className="font-medium">{item.label}</span>
+                        {statusFilter === item.value && (
+                          <CheckCircle2 className={`w-4 h-4 ${isDark ? "text-blue-400" : "text-blue-600"}`} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -189,86 +271,6 @@ const fetchUsers = async () => {
             ? "bg-black border-white/10" 
             : "bg-white border-black/5"}`}>
 
-          {/* Search + Filters */}
-          <div className={`flex flex-col md:flex-row gap-4 px-4 py-3 border-b 
-            ${isDark ? "border-white/10" : "border-black/5"}`}>
-
-            {/* Search Input */}
-            <div className="relative w-full md:w-[260px]">
-              <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 ${isDark ? "text-gray-400" : "text-gray-500"}`} />
-              <input
-                type="text"
-                placeholder="Search by name or email"
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className={`pl-9 pr-3 py-1.5 rounded-lg text-xs font-medium w-full transition-all focus:outline-none focus:ring-2 
-                  ${isDark 
-                    ? "bg-white/5 text-white placeholder-gray-500 border border-white/10 focus:ring-blue-500/50" 
-                    : "bg-white text-black placeholder-gray-400 border border-black/10 focus:ring-blue-500/30 shadow-sm"}`}
-              />
-            </div>
-
-            {/* Filter Dropdown */}
-            <div ref={dropdownRef} className="relative w-full md:w-[160px]">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();   
-                  setOpenFilter((prev) => !prev);
-                }}
-                className={`w-full px-3 py-1.5 rounded-lg text-xs flex justify-between items-center transition-all border
-                  ${isDark 
-                    ? "bg-white/5 text-white border-white/10 hover:bg-white/10" 
-                    : "bg-white text-black border-black/10 hover:bg-gray-50 shadow-sm"}`}
-              >
-                {statusFilter === "all" && "All Users"}
-                {statusFilter === "24h" && "Last 24 Hours"}
-                {statusFilter === "3d" && "Last 3 Days"}
-                {statusFilter === "7d" && "Last 1 Week"}
-                {statusFilter === "30d" && "Last 1 Month"}
-                <ChevronDown className="w-3.5 h-3.5 opacity-50" />
-              </button>
-
-              {openFilter && (
-                <div className={`absolute mt-1.5 w-full rounded-lg shadow-2xl z-50 text-xs border overflow-hidden
-                  ${isDark ? "bg-[#0a0a0a] border-white/10" : "bg-white/90 backdrop-blur-xl border-black/10"}`}>
-                  {[
-                    { label: "All Users", value: "all" },
-                    { label: "Last 24 Hours", value: "24h" },
-                    { label: "Last 3 Days", value: "3d" },
-                    { label: "Last 1 Week", value: "7d" },
-                    { label: "Last 1 Month", value: "30d" },
-                  ].map((item) => (
-                    <div
-                      key={item.value}
-                      onClick={() => {
-                        setStatusFilter(item.value);
-                        setCurrentPage(1);
-                        setOpenFilter(false);
-                      }}
-                      className={`flex justify-between items-center px-3 py-2 cursor-pointer transition-colors
-                        ${isDark 
-                          ? "hover:bg-white/10 text-gray-200" 
-                          : "hover:bg-black/5 text-gray-800"}`}
-                    >
-                      <span className="font-medium">{item.label}</span>
-                      {statusFilter === item.value && (
-                        <CheckCircle2 className={`w-3.5 h-3.5 ${isDark ? "text-blue-400" : "text-blue-600"}`} />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="md:ml-auto flex items-center justify-end w-full md:w-auto mt-2 md:mt-0">
-              {/* Optional secondary actions can go here */}
-            </div>
-
-          </div>
-
           {/* Mobile Card Layout */}
           <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
             {currentUsers.length > 0 ? (
@@ -276,8 +278,8 @@ const fetchUsers = async () => {
                 <div key={user._id} className={`p-4 rounded-xl border flex flex-col gap-3 transition-colors duration-200 ${isDark ? "bg-white/5 border-white/10" : "bg-gray-50 border-black/5"}`}>
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className={`font-bold text-[15px] ${isDark ? "text-gray-100" : "text-gray-900"}`}>{user.fullName || "N/A"}</h3>
-                      <p className={`text-[12px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>{user.email}</p>
+                      <h3 className={`font-normal text-[13px] ${isDark ? "text-gray-100" : "text-gray-900"}`}>{user.fullName || "N/A"}</h3>
+                      <p className={`text-[11px] opacity-50 ${isDark ? "text-gray-400" : "text-gray-600"}`}>{user.email}</p>
                     </div>
                     {user.isBlocked ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-red-500/10 text-red-500 border border-red-500/20">
@@ -291,12 +293,12 @@ const fetchUsers = async () => {
                   </div>
                   
                   <div className="flex justify-between items-center pt-3 border-t border-dashed border-gray-500/20">
-                    <p className={`text-[11px] font-medium uppercase tracking-wider ${isDark ? "text-gray-500" : "text-gray-500"}`}>
+                    <p className={`text-[11px] font-normal uppercase tracking-wider ${isDark ? "text-gray-500" : "text-gray-500"}`}>
                       Joined: {new Date(user.createdAt).toLocaleDateString()}
                     </p>
                     <button
                       onClick={() => openUser(user)}
-                      className={`text-[11px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all ${isDark ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20" : "bg-blue-50 text-blue-600 hover:bg-blue-100"}`}
+                      className={`text-[11px] font-normal uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all ${isDark ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20" : "bg-blue-50 text-blue-600 hover:bg-blue-100"}`}
                     >
                       View
                     </button>
@@ -322,22 +324,22 @@ const fetchUsers = async () => {
                       if (sortField === "name") setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
                       else { setSortField("name"); setSortOrder("asc"); }
                     }}
-                    className="px-4 py-3 text-left font-normal text-[13px] cursor-pointer hover:text-blue-500 transition-colors"
+                    className="px-5 py-3 font-normal text-left text-[11px] uppercase tracking-wider cursor-pointer hover:text-blue-500 transition-colors"
                   >
                     Name {sortField === "name" && (sortOrder === "asc" ? "↑" : "↓")}
                   </th>
-                  <th className="px-4 py-3 text-left font-normal text-[13px]">Email</th>
+                  <th className="px-5 py-3 font-normal text-left text-[11px] uppercase tracking-wider">Email</th>
                   <th
                     onClick={() => {
                       if (sortField === "date") setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
                       else { setSortField("date"); setSortOrder("desc"); }
                     }}
-                    className="px-4 py-3 text-left font-normal text-[13px] cursor-pointer hover:text-blue-500 transition-colors"
+                    className="px-5 py-3 font-normal text-left text-[11px] uppercase tracking-wider cursor-pointer hover:text-blue-500 transition-colors"
                   >
                     Joined {sortField === "date" && (sortOrder === "asc" ? "↑" : "↓")}
                   </th>
-                  <th className="px-4 py-3 text-center font-normal text-[13px]">Status</th>
-                  <th className="px-4 py-3 text-center font-normal text-[13px]">Details</th>
+                  <th className="px-5 py-3 font-normal text-center text-[11px] uppercase tracking-wider">Status</th>
+                  <th className="px-5 py-3 font-normal text-center text-[11px] uppercase tracking-wider">Details</th>
                 </tr>
               </thead>
 
@@ -353,40 +355,36 @@ const fetchUsers = async () => {
                     >
 
 
-                      <td className={`px-4 py-2.5 tracking-tight ${isDark ? "text-gray-100" : "text-gray-900"}`}>
+                      <td className={`px-5 py-2.5 text-[13px] tracking-tight ${isDark ? "text-gray-100" : "text-gray-900"}`}>
                         {user.fullName || "N/A"}
                       </td>
 
-                      <td className={`px-4 py-2.5 font-medium ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                      <td className={`px-5 py-2.5 text-[13px] font-normal ${isDark ? "text-gray-400" : "text-gray-600"}`}>
                         {user.email}
                       </td>
 
-                      <td className={`px-4 py-2.5 font-medium uppercase tracking-wider text-[11px] ${isDark ? "text-gray-500" : "text-gray-500"}`}>
+                      <td className={`px-5 py-2.5 font-normal uppercase tracking-wider text-[11px] ${isDark ? "text-gray-500" : "text-gray-500"}`}>
                         {new Date(user.createdAt).toLocaleDateString()}
                       </td>
 
-<td className="px-4 py-2.5 text-center">
-  {user.isBlocked ? (
-    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium
-    bg-red-500/10 text-red-500 border border-red-500/20">
-      
-      <span className="w-1 h-1 rounded-full bg-red-500"></span>
-      Blocked
-    </span>
-  ) : (
-    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-medium
-    bg-green-500/10 text-green-500 border border-green-500/20">
-      
-      <span className="w-1 h-1 rounded-full bg-green-500"></span>
-      Active
-    </span>
-  )}
-</td>
+                      <td className="px-5 py-2.5 text-center">
+                        {user.isBlocked ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-normal bg-red-500/10 text-red-500 border border-red-500/20">
+                            <span className="w-1 h-1 rounded-full bg-red-500"></span>
+                            Blocked
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-normal bg-green-500/10 text-green-500 border border-green-500/20">
+                            <span className="w-1 h-1 rounded-full bg-green-500"></span>
+                            Active
+                          </span>
+                        )}
+                      </td>
 
-                      <td className="px-4 py-2.5 text-center">
+                      <td className="px-5 py-2.5 text-center">
                         <button
                           onClick={() => openUser(user)}
-                          className={` text-xs transition-all duration-300 hover:scale-105 ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}
+                          className={`text-[11px] font-normal transition-all duration-300 hover:scale-105 ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}
                         >
                           View
                         </button>
