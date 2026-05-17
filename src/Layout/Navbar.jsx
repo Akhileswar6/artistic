@@ -2,10 +2,9 @@ import { useEffect, useRef, useState, memo } from "react";
 import { NavLink, useLocation, Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "../Components/ThemeToggle";
 import { ShoppingBag, Menu, X, ChevronDown, ChevronLeft, LogOut, Bell, User, Home, Image, Info, Phone, Settings, Instagram, Twitter, MessageSquare, ExternalLink } from "lucide-react";
-import SignIn from "../Pages/SignIn";
+import SignIn from "../Components/SignIn";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-const logo = "/artisticLogo.png";
 import { API_BASE_URL } from "../config";
 
 
@@ -93,7 +92,7 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
     <>
       {/* ================= MAIN NAVBAR ================= */}
       <div
-        className="absolute top-0 left-0 z-50 w-full bg-transparent transition-colors duration-300"
+        className="absolute top-0 left-0 z-50 w-full bg-transparent pt-3 md:pt-2 transition-colors duration-300"
         style={{ fontFamily: "Inter, serif" }}
       >
         {/* ===== DESKTOP NAVBAR ===== */}
@@ -101,61 +100,9 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
           {/* Left */}
           <div className="flex items-center gap-12">
             <NavLink to="/" className="flex items-center gap-1">
-              <img
-                src={logo}
-                alt="artistic"
-                className="h-12 w-auto object-contain"
-              />
-              <div className="relative group -mt-1 -ml-2">
-                <span
-                  className="inline-block translate-y-1 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#F4B028] via-[#D97A9A] to-[#6B3FA0]"
-                  style={{ fontFamily: "'Scope One', serif", backgroundSize: "200% auto" }}
-                >
-                  artistic
-                </span>
-                <svg
-                  viewBox="0 0 100 6"
-                  className="absolute -bottom-1.5 left-0 w-full opacity-70"
-                  fill="none"
-                >
-                  <motion.path
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                    d="M2 3 C20 1, 80 5, 98 3"
-                    stroke="#F4B028"
-                    strokeWidth="0.6"
-                    strokeLinecap="round"
-                  />
-                  <motion.path
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 0.8 }}
-                    transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }}
-                    d="M5 4 C30 2, 70 6, 95 4"
-                    stroke="#D97A9A"
-                    strokeWidth="0.5"
-                    strokeLinecap="round"
-                  />
-                  <motion.path
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 0.6 }}
-                    transition={{ duration: 1.4, delay: 0.9, ease: "easeOut" }}
-                    d="M3 5 C40 3, 60 7, 97 5"
-                    stroke="#6B3FA0"
-                    strokeWidth="0.4"
-                    strokeLinecap="round"
-                  />
-                  <motion.path
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 0.4 }}
-                    transition={{ duration: 1.6, delay: 1.1, ease: "easeOut" }}
-                    d="M8 2 C45 0, 55 4, 92 2"
-                    stroke="#3A3A3A"
-                    strokeWidth="0.3"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
+              <span className={`text-2xl font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque" }}>
+                art<span className="text-neutral-500 font-normal">istic</span>
+              </span>
             </NavLink>
             {/* Desktop Links */}
             <div className="relative flex items-center gap-2">
@@ -347,63 +294,11 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
                 />
               )}
             </button>
-            <div className="flex items-center gap-1">
-              <img
-                src={logo}
-                alt="artistic"
-                className="h-12 w-auto object-contain"
-              />
-              <div className="relative group -mt-1 -ml-2">
-                <span
-                  className="inline-block translate-y-1 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#F4B028] via-[#D97A9A] to-[#6B3FA0]"
-                  style={{ fontFamily: "'Scope One', serif", backgroundSize: "200% auto" }}
-                >
-                  artistic
-                </span>
-                <svg
-                  viewBox="0 0 100 6"
-                  className="absolute -bottom-1.5 left-0 w-full opacity-70"
-                  fill="none"
-                >
-                  <motion.path
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                    d="M2 3 C20 1, 80 5, 98 3"
-                    stroke="#F4B028"
-                    strokeWidth="0.6"
-                    strokeLinecap="round"
-                  />
-                  <motion.path
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 0.8 }}
-                    transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }}
-                    d="M5 4 C30 2, 70 6, 95 4"
-                    stroke="#D97A9A"
-                    strokeWidth="0.5"
-                    strokeLinecap="round"
-                  />
-                  <motion.path
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 0.6 }}
-                    transition={{ duration: 1.4, delay: 0.9, ease: "easeOut" }}
-                    d="M3 5 C40 3, 60 7, 97 5"
-                    stroke="#6B3FA0"
-                    strokeWidth="0.4"
-                    strokeLinecap="round"
-                  />
-                  <motion.path
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 0.4 }}
-                    transition={{ duration: 1.6, delay: 1.1, ease: "easeOut" }}
-                    d="M8 2 C45 0, 55 4, 92 2"
-                    stroke="#3A3A3A"
-                    strokeWidth="0.3"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
-            </div>
+            <NavLink to="/" className="flex items-center gap-1">
+              <span className={`text-2xl font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque" }}>
+                art<span className="text-neutral-500 font-normal">istic</span>
+              </span>
+            </NavLink>
           </div>
           {/* Right */}
           <div className="flex items-center gap-3">
@@ -576,61 +471,9 @@ function Navbar({ isDark, setIsDark, user, setUser, showSignIn, setShowSignIn })
               {/* Drawer Header */}
               <div className={`relative p-6 pl-5 flex items-center ${isDark ? "border-b border-white/5" : "border-b border-black/5"}`}>
                 <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-1">
-                  <img
-                    src={logo}
-                    alt="artistic"
-                    className="h-12 w-auto object-contain relative z-10"
-                  />
-                  <div className="relative group -mt-1 -ml-2">
-                    <span
-                      className="inline-block translate-y-1 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#F4B028] via-[#D97A9A] to-[#6B3FA0]"
-                      style={{ fontFamily: "'Scope One', serif", backgroundSize: "200% auto" }}
-                    >
-                      artistic
-                    </span>
-                    <svg
-                      viewBox="0 0 100 6"
-                      className="absolute -bottom-1.5 left-0 w-full opacity-70"
-                      fill="none"
-                    >
-                      <motion.path
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
-                        d="M2 3 C20 1, 80 5, 98 3"
-                        stroke="#F4B028"
-                        strokeWidth="0.6"
-                        strokeLinecap="round"
-                      />
-                      <motion.path
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 0.8 }}
-                        transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }}
-                        d="M5 4 C30 2, 70 6, 95 4"
-                        stroke="#D97A9A"
-                        strokeWidth="0.5"
-                        strokeLinecap="round"
-                      />
-                      <motion.path
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 0.6 }}
-                        transition={{ duration: 1.4, delay: 0.9, ease: "easeOut" }}
-                        d="M3 5 C40 3, 60 7, 97 5"
-                        stroke="#6B3FA0"
-                        strokeWidth="0.4"
-                        strokeLinecap="round"
-                      />
-                      <motion.path
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 0.4 }}
-                        transition={{ duration: 1.6, delay: 1.1, ease: "easeOut" }}
-                        d="M8 2 C45 0, 55 4, 92 2"
-                        stroke="#3A3A3A"
-                        strokeWidth="0.3"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </div>
+                  <span className={`text-2xl font-bold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque" }}>
+                    art<span className="text-neutral-500 font-normal">istic</span>
+                  </span>
                 </Link>
 
                 <motion.button
