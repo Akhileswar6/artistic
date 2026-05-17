@@ -130,39 +130,36 @@ export default function Messages({ isDark }) {
     <div style={{ fontFamily: "Inter, sans-serif" }} className="animate-in fade-in slide-in-from-bottom-4 duration-700">
 
       {/* Header */}
-      <div className={`mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 rounded-3xl transition-all duration-300
+      <div className={`mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 rounded-2xl transition-all duration-300
         ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-white border border-black/5 shadow-sm"}`}>
         <div>
-          <h1 className={`text-2xl md:text-3xl font-semibold tracking-tight ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+          <h1 className={`text-lg md:text-xl ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
             Messages
           </h1>
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <button
             onClick={fetchMessages}
             disabled={loading}    
-            className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all border
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] uppercase transition-all duration-300 transform active:scale-95 shadow-sm cursor-pointer
               ${isDark 
-                ? "bg-white text-black border-white/10 hover:bg-gray-100 shadow-white/5" 
-                : "bg-black text-white border-black/10 hover:bg-neutral-800 shadow-lg shadow-black/10"}`}
+                ? "bg-white text-black hover:bg-gray-100" 
+                : "bg-black text-white hover:bg-neutral-800"}`}
           >
-            <RefreshCcw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCcw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
             {loading ? "Refreshing" : "Refresh Pipeline"}
           </button>
         </div>
       </div>
 
-      {/* Container */}
-      <div className={`rounded-2xl overflow-hidden shadow-lg border transition-all duration-300
-        ${isDark ? "bg-black border-white/10" : "bg-white border-black/5"}`}>
-
-        {/* Search + Filters */}
-        <div className={`flex flex-col md:flex-row items-center gap-4 px-4 py-3 border-b 
-          ${isDark ? "border-white/10" : "border-black/5"}`}>
-
-          {/* Search Input */}
-          <div className="relative w-full md:w-[260px]">
-            <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 ${isDark ? "text-gray-400" : "text-gray-500"}`} />
+      {/* SEARCH AND FILTERS BAR */}
+      <div className={`mb-4 p-2.5 rounded-xl border transition-all duration-300 ${isDark ? "bg-white/[0.02] border-white/5 shadow-2xl" : "bg-white border-black/5 shadow-lg"
+        }`}>
+        <div className="flex flex-col lg:flex-row gap-2.5">
+          {/* SEARCH */}
+          <div className="relative flex-1 group">
+            <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-300 ${isDark ? "text-gray-500 group-focus-within:text-white" : "text-gray-400 group-focus-within:text-black"
+              }`} size={16} />
             <input
               type="text"
               placeholder="Search messages..."
@@ -171,69 +168,73 @@ export default function Messages({ isDark }) {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className={`pl-9 pr-3 py-1.5 rounded-lg text-xs font-medium w-full transition-all focus:outline-none focus:ring-2 
-                ${isDark 
-                  ? "bg-white/5 text-white placeholder-gray-500 border border-white/10 focus:ring-blue-500/50" 
-                  : "bg-white text-black placeholder-gray-400 border border-black/10 focus:ring-blue-500/30 shadow-sm"}`}
+              className={`w-full pl-10 pr-4 py-2 md:py-2.5 rounded-lg border outline-none transition-all duration-300 text-[13px] ${isDark
+                  ? "bg-black border-white/10 text-white focus:border-white/50 focus:bg-white/[0.04]"
+                  : "bg-gray-50 border-black/10 text-black focus:border-black/50 focus:bg-white"
+                }`}
             />
           </div>
 
-          {/* Filter Dropdown */}
-          <div ref={dropdownRef} className="relative w-full md:w-[160px]">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();   
-                setOpenFilter((prev) => !prev);
-              }}
-              className={`w-full px-3 py-1.5 rounded-lg text-xs flex justify-between items-center transition-all border
-                ${isDark 
-                  ? "bg-white/5 text-white border-white/10 hover:bg-white/10" 
-                  : "bg-white text-black border-black/10 hover:bg-gray-50 shadow-sm"}`}
-            >
-              <span className="truncate">
-                {dateFilter === "all" && "All Time"}
-                {dateFilter === "24h" && "Last 24 Hours"}
-                {dateFilter === "7d" && "Last Week"}
-                {dateFilter === "30d" && "Last Month"}
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 opacity-50 flex-shrink-0" />
-            </button>
+          {/* FILTERS */}
+          <div className="flex flex-col sm:flex-row gap-2.5">
+            {/* Status Filter */}
+            <div ref={dropdownRef} className="relative w-full min-w-[145px]">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();   
+                  setOpenFilter((prev) => !prev);
+                }}
+                className={`w-full px-2.5 py-1.5 rounded-lg text-[11px] flex justify-between items-center transition-all border cursor-pointer
+                  ${isDark 
+                    ? "bg-[#0a0a0a] text-white border-white/10 hover:bg-white/5" 
+                    : "bg-white text-black border-black/10 hover:bg-gray-50 shadow-sm"}`}
+              >
+                <span className="flex items-center gap-1.5">
+                  {dateFilter === "all" && "All Time"}
+                  {dateFilter === "24h" && "Last 24 Hours"}
+                  {dateFilter === "7d" && "Last Week"}
+                  {dateFilter === "30d" && "Last Month"}
+                </span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-50 ml-1" />
+              </button>
 
-            {openFilter && (
-              <div className={`absolute mt-1.5 w-full rounded-lg shadow-2xl z-50 text-xs border overflow-hidden
-                ${isDark ? "bg-[#0a0a0a] border-white/10" : "bg-white shadow-xl border-black/10"}`}>
-                {[
-                  { label: "All Time", value: "all" },
-                  { label: "Last 24 Hours", value: "24h" },
-                  { label: "Last Week", value: "7d" },
-                  { label: "Last Month", value: "30d" },
-                ].map((item) => (
-                  <div
-                    key={item.value}
-                    onClick={() => {
-                      setDateFilter(item.value);
-                      setCurrentPage(1);
-                      setOpenFilter(false);
-                    }}
-                    className={`flex justify-between items-center px-3 py-2 cursor-pointer transition-colors
-                      ${isDark 
-                        ? "hover:bg-white/10 text-gray-200" 
-                        : "hover:bg-black/5 text-gray-800"}`}
-                  >
-                    <span className="font-medium">{item.label}</span>
-                    {dateFilter === item.value && (
-                      <CheckCircle2 className={`w-3.5 h-3.5 ${isDark ? "text-blue-400" : "text-blue-600"}`} />
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center gap-3 w-full md:w-auto md:ml-auto">
-            {/* Optional secondary actions */}
+              {openFilter && (
+                <div className={`absolute mt-1.5 w-full rounded-lg shadow-2xl z-50 text-[12px] border overflow-hidden
+                  ${isDark ? "bg-[#0a0a0a] border-white/10" : "bg-white shadow-xl border-black/10"}`}>
+                  {[
+                    { label: "All Time", value: "all" },
+                    { label: "Last 24 Hours", value: "24h" },
+                    { label: "Last Week", value: "7d" },
+                    { label: "Last Month", value: "30d" },
+                  ].map((item) => (
+                    <div
+                      key={item.value}
+                      onClick={() => {
+                        setDateFilter(item.value);
+                        setCurrentPage(1);
+                        setOpenFilter(false);
+                      }}
+                      className={`flex justify-between items-center px-4 py-2.5 cursor-pointer transition-colors
+                        ${isDark 
+                          ? "hover:bg-white/10 text-gray-200" 
+                          : "hover:bg-black/5 text-gray-800"}`}
+                    >
+                      <span className="font-medium">{item.label}</span>
+                      {dateFilter === item.value && (
+                        <CheckCircle2 className={`w-4 h-4 ${isDark ? "text-blue-400" : "text-blue-600"}`} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Container */}
+      <div className={`rounded-2xl overflow-hidden shadow-lg border transition-all duration-300
+        ${isDark ? "bg-black border-white/10" : "bg-white border-black/5"}`}>
 
         {/* Mobile Card Layout */}
         <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
@@ -242,22 +243,22 @@ export default function Messages({ isDark }) {
               <div key={msg._id} className={`p-4 rounded-xl border flex flex-col gap-3 transition-colors duration-200 ${isDark ? "bg-white/5 border-white/10" : "bg-gray-50 border-black/5"}`}>
                 <div className="flex justify-between items-start">
                   <div className="flex flex-col min-w-0">
-                    <span className={`font-bold text-[15px] truncate ${isDark ? "text-gray-100" : "text-gray-900"}`}>{msg.fullName}</span>
-                    <span className={`text-[12px] truncate ${isDark ? "text-gray-400" : "text-gray-600"}`}>{msg.email}</span>
+                    <span className={`font-normal text-[13px] truncate ${isDark ? "text-gray-100" : "text-gray-900"}`}>{msg.fullName}</span>
+                    <span className={`text-[11px] opacity-50 truncate ${isDark ? "text-gray-400" : "text-gray-600"}`}>{msg.email}</span>
                   </div>
-                  <span className={`text-[11px] font-medium opacity-60 whitespace-nowrap ${isDark ? "text-gray-500" : "text-gray-500"}`}>
+                  <span className={`text-[11px] font-normal opacity-50 whitespace-nowrap ${isDark ? "text-gray-500" : "text-gray-500"}`}>
                     {new Date(msg.createdAt).toLocaleDateString()}
                   </span>
                 </div>
                 
-                <div className={`text-[13px] line-clamp-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
-                  <span className="font-semibold opacity-70">Subject:</span> {msg.subject || "(No Subject)"}
+                <div className={`text-[13px] font-normal line-clamp-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                  <span className="opacity-50">Subject:</span> {msg.subject || "(No Subject)"}
                 </div>
 
                 <div className="flex justify-between items-center pt-3 border-t border-dashed border-gray-500/20">
                   <button
                     onClick={() => openMessage(msg)}
-                    className={`text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-lg transition-all ${isDark ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20" : "bg-blue-50 text-blue-600 hover:bg-blue-100"}`}
+                    className={`text-[11px] font-normal uppercase tracking-wider px-3 py-1.5 rounded-lg transition-all ${isDark ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20" : "bg-blue-50 text-blue-600 hover:bg-blue-100"}`}
                   >
                     View Details
                   </button>
@@ -283,11 +284,11 @@ export default function Messages({ isDark }) {
           <table className="w-full text-sm border-collapse">
             <thead>
               <tr className={`${isDark ? "bg-[#0d0d0d] text-gray-400 border-b border-white/10" : "bg-gray-200 text-black border-b border-black/10"}`}>
-                <th className="px-4 py-3 text-left font-normal text-[13px] w-[25%]">Sender</th>
-                <th className="px-4 py-3 text-left font-normal text-[13px] w-[35%]">Subject</th>
-                <th className="px-4 py-3 text-center font-normal text-[13px] w-[15%]">Date</th>
-                <th className="px-4 py-3 text-center font-normal text-[13px] w-[15%]">Details</th>
-                <th className="px-4 py-3 text-center font-normal text-[13px] w-[10%]">Action</th>
+                <th className="px-5 py-3 font-normal text-left text-[11px] uppercase tracking-wider w-[25%]">Sender</th>
+                <th className="px-5 py-3 font-normal text-left text-[11px] uppercase tracking-wider w-[35%]">Subject</th>
+                <th className="px-5 py-3 font-normal text-center text-[11px] uppercase tracking-wider w-[15%]">Date</th>
+                <th className="px-5 py-3 font-normal text-center text-[11px] uppercase tracking-wider w-[15%]">Details</th>
+                <th className="px-5 py-3 font-normal text-center text-[11px] uppercase tracking-wider w-[10%]">Action</th>
               </tr>
             </thead>
 
@@ -299,30 +300,30 @@ export default function Messages({ isDark }) {
                     className={`group transition-colors duration-200 border-b last:border-none
                       ${isDark ? "border-white/5 hover:bg-white/5" : "border-black/5 hover:bg-black/5"}`}
                   >
-                    <td className="px-4 py-2.5 text-left">
+                    <td className="px-5 py-2.5 text-left">
                       <div className="flex flex-col">
-                        <span className={`font-medium ${isDark ? "text-gray-100" : "text-gray-900"}`}>{msg.fullName}</span>
+                        <span className={`text-[13px] font-normal ${isDark ? "text-gray-100" : "text-gray-900"}`}>{msg.fullName}</span>
                         <span className={`text-[10px] ${isDark ? "text-gray-500" : "text-gray-400"}`}>{msg.email}</span>
                       </div>
                     </td>
-                    <td className={`px-4 py-2.5 text-left text-[13px] truncate max-w-[200px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                    <td className={`px-5 py-2.5 text-left text-[13px] truncate max-w-[200px] ${isDark ? "text-gray-400" : "text-gray-600"}`}>
                       {msg.subject || "(No Subject)"}
                     </td>
-                    <td className={`px-4 py-2.5 text-center text-[11px] ${isDark ? "text-gray-500" : "text-gray-500"}`}>
+                    <td className={`px-5 py-2.5 text-center text-[11px] ${isDark ? "text-gray-500" : "text-gray-500"}`}>
                       {new Date(msg.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-4 py-2.5 text-center">
+                    <td className="px-5 py-2.5 text-center">
                       <button
                         onClick={() => openMessage(msg)}
-                        className={`text-xs transition-all duration-300 hover:scale-105 ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}
+                        className={`text-[11px] font-normal transition-all duration-300 hover:scale-105 ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}
                       >
                         View
                       </button>
                     </td>
-                    <td className="px-4 py-2.5 text-center">
+                    <td className="px-5 py-2.5 text-center">
                       <button
                         onClick={() => deleteMessage(msg._id)}
-                        className={`text-red-500  transition-all duration-300 transform hover:scale-110 p-1.5 rounded-sm hover:bg-red-500/10`}
+                        className={`text-red-500 transition-all duration-300 transform hover:scale-110 p-1.5 rounded-sm hover:bg-red-500/10`}
                       >
                         <Trash2 size={14} />
                       </button>
