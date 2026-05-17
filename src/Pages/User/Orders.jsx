@@ -26,6 +26,14 @@ export default function Orders({ isDark }) {
       setOrders(response.data);
     } catch (err) {
       console.error("Failed to fetch orders:", err);
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("loginTimestamp");
+        toast.error("Session expired. Please sign in again.");
+        navigate("/");
+        window.location.reload();
+      }
     } finally {
       setLoading(false);
     }
@@ -94,20 +102,20 @@ export default function Orders({ isDark }) {
             <OrderSkeleton />
           </div>
         ) : orders.length > 0 ? (
-          <div className="grid gap-4 md:gap-6">
+          <div className="grid gap-6 md:gap-8">
             {orders.map((order) => {
               const statusInfo = getStatusInfo(order.status);
               return (
                 <div
                   key={order._id}
-                  className={`group rounded-2xl p-4 border transition-all duration-500 hover:shadow-xl ${isDark
+                  className={`group rounded-2xl p-5 md:p-6 border transition-all duration-500 hover:shadow-xl ${isDark
                     ? "bg-[#111111] border-white/5 hover:border-white/10 "
                     : "bg-white border-black/5 hover:border-black/15 shadow-lg "
                     }`}
                 >
-                  <div className="flex flex-col sm:flex-row gap-4 md:gap-5 items-start sm:items-center">
+                  <div className="flex flex-col sm:flex-row gap-5 md:gap-6 items-start sm:items-center">
                     {/* Compact Image Preview */}
-                    <div className="w-full sm:w-28 md:w-32 h-40 sm:h-28 md:h-32 rounded-xl overflow-hidden shrink-0 border border-white/5 shadow-xl relative group-hover:scale-[1.02] transition-transform duration-500">
+                    <div className="w-full sm:w-32 md:w-36 h-48 sm:h-32 md:h-36 rounded-xl overflow-hidden shrink-0 border border-white/5 shadow-xl relative group-hover:scale-[1.02] transition-transform duration-500">
                       <OptimizedImage src={order.photo} alt="Commission" className="w-full h-full object-cover" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>
@@ -116,10 +124,10 @@ export default function Orders({ isDark }) {
                       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                         <div className="space-y-1.5">
                           <div className="flex items-center gap-3">
-                            <h3 className="font-bold text-base md:text-[17px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                            <h3 className="text-base md:text-[17px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
                               {order.artStyle.charAt(0).toUpperCase() + order.artStyle.slice(1)} Portrait
                             </h3>
-                            <span className={`px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest border ${statusInfo.color.replace('bg-', 'bg-opacity-10 border-').replace('/10', '/20')
+                            <span className={`px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-medium uppercase tracking-widest border ${statusInfo.color.replace('bg-', 'bg-opacity-10 border-').replace('/10', '/20')
                               }`}>
                               {statusInfo.label}
                             </span>
@@ -137,7 +145,7 @@ export default function Orders({ isDark }) {
 
                         <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
                           <div className={`px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg border ${isDark ? "bg-white/5 border-white/5" : "bg-gray-50 border-black/5"}`}>
-                            <p className="text-sm md:text-base font-black flex items-center gap-0.5 tracking-tighter">
+                            <p className="text-sm md:text-base flex items-center gap-0.5 tracking-tighter">
                               <IndianRupee size={14} /> {order.totalPrice.toLocaleString()}
                             </p>
                           </div>
