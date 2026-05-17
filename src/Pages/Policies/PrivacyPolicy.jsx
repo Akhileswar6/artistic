@@ -27,7 +27,7 @@ export default function PrivacyPolicy({ isDark }) {
 
   return (
     <div
-      className={`relative w-full min-h-screen py-10 sm:py-16 px-6 sm:px-12 overflow-hidden transition-colors duration-500 ${isDark ? "bg-[#080808]" : "bg-[#faf9f6]"
+      className={`relative w-full min-h-screen pt-24 pb-10 sm:pt-32 sm:pb-16 px-6 sm:px-12 overflow-hidden transition-colors duration-500 ${isDark ? "bg-[#0f1115]" : "bg-white"
         }`}
       style={{ fontFamily: "Inter, serif" }}
     >
