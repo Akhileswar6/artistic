@@ -200,7 +200,6 @@ router.put("/change-password", verifyAdmin, async (req, res) => {
 // ============================
 router.get("/users", verifyAdmin, async (req, res) => {
   try {
-    const User = require("../models/User");
     const users = await User.find().select("-password");
     res.json(users);
   } catch (err) {
@@ -214,7 +213,6 @@ router.get("/users", verifyAdmin, async (req, res) => {
 router.post("/block-users", verifyAdmin, async (req, res) => {
   try {
     const { userIds } = req.body;
-    const User = require("../models/User");
     const users = await User.find({ _id: { $in: userIds } });
 
     const bulkOps = users.map((user) => ({
@@ -236,7 +234,6 @@ router.post("/block-users", verifyAdmin, async (req, res) => {
 // ============================
 router.get("/messages", verifyAdmin, async (req, res) => {
   try {
-    const Message = require("../models/Message");
     const messages = await Message.find().sort({ createdAt: -1 });
     res.json(messages);
   } catch (err) {
@@ -246,7 +243,6 @@ router.get("/messages", verifyAdmin, async (req, res) => {
 
 router.delete("/messages/:id", verifyAdmin, async (req, res) => {
   try {
-    const Message = require("../models/Message");
     await Message.findByIdAndDelete(req.params.id);
     res.json({ message: "Success" });
   } catch (err) {
@@ -259,10 +255,6 @@ router.delete("/messages/:id", verifyAdmin, async (req, res) => {
 // ============================
 router.get("/stats-summary", verifyAdmin, async (req, res) => {
   try {
-    const User = require("../models/User");
-    const Message = require("../models/Message");
-    const Order = require("../models/Order");
-
     const usersCount = await User.countDocuments();
     const messagesCount = await Message.countDocuments();
     const ordersCount = await Order.countDocuments();
@@ -287,10 +279,6 @@ router.get("/stats-summary", verifyAdmin, async (req, res) => {
 // ============================
 router.get("/analytics", verifyAdmin, async (req, res) => {
   try {
-    const Order = require("../models/Order");
-    const User = require("../models/User");
-    const Message = require("../models/Message");
-
     // 1. Revenue by Day (Last 7 days)
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
