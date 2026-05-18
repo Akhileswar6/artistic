@@ -289,9 +289,6 @@ exports.updateProfile = async (req, res) => {
     if (req.file) {
       profilePic = req.file.path;
     }
-
-    const User = require("../models/User");
-    
     const user = await User.findByIdAndUpdate(
       userId,
       { $set: { fullName, profilePic } },
