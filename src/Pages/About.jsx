@@ -1,7 +1,7 @@
 import { Heart, Award, Star, Clock, MapPin, CheckCircle, Palette, Sparkles, User, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import akhil from "../assets/Akhil.jpg";
+import akhil from "../assets/Akhil.JPG";
 
 const containerVariants = {
   hidden: { opacity: 0 },
