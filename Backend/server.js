@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 require("dotenv").config();
 
 const express = require("express");
@@ -9,7 +17,7 @@ const app = express();
 
 app.use(cors({
   origin: [
-    "http://localhost:5173",           // local frontend
+    "http://localhost:5173",            // local frontend
     "https://artistic-zeta.vercel.app"  // deployed frontend
   ],
   credentials: true
