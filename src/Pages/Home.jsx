@@ -22,6 +22,7 @@ import RecentSketches from "../Components/RecentSketches";
 import ArtistArtworks from "../Components/ArtistArtworks";
 import Features from "../Components/Features";
 import CustomerShowcase from "../Components/CustomerShowcase";
+import ContactSection from "../Components/ContactSection";
 
 export default function Home({ isDark }) {
   const { user } = useOutletContext();
@@ -472,6 +473,9 @@ export default function Home({ isDark }) {
           <Features isDark={isDark} />
         </div>
 
+        <div className="mt-24 md:mt-40">
+          <ContactSection isDark={isDark} />
+        </div>
 
       </div>
 

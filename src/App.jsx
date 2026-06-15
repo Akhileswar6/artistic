@@ -3,6 +3,15 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { AnimatePresence, motion } from "framer-motion";
 
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
+
 // Layouts
 import Layout from "./Layout/Layout";
 import PolicyNavbar from "./Layout/PolicyNavbar";
@@ -152,6 +161,7 @@ export default function App() {
         className={`min-h-screen flex flex-col transition-colors duration-300 ${isDark ? "bg-black text-white" : "bg-white text-black"
           }`}
       >
+        <ScrollToTop />
         <Suspense fallback={<PageLoader />}>
           <Routes location={location}>
             {/* Admin Routes */}
