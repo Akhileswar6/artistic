@@ -124,13 +124,13 @@ export default function Footer({ isDark }) {
               Contact
             </h4>
             <div className={`space-y-2 text-[14px] ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
-              <div className="flex items-center gap-3 group cursor-pointer hover:text-blue-500 transition-colors">
+              <div className="flex items-center gap-3 group ">
                 <div className={`p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-black/5"}`}>
                   <Mail size={16} />
                 </div>
                 <span>artistic.official12@gmail.com</span>
               </div>
-              <div className="flex items-center gap-3 group cursor-pointer hover:text-green-500 transition-colors">
+              <div className="flex items-center gap-3 group ">
                 <div className={`p-2 rounded-lg ${isDark ? "bg-white/5" : "bg-black/5"}`}>
                   <Phone size={16} />
                 </div>
