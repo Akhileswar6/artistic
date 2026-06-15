@@ -105,32 +105,43 @@ const getAllOrders = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, isFullPaid, isAdvancePaid } = req.body;
 
-    // Handle payment flags based on status
-    const updateData = { status };
-    if (status === "payment_done") {
-      updateData.isAdvancePaid = true;
-    } else if (status === "out_for_delivery" || status === "delivered") {
-      // Mark as fully paid when shipping or delivered
-      updateData.isAdvancePaid = true;
-      updateData.isFullPaid = true;
-    } else if (status === "pending" || status === "accepted") {
-      // If admin moves status back, allow them to re-verify payment
-      updateData.isAdvancePaid = false;
-      updateData.isFullPaid = false;
-      updateData.transactionId = ""; 
-      updateData.balanceTransactionId = "";
-    }
-
-    const order = await Order.findByIdAndUpdate(
-      id,
-      updateData,
-      { returnDocument: "after", runValidators: true }
-    );
-
+    const order = await Order.findById(id);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
+    }
+
+    let actionName = "Status Update";
+
+    if (status !== undefined) {
+      order.status = status;
+      // Handle payment flags based on status
+      if (status === "payment_done") {
+        order.isAdvancePaid = true;
+      } else if (status === "out_for_delivery" || status === "delivered") {
+        order.isAdvancePaid = true;
+        order.isFullPaid = true;
+      } else if (status === "pending" || status === "accepted") {
+        order.isAdvancePaid = false;
+        order.isFullPaid = false;
+        order.transactionId = ""; 
+        order.balanceTransactionId = "";
+      }
+    }
+
+    if (isFullPaid !== undefined) {
+      order.isFullPaid = isFullPaid;
+      if (isFullPaid) {
+        actionName = "Balance Payment Verified";
+      }
+    }
+
+    if (isAdvancePaid !== undefined) {
+      order.isAdvancePaid = isAdvancePaid;
+      if (isAdvancePaid) {
+        actionName = "Advance Payment Verified";
+      }
     }
 
     // --- LOG HISTORY & ACTIVITY ---
@@ -139,10 +150,10 @@ const updateOrderStatus = async (req, res) => {
     
     // Add to order history
     order.history.push({
-      status: status,
+      status: order.status,
       updatedBy: admin?.fullName || "Admin",
       timestamp: new Date(),
-      metadata: { action: "Status Update" }
+      metadata: { action: actionName }
     });
     await order.save();
 
@@ -150,14 +161,14 @@ const updateOrderStatus = async (req, res) => {
     await new Activity({
       adminId: adminId,
       adminName: admin?.fullName || "Admin",
-      action: "Updated Order Status",
+      action: actionName === "Status Update" ? "Updated Order Status" : actionName,
       targetId: id,
       targetType: "Order",
-      details: `Changed status to: ${status}`,
+      details: actionName === "Status Update" ? `Changed status to: ${order.status}` : `${actionName} for order`,
     }).save();
 
     // Schedule activity log cleanup 7 days after delivery
-    if (status === "delivered") {
+    if (order.status === "delivered") {
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
       await Activity.updateMany(
         { targetId: id, targetType: "Order" },
@@ -167,7 +178,7 @@ const updateOrderStatus = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Order status updated successfully",
+      message: actionName === "Status Update" ? "Order status updated successfully" : `${actionName} successfully`,
       order,
     });
   } catch (error) {
