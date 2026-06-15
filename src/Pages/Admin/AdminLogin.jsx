@@ -8,7 +8,7 @@ import { ArrowLeft, Eye, EyeOff, LockIcon } from "lucide-react";
 
 export default function AdminLogin({ isDark, setIsDark }) {
 
-  const [email, setEmail] = useState("artistic.official12@gmail.com");
+  const [email, setEmail] = useState();
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
   const [showPassword, setShowPassword] = useState(false);

@@ -253,20 +253,12 @@ export default function UserOrders({ isDark }) {
         body: JSON.stringify({ status: newStatus }),
       });
       if (res.ok) {
-        setOrders(orders.map(o => o._id === id ? {
-          ...o,
-          status: newStatus,
-          isAdvancePaid: ['payment_done', 'out_for_delivery', 'delivered'].includes(newStatus) ? true : o.isAdvancePaid,
-          isFullPaid: ['out_for_delivery', 'delivered'].includes(newStatus) ? true : o.isFullPaid
-        } : o));
+        const data = await res.json();
+        const updatedOrder = data.order;
+        setOrders(orders.map(o => o._id === id ? updatedOrder : o));
 
         if (selectedOrder && selectedOrder._id === id) {
-          setSelectedOrder({
-            ...selectedOrder,
-            status: newStatus,
-            isAdvancePaid: ['payment_done', 'out_for_delivery', 'delivered'].includes(newStatus) ? true : selectedOrder.isAdvancePaid,
-            isFullPaid: ['out_for_delivery', 'delivered'].includes(newStatus) ? true : selectedOrder.isFullPaid
-          });
+          setSelectedOrder(updatedOrder);
         }
       } else {
         const errorData = await res.json();
@@ -275,6 +267,37 @@ export default function UserOrders({ isDark }) {
     } catch (err) {
       console.error("Failed to update status");
       toast.error("Network error: Failed to update status");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const verifyBalancePayment = async (id) => {
+    setUpdatingId(id);
+    try {
+      const token = localStorage.getItem("adminToken");
+      const res = await fetch(`${API_BASE_URL}/api/orders/status/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ isFullPaid: true }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const updatedOrder = data.order;
+        setOrders(orders.map(o => o._id === id ? updatedOrder : o));
+
+        setSelectedOrder(null);
+        toast.success("Balance payment verified successfully!");
+      } else {
+        const errorData = await res.json();
+        toast.error(`Error: ${errorData.message || "Failed to verify balance payment"}`);
+      }
+    } catch (err) {
+      console.error("Failed to verify balance payment", err);
+      toast.error("Network error: Failed to verify balance payment");
     } finally {
       setUpdatingId(null);
     }
@@ -983,82 +1006,124 @@ export default function UserOrders({ isDark }) {
                 {/* Right: Payment & Visual (4 cols) */}
                 <div className="lg:col-span-5 space-y-10">
 
-                  {/* TRANSACTION ID ALERT */}
-                  <div className={`p-6 md:p-8 rounded-lg border transition-all duration-500 shadow-2xl relative overflow-hidden
+                  {/* TRANSACTION ID PANEL */}
+                  <div className={`p-5 rounded-2xl border transition-all duration-500 shadow-xl relative overflow-hidden backdrop-blur-md
                     ${(selectedOrder.transactionId || selectedOrder.balanceTransactionId)
-                      ? "bg-indigo-600/10 border-indigo-500/30 text-indigo-400"
-                      : isDark ? "bg-white/5 border-white/10 opacity-30" : "bg-black/5 border-black/10 opacity-30"}`}>
+                      ? (isDark ? "bg-emerald-950/20 border-emerald-500/20" : "bg-emerald-50/50 border-emerald-200")
+                      : (isDark ? "bg-white/5 border-white/10 opacity-30" : "bg-black/5 border-black/10 opacity-30")}`}>
 
-                    <div className="relative z-10 flex flex-col gap-5">
+                    <div className="relative z-10 space-y-4">
+                      {/* Header */}
+                      <div className="flex items-center gap-2 pb-2.5 border-b border-emerald-500/10">
+                        <IndianRupee size={16} className={isDark ? "text-emerald-400" : "text-emerald-600"} />
+                        <h4 className={`text-xs  uppercase tracking-wider ${isDark ? "text-emerald-300" : "text-emerald-800"}`}>
+                          UPI Transaction Details
+                        </h4>
+                      </div>
+
                       {/* ADVANCE ID */}
-                      <div>
-                        <p className="text-[11px] opacity-60 uppercase mb-1.5">Advance UPI ID</p>
-                        <div className="flex items-center justify-between gap-4 w-full">
-                          <div className="flex items-center gap-2">
-                            <p className={`text-sm md:text-base break-all leading-relaxed ${selectedOrder.transactionId ? "text-indigo-400" : "text-gray-500"}`}>
-                              {selectedOrder.transactionId || "No ID Submitted Yet"}
-                            </p>
-                            {selectedOrder.isAdvancePaid && (
-                              <CircleCheckBig size={16} className="text-emerald-500 shrink-0" />
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            {selectedOrder.transactionId && (
-                              <button
-                                onClick={() => {
-                                  navigator.clipboard.writeText(selectedOrder.transactionId);
-                                  toast.success("Advance ID Copied!");
-                                }}
-                                className="flex items-center justify-center p-1.5 hover:bg-white/5 rounded text-indigo-400 hover:text-indigo-300 transition-colors"
-                                title="Copy Advance ID">
-                                <Copy size={16} />
-                              </button>
-                            )}
-                          </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className={`text-[10px] uppercase  tracking-wide ${isDark ? "text-white/40" : "text-neutral-500"}`}>
+                            01. Advance Payment
+                          </span>
+                          {selectedOrder.isAdvancePaid ? (
+                            <span className={`px-2 py-0.5 rounded-full text-[9px]  uppercase tracking-wider flex items-center gap-1 ${isDark ? "bg-emerald-500/10 text-emerald-400" : "bg-emerald-100 text-emerald-800"}`}>
+                              <CircleCheckBig size={10} /> Verified
+                            </span>
+                          ) : selectedOrder.transactionId ? (
+                            <span className="px-2 py-0.5 rounded-full text-[9px]  uppercase tracking-wider bg-amber-500/10 text-amber-500 flex items-center gap-1">
+                              <Clock size={10} className="animate-pulse" /> Pending
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-full text-[9px]  uppercase tracking-wider bg-red-500/10 text-red-500">
+                              Awaiting
+                            </span>
+                          )}
                         </div>
+
+                        {selectedOrder.transactionId ? (
+                          <div className={`p-2.5 rounded-xl flex items-center justify-between gap-3  text-xs border ${isDark ? "bg-black/40 border-emerald-500/10 text-emerald-300" : "bg-white border-emerald-200 text-emerald-800"}`}>
+                            <span className="break-all select-all font-medium tracking-wider">
+                              {selectedOrder.transactionId}
+                            </span>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(selectedOrder.transactionId);
+                                toast.success("Advance Transaction ID Copied!");
+                              }}
+                              className={`p-1.5 rounded-lg transition-all shrink-0 active:scale-95 ${isDark ? "bg-white/5 hover:bg-white/10 text-emerald-400" : "bg-emerald-50 hover:bg-emerald-100 text-emerald-700"}`}
+                              title="Copy ID"
+                            >
+                              <Copy size={13} />
+                            </button>
+                          </div>
+                        ) : (
+                          <p className={`text-xs italic pl-1 ${isDark ? "text-white/30" : "text-neutral-400"}`}>
+                            No transaction ID submitted yet.
+                          </p>
+                        )}
                       </div>
 
                       {/* BALANCE ID */}
                       {(selectedOrder.isAdvancePaid || selectedOrder.balanceTransactionId) && (
-                        <div className="pt-4 border-t border-indigo-500/20">
-                          <p className="text-[11px] opacity-60 uppercase mb-1.5">Balance UPI ID</p>
-                          <div className="flex items-center justify-between gap-4 w-full">
-                            <div className="flex items-center gap-2">
-                              <p className={`text-sm md:text-base break-all leading-relaxed ${selectedOrder.balanceTransactionId ? "text-indigo-400" : "text-gray-500"}`}>
-                                {selectedOrder.balanceTransactionId || "No ID Submitted Yet"}
-                              </p>
-                              {selectedOrder.isFullPaid && (
-                                <CircleCheckBig  size={16} className="text-emerald-500 shrink-0" />
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                              {selectedOrder.balanceTransactionId && (
+                        <div className={`pt-4 border-t ${isDark ? "border-emerald-500/10" : "border-emerald-200/50"} space-y-2`}>
+                          <div className="flex justify-between items-center">
+                            <span className={`text-[10px] uppercase tracking-wide ${isDark ? "text-white/40" : "text-neutral-500"}`}>
+                              02. Final Balance
+                            </span>
+                            {selectedOrder.isFullPaid ? (
+                              <span className={`px-2 py-0.5 rounded-full text-[9px]  uppercase tracking-wider flex items-center gap-1 ${isDark ? "bg-emerald-500/10 text-emerald-400" : "bg-emerald-100 text-emerald-800"}`}>
+                                <CircleCheckBig size={10} /> Verified
+                              </span>
+                            ) : selectedOrder.balanceTransactionId ? (
+                              <span className="px-2 py-0.5 rounded-full text-[9px]  uppercase tracking-wider bg-amber-500/10 text-amber-500 flex items-center gap-1">
+                                <Clock size={10} className="animate-pulse" /> Pending
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full text-[9px]  uppercase tracking-wider bg-red-500/10 text-red-500">
+                                Awaiting
+                              </span>
+                            )}
+                          </div>
+
+                          {selectedOrder.balanceTransactionId ? (
+                            <div className="space-y-3">
+                              <div className={`p-2.5 rounded-xl flex items-center justify-between gap-3  text-xs border ${isDark ? "bg-black/40 border-emerald-500/10 text-emerald-300" : "bg-white border-emerald-200 text-emerald-800"}`}>
+                                <span className="break-all select-all font-medium tracking-wider">
+                                  {selectedOrder.balanceTransactionId}
+                                </span>
                                 <button
                                   onClick={() => {
                                     navigator.clipboard.writeText(selectedOrder.balanceTransactionId);
-                                    toast.success("Balance ID Copied!");
+                                    toast.success("Balance Transaction ID Copied!");
                                   }}
-                                  className="flex items-center justify-center p-1.5 hover:bg-white/5 rounded text-indigo-400 hover:text-indigo-300 transition-colors"
-                                  title="Copy Balance ID">
-                                  <Copy size={16} />
+                                  className={`p-1.5 rounded-lg transition-all shrink-0 active:scale-95 ${isDark ? "bg-white/5 hover:bg-white/10 text-emerald-400" : "bg-emerald-50 hover:bg-emerald-100 text-emerald-700"}`}
+                                  title="Copy ID"
+                                >
+                                  <Copy size={13} />
+                                </button>
+                              </div>
+
+                              {selectedOrder.balanceTransactionId && !selectedOrder.isFullPaid && (
+                                <button
+                                  onClick={() => verifyBalancePayment(selectedOrder._id)}
+                                  className="w-full py-2.5 rounded-xl uppercase text-[10px] tracking-wider transition-all duration-300 transform active:scale-95  flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-600 text-white shadow-emerald-500/20 cursor-pointer"
+                                >
+                                  <CircleCheckBig size={12} /> Verify Balance Payment
                                 </button>
                               )}
-                              
                             </div>
-                            
-                          </div>
-                          {selectedOrder.balanceTransactionId && !selectedOrder.isFullPaid && (
-                            <button
-                              onClick={() => updateStatus(selectedOrder._id, 'out_for_delivery')}
-                              className="w-full py-2 mt-4 bg-blue-500 hover:bg-blue-600 text-white rounded text-[12px]  transition-all shadow shadow-blue-500/20 active:scale-95">
-                              Verify
-                            </button>
+                          ) : (
+                            <p className={`text-xs italic pl-1 ${isDark ? "text-white/30" : "text-neutral-400"}`}>
+                              No transaction ID submitted yet.
+                            </p>
                           )}
                         </div>
                       )}
                     </div>
                     {(selectedOrder.transactionId || selectedOrder.balanceTransactionId) && (
-                      <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-500/20 blur-[60px] rounded-full animate-pulse"></div>
+                      <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-emerald-500/10 blur-[60px] rounded-full pointer-events-none"></div>
                     )}
                   </div>
 
