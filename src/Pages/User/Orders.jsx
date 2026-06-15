@@ -73,26 +73,36 @@ export default function Orders({ isDark }) {
     <div className={`min-h-screen pt-24 md:pt-32 pb-24 px-4 md:px-6 transition-colors duration-300 ${isDark ? "bg-[#0a0a0b] text-white" : "bg-[#f8f9fa] text-black"}`} style={{ fontFamily: "Inter, sans-serif" }}>
       <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
 
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-6">
-          <div className="text-left">
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-                My Orders
-              </h1>
-              {loading && <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin opacity-50"></div>}
-            </div>
-            <p className={`text-xs md:text-sm mt-1 opacity-50`}>Track and manage your recent commissions</p>
-          </div>
+        {/* Premium Coloured Header Section */}
+        <div className={`p-6 md:p-8 rounded-2xl md:rounded-3xl border relative overflow-hidden transition-all shadow-lg ${isDark ? "bg-purple-950/10 border-purple-500/10" : "bg-purple-50/50 border-purple-100"}`}>
+          {/* Subtle Background Glows */}
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-500/5 blur-[80px] rounded-full pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-fuchsia-500/5 blur-[80px] rounded-full pointer-events-none"></div>
 
-          <button
-            onClick={() => navigate("/order")}
-            className={`w-full sm:w-auto px-4 py-2.5 md:py-2 rounded-lg text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-neutral-800"
-              }`}
-          >
-            New Commission
-            <ArrowRight size={16} />
-          </button>
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="text-left space-y-2">
+              <div className="flex items-center gap-3">
+                <div className={`p-2.5 md:p-3 rounded-[14px] flex items-center justify-center relative overflow-hidden backdrop-blur-xl border ${isDark ? "bg-purple-900/40 border-purple-400/20 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.1)]" : "bg-white/80 border-purple-200 text-purple-600 shadow-md"}`}>
+                  <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-50"></div>
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+                  <ShoppingBag size={24} strokeWidth={2.5} className="relative z-10" />
+                </div>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                  My Orders
+                </h1>
+                {loading && <div className="w-4 h-4 border-2 border-purple-500 border-t-transparent rounded-full animate-spin opacity-50"></div>}
+              </div>
+              <p className={`text-xs md:text-sm opacity-60 ml-12 md:ml-14`}>Track and manage your recent commissions</p>
+            </div>
+
+            <button
+              onClick={() => navigate("/order")}
+              className={`w-full sm:w-auto px-5 py-3 md:py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer backdrop-blur-xl border ${isDark ? "bg-white/[0.05] border-white/10 text-white hover:bg-white/[0.08] hover:border-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.03)]" : "bg-white/60 border-white/80 text-purple-800 shadow-[0_8px_32px_rgba(168,85,247,0.1)] hover:bg-white/90"}`}
+            >
+              New Order
+              <ArrowRight size={16} />
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -108,12 +118,15 @@ export default function Orders({ isDark }) {
               return (
                 <div
                   key={order._id}
-                  className={`group rounded-2xl p-5 md:p-6 border transition-all duration-500 hover:shadow-xl ${isDark
-                    ? "bg-[#111111] border-white/5 hover:border-white/10 "
-                    : "bg-white border-black/5 hover:border-black/15 shadow-lg "
+                  className={`group relative overflow-hidden rounded-2xl p-5 md:p-6 border transition-all duration-500 backdrop-blur-2xl ${isDark
+                    ? "bg-white/[0.03] border-white/10"
+                    : "bg-white/60 border-white/80 shadow-lg"
                     }`}
                 >
-                  <div className="flex flex-col sm:flex-row gap-5 md:gap-6 items-start sm:items-center">
+                  <div className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent ${isDark ? 'via-white/20' : 'via-white/80'} to-transparent opacity-50`}></div>
+                  <div className={`absolute inset-0 bg-gradient-to-b ${isDark ? 'from-white/5' : 'from-white/40'} to-transparent pointer-events-none`}></div>
+
+                  <div className="relative z-10 flex flex-col sm:flex-row gap-5 md:gap-6 items-start sm:items-center">
                     {/* Compact Image Preview */}
                     <div className="w-full sm:w-32 md:w-36 h-48 sm:h-32 md:h-36 rounded-xl overflow-hidden shrink-0 border border-white/5 shadow-xl relative group-hover:scale-[1.02] transition-transform duration-500">
                       <OptimizedImage src={order.photo} alt="Commission" className="w-full h-full object-cover" />
@@ -127,8 +140,7 @@ export default function Orders({ isDark }) {
                             <h3 className="text-base md:text-[17px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
                               {order.artStyle.charAt(0).toUpperCase() + order.artStyle.slice(1)} Portrait
                             </h3>
-                            <span className={`px-2 py-0.5 rounded-full text-[9px] md:text-[10px] font-medium uppercase tracking-widest border ${statusInfo.color.replace('bg-', 'bg-opacity-10 border-').replace('/10', '/20')
-                              }`}>
+                            <span className={`px-2.5 py-1 rounded-full text-[9px] md:text-[10px]  uppercase tracking-wider ${statusInfo.color}`}>
                               {statusInfo.label}
                             </span>
                           </div>
@@ -144,12 +156,12 @@ export default function Orders({ isDark }) {
                         </div>
 
                         <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
-                          <div className={`px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg border ${isDark ? "bg-white/5 border-white/5" : "bg-gray-50 border-black/5"}`}>
-                            <p className="text-sm md:text-base flex items-center gap-0.5 tracking-tighter">
-                              <IndianRupee size={14} /> {order.totalPrice.toLocaleString()}
-                            </p>
+                          <div className="flex items-center gap-1.5">
+                            <IndianRupee size={16} className={isDark ? "text-emerald-400" : "text-emerald-600"} strokeWidth={2.5} />
+                            <span className={`text-base md:text-lg font-bold tracking-tight ${isDark ? "text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300" : "text-emerald-700"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                              {order.totalPrice.toLocaleString()}
+                            </span>
                           </div>
-                          <p className="text-[11px] md:text-[13px] opacity-30">Total Value</p>
                         </div>
                       </div>
 
@@ -189,7 +201,7 @@ export default function Orders({ isDark }) {
 
               <button
                 onClick={() => navigate("/order")}
-                className={`inline-flex items-center gap-2 text-xs md:text-sm font-semibold transition-colors ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"
+                className={`inline-flex items-center gap-2 text-xs md:text-sm  transition-colors ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"
                   }`}
               >
                 <Package size={18} />
@@ -199,19 +211,7 @@ export default function Orders({ isDark }) {
           </div>
         )}
 
-        {/* Helpful Info */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-10 md:pt-12 border-t border-white/5">
-          {[
-            { title: "Artisan Quality", desc: "Hand-drawn with premium materials" },
-            { title: "Safe Shipping", desc: "Special packaging for fragile art" },
-            { title: "Updates", desc: "Receive photo updates as we draw" }
-          ].map((item, i) => (
-            <div key={i} className="text-center sm:text-left space-y-1.5 md:space-y-2">
-              <h4 className="text-sm md:text-md font-bold" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>{item.title}</h4>
-              <p className="text-[11px] md:text-[12px] opacity-40 leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
-        </div>
+
 
       </div>
     </div>
