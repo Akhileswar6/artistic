@@ -1,4 +1,4 @@
-<img width="208" height="126" alt="image" src="https://github.com/user-attachments/assets/b2207ea8-f785-420b-91d3-39c6165ffb1f" />
+<img width="198" height="71" alt="image" src="https://github.com/user-attachments/assets/42a8c960-69da-4c06-b2fd-594f596212d5" />
 
 Artistic is a premium, full-stack web application designed for custom art commissions. It allows clients to upload their photos, select custom drawing styles, choose framing options, and commission beautiful hand-drawn sketches, portraits, and divine artworks. The platform features a unique two-stage payment flow (advance + balance), interactive dashboards, a dark/light mode toggle with theme memory, and a secure administration panel featuring rich visual analytics.
 
