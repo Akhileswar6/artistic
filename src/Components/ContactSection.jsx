@@ -135,7 +135,7 @@ export default function ContactSection({ isDark }) {
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className={`w-full py-3.5 px-6 rounded-full font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                    className={`w-full py-3.5 px-6 rounded-full text-sm transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
                       isDark 
                         ? "bg-white text-black hover:bg-neutral-200" 
                         : "bg-black text-white hover:bg-neutral-800"
