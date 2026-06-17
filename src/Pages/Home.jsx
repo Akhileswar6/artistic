@@ -457,23 +457,23 @@ export default function Home({ isDark }) {
 
 
 
-        <div className="mt-24 md:mt-40">
+        <div className="mt-20 md:mt-36">
           <Testimonials isDark={isDark} />
         </div>
 
 
 
 
-        <div className="mt-24 md:mt-40">
+        <div className="mt-20 md:mt-36">
           <CustomerShowcase isDark={isDark} />
         </div>
 
 
-        <div className="mt-24 md:mt-40">
+        <div className="mt-20 md:mt-25">
           <Features isDark={isDark} />
         </div>
 
-        <div className="mt-24 md:mt-40">
+        <div className="mt-20 md:mt-20">
           <ContactSection isDark={isDark} />
         </div>
 
