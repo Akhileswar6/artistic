@@ -2,9 +2,21 @@ const express = require("express");
 const router = express.Router();
 
 const Notification = require("../models/Notification");
+const { validate } = require("../middleware/validationMiddleware");
+const { z } = require("zod");
+
+const mongoIdRegex = /^[0-9a-fA-F]{24}$/;
+
+const userIdParamSchema = z.object({
+  userId: z.string().regex(mongoIdRegex, "Invalid User ID format"),
+});
+
+const idParamSchema = z.object({
+  id: z.string().regex(mongoIdRegex, "Invalid Notification ID format"),
+});
 
 // ================= GET ALL NOTIFICATIONS =================
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", validate({ params: userIdParamSchema }), async (req, res) => {
   try {
     const notifications = await Notification.find({
       userId: req.params.userId,
@@ -17,7 +29,7 @@ router.get("/:userId", async (req, res) => {
 });
 
 // ================= MARK ONE AS READ =================
-router.put("/:id", async (req, res) => {
+router.put("/:id", validate({ params: idParamSchema }), async (req, res) => {
   try {
     await Notification.findByIdAndUpdate(req.params.id, { read: true });
     res.json({ message: "Notification updated" });
@@ -27,7 +39,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // ================= MARK ALL AS READ =================
-router.put("/mark-all/:userId", async (req, res) => {
+router.put("/mark-all/:userId", validate({ params: userIdParamSchema }), async (req, res) => {
   try {
     await Notification.updateMany(
       { userId: req.params.userId },

@@ -42,11 +42,25 @@ const sendOtpEmail = async (email, otp) => {
 };
 
 const { verifyAdmin } = require("../middleware/authMiddleware");
+const { validate } = require("../middleware/validationMiddleware");
+const {
+  adminLoginSchema,
+  adminProfileSchema,
+  addAdminSchema,
+  changePasswordSchema,
+  blockUsersSchema,
+  systemConfigSchema,
+} = require("../validators/adminSchemas");
+const { strictLimiter } = require("../middleware/rateLimiters");
+const { z } = require("zod");
+const adminIdParamSchema = z.object({
+  id: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ID format"),
+});
 
 // ============================
 // 🟢 LOGIN ROUTE
 // ============================
-router.post("/login", async (req, res) => {
+router.post("/login", strictLimiter, validate({ body: adminLoginSchema }), async (req, res) => {
   const { email, password, otp } = req.body;
 
   try {
@@ -123,7 +137,7 @@ router.get("/profile", verifyAdmin, async (req, res) => {
   }
 });
 
-router.put("/profile", verifyAdmin, async (req, res) => {
+router.put("/profile", verifyAdmin, validate({ body: adminProfileSchema }), async (req, res) => {
   try {
     const { fullName, email, bio, avatar } = req.body;
     const admin = await Admin.findByIdAndUpdate(
@@ -149,7 +163,7 @@ router.get("/all-admins", verifyAdmin, async (req, res) => {
   }
 });
 
-router.post("/add-admin", verifyAdmin, async (req, res) => {
+router.post("/add-admin", verifyAdmin, validate({ body: addAdminSchema }), async (req, res) => {
   try {
     const { email, password, fullName } = req.body;
     
@@ -165,7 +179,7 @@ router.post("/add-admin", verifyAdmin, async (req, res) => {
   }
 });
 
-router.delete("/remove-admin/:id", verifyAdmin, async (req, res) => {
+router.delete("/remove-admin/:id", verifyAdmin, validate({ params: adminIdParamSchema }), async (req, res) => {
   try {
     if (req.params.id === req.user.id) {
       return res.status(400).json({ message: "Cannot remove yourself" });
@@ -177,7 +191,7 @@ router.delete("/remove-admin/:id", verifyAdmin, async (req, res) => {
   }
 });
 
-router.put("/change-password", verifyAdmin, async (req, res) => {
+router.put("/change-password", verifyAdmin, validate({ body: changePasswordSchema }), async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
     const admin = await Admin.findById(req.user.id);
@@ -210,7 +224,7 @@ router.get("/users", verifyAdmin, async (req, res) => {
 // ============================
 // 🚫 BLOCK/UNBLOCK USERS
 // ============================
-router.post("/block-users", verifyAdmin, async (req, res) => {
+router.post("/block-users", verifyAdmin, validate({ body: blockUsersSchema }), async (req, res) => {
   try {
     const { userIds } = req.body;
     const users = await User.find({ _id: { $in: userIds } });
@@ -241,7 +255,7 @@ router.get("/messages", verifyAdmin, async (req, res) => {
   }
 });
 
-router.delete("/messages/:id", verifyAdmin, async (req, res) => {
+router.delete("/messages/:id", verifyAdmin, validate({ params: adminIdParamSchema }), async (req, res) => {
   try {
     await Message.findByIdAndDelete(req.params.id);
     res.json({ message: "Success" });
@@ -372,7 +386,7 @@ router.get("/config", verifyAdmin, async (req, res) => {
   }
 });
 
-router.put("/config", verifyAdmin, async (req, res) => {
+router.put("/config", verifyAdmin, validate({ body: systemConfigSchema }), async (req, res) => {
   try {
     const update = req.body;
     let config = await SystemConfig.findOneAndUpdate({}, update, { new: true, upsert: true });

@@ -2,11 +2,14 @@ const express = require("express");
 const router = express.Router();
 const Message = require("../models/Message");
 const { verifyToken } = require("../middleware/authMiddleware");
+const { validate } = require("../middleware/validationMiddleware");
+const { submitContactSchema } = require("../validators/contactSchemas");
+const { strictLimiter } = require("../middleware/rateLimiters");
 
 // @route   POST api/contact
 // @desc    Submit a message
 // @access  Private (Logged in users only)
-router.post("/", verifyToken, async (req, res) => {
+router.post("/", verifyToken, strictLimiter, validate({ body: submitContactSchema }), async (req, res) => {
   try {
     const { fullName, email, subject, message } = req.body;
 
