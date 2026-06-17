@@ -1,4 +1,4 @@
-# Artistic — Custom Hand-Drawn Sketch & Portrait Commission Platform
+![alt text](<Screenshot 2026-06-16 230339.png>)
 
 Artistic is a premium, full-stack web application designed for custom art commissions. It allows clients to upload their photos, select custom drawing styles, choose framing options, and commission beautiful hand-drawn sketches, portraits, and divine artworks. The platform features a unique two-stage payment flow (advance + balance), interactive dashboards, a dark/light mode toggle with theme memory, and a secure administration panel featuring rich visual analytics.
 
