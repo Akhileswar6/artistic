@@ -28,69 +28,207 @@ const sendOtpEmail = async (email, otp) => {
         to: [{ email }],
         subject: `Artistic Verification Code : ${otp}`,
         htmlContent: `
-  <body style="margin:0; padding:0; background-color:#f3f4f6; font-family: Inter, sans-serif;">
+<body style="margin:0;padding:20px;background:#f3f4f6;font-family:Inter,Segoe UI,Arial,sans-serif;">
 
-    <table align="center" width="100%" cellpadding="0" cellspacing="0"
-      style="max-width:600px; margin:40px auto; background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-      
-      <tr>
-        <td style="background:#2f3e5c; text-align:center; padding:20px;">
-          <h1 style="color:#ffffff; margin:0; font-size:22px;">Artistic</h1>
-        </td>
-      </tr>
+<table
+  align="center"
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  style="
+    max-width:650px;
+    margin:20px auto;
+    background:#000000;
+    border:1px solid #1a1a1e;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 20px 40px rgba(0,0,0,0.15);
+  "
+>
 
-      <tr>
-        <td style="padding:25px 30px 10px; text-align:center;">
-          <h2 style="margin:0; color:#111827;">Verify Your Identity</h2>
-        </td>
-      </tr>
 
-      <tr>
-        <td style="padding:0 30px;">
-          <hr style="border:none; border-top:1px solid #e5e7eb;">
-        </td>
-      </tr>
+  <!-- Logo -->
+  <tr>
+    <td align="center" style="padding:40px 20px 20px;">
 
-      <tr>
-        <td style="padding:20px 30px;">
-          <p style="color:#374151; font-size:14px;">Hi there,</p>
+      <div style="display:inline-block; padding:10px;">
+        <img
+          src="https://res.cloudinary.com/artistic/image/upload/v1781679268/artistic_assets/logo.png"
+          alt="Artistic"
+          width="200"
+          style="display:block;"
+        />
+      </div>
 
-          <p style="color:#4b5563; font-size:14px; line-height:1.6;">
-            Use the One-Time Password (OTP) below to complete your login/signup process.
-          </p>
+    </td>
+  </tr>
 
-          <div style="text-align:center; margin:25px 0;">
-            <span style="display:inline-block; background:#e5eaf2; padding:15px 25px; border-radius:6px; font-size:26px; font-weight:bold; letter-spacing:10px; color:#1f2937;">
-              ${otp}
-            </span>
-          </div>
-        </td>
-      </tr>
+  <!-- Title -->
+  <tr>
+    <td align="center" style="padding:10px 30px;">
+      <h1
+        style="
+          margin:0;
+          color:#ffffff;
+          font-size:28px;
+          font-weight:700;
+        "
+      >
+        Verify Your Identity
+      </h1>
 
-      <tr>
-        <td style="padding:0 30px;">
-          <hr style="border:none; border-top:1px solid #e5e7eb;">
-        </td>
-      </tr>
+      <p
+        style="
+          margin-top:12px;
+          color:#a1a1aa;
+          font-size:15px;
+          line-height:1.6;
+        "
+      >
+        Use the verification code below to securely continue
+        your login or signup process.
+      </p>
+    </td>
+  </tr>
 
-      <tr>
-        <td style="padding:15px 30px; font-size:13px; color:#6b7280;">
-          <p>This OTP is valid for <strong>5 minutes</strong>.</p>
-          <p>Do not share this code with anyone. If you did not request this, please ignore this email.</p>
-        </td>
-      </tr>
+  <!-- Divider -->
+  <tr>
+    <td style="padding:10px 40px;">
+      <hr
+        style="
+          border:none;
+          border-top:1px solid #27272a;
+          margin:0;
+        "
+      >
+    </td>
+  </tr>
 
-      <tr>
-        <td style="background:#f3f4f6; text-align:center; padding:15px;">
-          <p style="margin:0; font-size:12px; color:#9ca3af;">
-            © 2026 Artistic. All rights reserved.
-          </p>
-        </td>
-      </tr>
+  <!-- Greeting -->
+  <tr>
+    <td style="padding:30px 40px 10px;">
+      <p
+        style="
+          color:#f4f4f5;
+          font-size:15px;
+          margin:0;
+        "
+      >
+        Hi there 👋,
+      </p>
+    </td>
+  </tr>
 
-    </table>
-  </body>
-        `,
+  <!-- OTP Box -->
+  <tr>
+    <td align="center" style="padding:20px 40px 35px;">
+
+      <div
+        style="
+          display:inline-block;
+          padding:24px 42px;
+        "
+      >
+        <span
+          style="
+            font-size:40px;
+            font-weight:700;
+            letter-spacing:12px;
+            color:#ffffff;
+            font-family:Courier New,monospace;
+          "
+        >
+          ${otp}
+        </span>
+      </div>
+
+    </td>
+  </tr>
+
+  <!-- Info -->
+  <tr>
+    <td style="padding:0 40px 20px;">
+      <p
+        style="
+          margin:0 0 8px;
+          color:#f4f4f5;
+          font-size:14px;
+          line-height:1.6;
+        "
+      >
+        This OTP is valid for <strong>5 minutes</strong>.
+      </p>
+
+      <p
+        style="
+          margin:0;
+          color:#a1a1aa;
+          font-size:13px;
+          line-height:1.6;
+        "
+      >
+        Enter this code in the application to verify your identity and continue securely.
+      </p>
+    </td>
+  </tr>
+
+  <!-- Security Notice -->
+  <tr>
+    <td style="padding:0 40px 30px;">
+      <p
+        style="
+          margin:0;
+          color:#a1a1aa;
+          font-size:13px;
+          line-height:1.6;
+        "
+      >
+        Never share this OTP with anyone. Artistic support will never ask for your verification code. If you did not request this email, you can safely ignore it.
+      </p>
+    </td>
+  </tr>
+
+  <!-- Divider -->
+  <tr>
+    <td style="padding:0 40px;">
+      <hr
+        style="
+          border:none;
+          border-top:1px solid #27272a;
+          margin:0;
+        "
+      >
+    </td>
+  </tr>
+
+  <!-- Footer -->
+  <tr>
+    <td
+    align="center"
+      style="
+        padding:15px;
+        background:#050505;
+      "
+    >
+
+
+
+      <p
+        style="
+          color:#71717a;
+          font-size:13px;
+        "
+      >
+        © 2026 Artistic. All rights reserved.
+      </p>
+
+    </td>
+  </tr>
+
+</table>
+
+</body>
+`,
       }),
     });
 
