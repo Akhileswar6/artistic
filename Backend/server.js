@@ -1,19 +1,18 @@
-
-
-
-
-
-
-
-
 require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const helmet = require("helmet");
+const mongoSanitizer = require("./middleware/mongoSanitize");
+const { globalLimiter } = require("./middleware/rateLimiters");
+const xssSanitizer = require("./middleware/xssMiddleware");
 
 const app = express();
 
+// Security HTTP Headers & Rate Limiting
+app.use(helmet());
+app.use(globalLimiter);
 
 app.use(cors({
   origin: [
@@ -23,10 +22,13 @@ app.use(cors({
   credentials: true
 }));
 
-// Middleware
+// Body Parser Middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+// Data Sanitization
+app.use(mongoSanitizer);
+app.use(xssSanitizer);
 
 // Routes
 const authRoutes = require("./routes/authRoutes");

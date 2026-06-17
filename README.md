@@ -1,16 +1,34 @@
-# Artistic — Custom Hand-Drawn Sketch & Portrait Commission Platform
+![alt text](<Screenshot 2026-06-16 230339.png>)
 
 Artistic is a premium, full-stack web application designed for custom art commissions. It allows clients to upload their photos, select custom drawing styles, choose framing options, and commission beautiful hand-drawn sketches, portraits, and divine artworks. The platform features a unique two-stage payment flow (advance + balance), interactive dashboards, a dark/light mode toggle with theme memory, and a secure administration panel featuring rich visual analytics.
 
 ---
 
-## 🚀 Key Features
+## 🏗️ System Architecture & Scalability (Handling User Load)
+
+Artistic is engineered to be fast, scalable, and resilient under load:
+- **Stateless Backend Architecture:** The Node.js/Express backend utilizes JWT (JSON Web Tokens) for authentication rather than server-side sessions. This stateless design allows the backend to be horizontally scaled across multiple instances without session mismatch issues.
+- **Optimized Asset Delivery (CDN):** High-resolution image uploads (up to 5MB) are strictly validated by `multer` and offloaded directly to **Cloudinary**. This acts as a global Content Delivery Network (CDN), significantly reducing the bandwidth load on the Node.js server and ensuring rapid image rendering for clients.
+- **Database Efficiency:** The MongoDB database utilizes Mongoose schemas with strictly typed fields and enumerations. Connection pooling ensures efficient database querying even during traffic spikes.
+- **High-Performance Frontend:** The React frontend is bundled using Vite, resulting in highly optimized, minified production assets that ensure rapid First Contentful Paint (FCP) and a snappy user experience.
+
+---
+
+## 🔒 Security & Authentication
+
+Security is a primary focus, protecting both user data and system integrity:
+- **Passwordless Authentication:** To eliminate the risk of weak passwords and brute-force attacks, Artistic utilizes a passwordless login system. Users receive secure, time-sensitive 6-digit OTPs (One Time Passwords) via Brevo SMTP.
+- **Google OAuth Integration:** Seamless and secure social authentication is provided via Firebase Auth, ensuring enterprise-grade login security.
+- **JWT Route Protection:** All sensitive backend routes are protected by custom Express middleware. The middleware intercepts requests, verifies the JWT cryptographic signature, and checks expiration before granting access.
+- **Role-Based Access Control (RBAC):** The Admin Dashboard and order mutation APIs are strictly gated. The backend verifies the `role` payload within the JWT to ensure only authorized administrators can modify order states or view financial analytics.
+- **File Upload Sanitization:** All user image uploads are intercepted. File sizes are capped at 5MB, and MIME types are strictly checked to prevent malicious executable script uploads.
+
+---
+
+## ✨ Key Features
 
 ### 👤 Customer Features
 - **Dynamic Commission Ordering**: Three-step ordering wizard (Details ➔ Artwork Upload ➔ Confirmation) with real-time price calculations based on selected art style and framing options.
-- **High-Quality Image Upload**: Secured client photo upload with file-size limitation (5MB) powered by `Multer` and hosted on `Cloudinary`.
-- **Passwordless OTP-Based Login**: Seamless, password-free login and registration. Users receive secure 6-digit login codes directly in their inbox (via Brevo SMTP).
-- **Google Authentication**: Single-click social authentication integrated with Firebase Auth.
 - **Client Order Dashboard**: Detailed tracking of active/past orders, status logs, secure payment submission, and invoice downloads.
 - **PDF Invoice Generation**: Instantly generate and download PDF invoices/receipts for orders using `jsPDF`.
 - **Two-Stage Payment Flow**: Payment tracking through transaction IDs for the **25% advance** and the remaining **75% balance**.
@@ -21,70 +39,8 @@ Artistic is a premium, full-stack web application designed for custom art commis
 - **Analytical Dashboard**: Rich interactive charts tracking daily revenue trends, art style distribution, order statuses, user growth, and contact message trends (powered by `Recharts`).
 - **Order Pipeline Manager**: Complete control over client orders, state updates, payment validations, history logs, and tracking details.
 - **User Administration**: View registered user profiles and toggle account bans (block/unblock users) in bulk or individually.
-- **Contact Message Portal**: Inbox for client feedback, support inquiries, and custom messaging inquiries.
 - **Global Settings Configuration**: Set maintenance mode, base pricing variables, custom discounts, announcement banners, and contact information dynamically.
-- **2FA OTP Protected Login**: Dedicated secure admin login portal with dual-factor verification (email-delivered verification code).
 - **Automatic Audit Trail**: Tracks administrative activities and automatically handles logs cleanup (expiring order logs 7 days post-delivery).
-
----
-
-## 🛠️ Tech Stack
-
-### Frontend
-- **Framework**: React 19 (Vite-bundled)
-- **Styling**: Tailwind CSS v4 & Vanilla CSS
-- **Routing**: React Router DOM v7
-- **Animations**: Framer Motion
-- **Charts**: Recharts
-- **Icons**: Lucide React, React Icons & Griddy Icons
-- **Utility Libraries**: Axios, jsPDF, React Hot Toast
-
-### Backend
-- **Server Environment**: Node.js & Express.js (v5)
-- **Database**: MongoDB (via Mongoose)
-- **Security & Tokens**: JSON Web Tokens (JWT), BcryptJS
-- **File Management**: Multer, Multer-Storage-Cloudinary
-- **Social Auth Admin**: Firebase Admin SDK
-- **Email Delivery**: Brevo (Sendinblue) SMTP HTTP API
-- **HTTP Client**: Node-fetch
-
----
-
-## 📁 Directory Structure
-
-```text
-artistic/
-├── dist/                      # Compiled frontend static files (production bundle)
-├── public/                    # Frontend static assets (icons, logos)
-├── src/                       # Frontend Source Code
-│   ├── assets/                # Images, background sketches, styles
-│   ├── Components/            # Reusable UI Elements
-│   │   ├── Admin/             # Admin-specific helper components & Route guards
-│   │   ├── Order/             # Ordering wizard forms (Details, ArtPhoto, Review)
-│   │   └── ...                # Theme toggles, skeletons, optimized image components
-│   ├── Layout/                # Common layouts (Navbar, Footer, Admin Sidebars)
-│   ├── Pages/                 # Core page templates
-│   │   ├── Admin/             # Dashboard, Users list, Orders panel, Settings
-│   │   ├── Policies/          # Terms, Privacy, Refund policies
-│   │   ├── User/              # Client Account, Orders list, Details, Notifications
-│   │   └── ...                # Home page, Gallery, Process details, Contact form
-│   ├── App.jsx                # Main application component & routing definitions
-│   ├── config.js              # Environment url configurations
-│   ├── firebase.js            # Firebase client authentication setup
-│   ├── index.css              # Styling rules & custom tailwind directives
-│   └── main.jsx               # React entry mount point
-├── Backend/                   # Backend Server Code
-│   ├── controllers/           # API handlers (Authentication, Order processing)
-│   ├── middleware/            # JWT validation and Admin authorization guards
-│   ├── models/                # MongoDB Mongoose database schemas
-│   ├── routes/                # Express API endpoints mapping
-│   ├── firebaseAdmin.js       # Firebase Admin initialization
-│   ├── server.js              # Main Express server bootstrapper
-│   └── serviceAccountKey.json # Firebase security credential (ignored in production)
-├── index.html                 # HTML Entry file
-├── vite.config.js             # Vite development configurations
-└── package.json               # System configuration & dependencies
-```
 
 ---
 
@@ -108,6 +64,56 @@ sequenceDiagram
     Note over Customer, Admin: Delivery to doorstep
     Admin->>Backend: Mark Order as "delivered"
     Customer->>Backend: Leave Rating and Feedback review
+```
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework**: React 19 (Vite-bundled)
+- **Styling**: Tailwind CSS v4 & Vanilla CSS
+- **Routing**: React Router DOM v7
+- **Animations**: Framer Motion
+- **Charts**: Recharts
+- **Icons**: Lucide React, React Icons & Griddy Icons
+- **Utility Libraries**: Axios, jsPDF, React Hot Toast
+
+### Backend
+- **Server Environment**: Node.js & Express.js (v5)
+- **Database**: MongoDB (via Mongoose)
+- **Security & Tokens**: JSON Web Tokens (JWT), BcryptJS
+- **File Management**: Multer, Multer-Storage-Cloudinary
+- **Social Auth Admin**: Firebase Admin SDK
+- **Email Delivery**: Brevo (Sendinblue) SMTP HTTP API
+
+---
+
+## 📁 Directory Structure
+
+```text
+artistic/
+├── dist/                      # Compiled frontend static files (production bundle)
+├── public/                    # Frontend static assets (icons, logos)
+├── src/                       # Frontend Source Code
+│   ├── assets/                # Images, background sketches, styles
+│   ├── Components/            # Reusable UI Elements
+│   ├── Layout/                # Common layouts (Navbar, Footer, Admin Sidebars)
+│   ├── Pages/                 # Core page templates
+│   ├── App.jsx                # Main application component & routing definitions
+│   ├── config.js              # Environment url configurations
+│   ├── firebase.js            # Firebase client authentication setup
+│   └── main.jsx               # React entry mount point
+├── Backend/                   # Backend Server Code
+│   ├── controllers/           # API handlers (Authentication, Order processing)
+│   ├── middleware/            # JWT validation and Admin authorization guards
+│   ├── models/                # MongoDB Mongoose database schemas
+│   ├── routes/                # Express API endpoints mapping
+│   ├── firebaseAdmin.js       # Firebase Admin initialization
+│   └── server.js              # Main Express server bootstrapper
+├── index.html                 # HTML Entry file
+├── vite.config.js             # Vite development configurations
+└── package.json               # System configuration & dependencies
 ```
 
 ---
