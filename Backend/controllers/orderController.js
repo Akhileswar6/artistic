@@ -2,6 +2,7 @@ const Order = require("../models/Order");
 const User = require("../models/User");
 const Activity = require("../models/Activity");
 const Admin = require("../models/Admin");
+const { generatePresignedUrl } = require("../utils/s3utils");
 
 // CREATE ORDER
 const createOrder = async (req, res) => {
@@ -17,9 +18,10 @@ const createOrder = async (req, res) => {
       price 
     } = req.body;
 
-    const photo = req.file ? req.file.path : null;
+    const photo = req.file ? req.file.key : null;
 
     if (!photo) {
+      console.error("❌ Create Order Error: Photo is missing. req.file =", req.file);
       return res.status(400).json({ success: false, message: "Photo is required" });
     }
 
@@ -71,7 +73,13 @@ const getUserOrders = async (req, res) => {
       createdAt: -1,
     });
 
-    res.json(orders);
+    const ordersWithUrls = await Promise.all(orders.map(async (order) => {
+      const orderObj = order.toObject();
+      orderObj.photo = await generatePresignedUrl(orderObj.photo);
+      return orderObj;
+    }));
+
+    res.json(ordersWithUrls);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -84,7 +92,9 @@ const getOrderById = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-    res.json(order);
+    const orderObj = order.toObject();
+    orderObj.photo = await generatePresignedUrl(orderObj.photo);
+    res.json(orderObj);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -94,7 +104,14 @@ const getOrderById = async (req, res) => {
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find().populate("user", "fullName email");
-    res.json(orders);
+    
+    const ordersWithUrls = await Promise.all(orders.map(async (order) => {
+      const orderObj = order.toObject();
+      orderObj.photo = await generatePresignedUrl(orderObj.photo);
+      return orderObj;
+    }));
+    
+    res.json(ordersWithUrls);
   } catch (error) {
     console.error("❌ Get All Orders Error:", error);
     res.status(500).json({ message: error.message, stack: error.stack });
@@ -314,4 +331,4 @@ module.exports = {
   updatePaymentInfo,
   submitFeedback
 };
-
+

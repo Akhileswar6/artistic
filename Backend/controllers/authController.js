@@ -5,6 +5,7 @@ const Notification = require("../models/Notification");
 const crypto = require("crypto");
 const admin = require("../firebaseAdmin");
 const jwt = require("jsonwebtoken");
+const { generatePresignedUrl } = require("../utils/s3utils");
 
 // 🔥 fetch for Node
 const fetch = (...args) =>
@@ -286,9 +287,12 @@ exports.googleAuth = async (req, res) => {
       { expiresIn: "2h" }
     );
 
+    const userObj = user.toObject();
+    userObj.profilePic = await generatePresignedUrl(userObj.profilePic);
+
     res.json({
       message: "Google login successful",
-      user,
+      user: userObj,
       token: userToken,
     });
 
@@ -407,9 +411,12 @@ exports.verifyOtp = async (req, res) => {
       { expiresIn: "2h" }
     );
 
+    const userObj = user.toObject();
+    userObj.profilePic = await generatePresignedUrl(userObj.profilePic);
+
     res.json({
       message: "Success",
-      user,
+      user: userObj,
       token: userToken,
     });
 
@@ -423,9 +430,9 @@ exports.updateProfile = async (req, res) => {
     const { userId, fullName } = req.body;
     let { profilePic } = req.body;
 
-    // If a file was uploaded, use the Cloudinary URL from req.file
+    // If a file was uploaded, use the S3 URL from req.file
     if (req.file) {
-      profilePic = req.file.path;
+      profilePic = req.file.key;
     }
     const user = await User.findByIdAndUpdate(
       userId,
@@ -435,7 +442,10 @@ exports.updateProfile = async (req, res) => {
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.json({ message: "Profile updated successfully", user });
+    const userObj = user.toObject();
+    userObj.profilePic = await generatePresignedUrl(userObj.profilePic);
+
+    res.json({ message: "Profile updated successfully", user: userObj });
   } catch (err) {
     console.error("Update Error:", err);
     res.status(500).json({ message: "Error updating profile" });
