@@ -1,164 +1,165 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import logoImg from '../assets/logo.png';
 
-export const generateInvoice = (order) => {
+export const generateInvoice = async (order) => {
   if (!order) return;
+
+  // Load logo image
+  const img = new Image();
+  img.src = logoImg;
+  await new Promise((resolve) => {
+    img.onload = resolve;
+    img.onerror = () => {
+      console.error("Failed to load logo image");
+      resolve(); // Proceed anyway without the image
+    };
+  });
 
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
-  // ----- Document Header -----
-  doc.setFontSize(22);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(20, 20, 20);
-  doc.text("Artistic", 14, 22);
+  // Top Left: Logo
+  if (img.complete && img.naturalWidth > 0) {
+    const imgWidth = 35; // Target width in mm
+    const imgHeight = (img.height * imgWidth) / img.width;
+    doc.addImage(img, 'PNG', 14, 12, imgWidth, imgHeight);
+  } else {
+    // Fallback if image fails to load
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(60, 60, 60);
+    doc.text("Artistic", 14, 20);
+  }
 
+  // Top Right: NO. 000001
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(120, 120, 120);
-  doc.text("Premium Art Commissions", 14, 29);
+  doc.setTextColor(60, 60, 60);
+  doc.text(`NO. ${order._id.slice(-6).toUpperCase()}`, pageWidth - 14, 20, { align: "right" });
 
-  // Invoice Title (right-aligned)
-  doc.setFontSize(22);
+  // Big INVOICE
+  doc.setFontSize(15);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(20, 20, 20);
-  doc.text("Invoice", pageWidth - 14, 22, { align: "right" });
+  doc.text("INVOICE", 14, 45);
 
-  // Order Details (right-aligned)
-  doc.setFontSize(9);
+  // Date
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "bold");
+  doc.text("Date: ", 14, 60);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(80, 80, 80);
-  doc.text(`Order ID: #${order._id.slice(-8).toUpperCase()}`, pageWidth - 14, 30, { align: "right" });
-  doc.text(`Date: ${new Date(order.createdAt).toLocaleDateString("en-IN")}`, pageWidth - 14, 36, { align: "right" });
-  doc.text(`Status: ${order.status.replace("_", " ").toUpperCase()}`, pageWidth - 14, 42, { align: "right" });
+  const dateStr = new Date(order.createdAt).toLocaleDateString("en-GB", { day: '2-digit', month: 'long', year: 'numeric' });
+  doc.text(dateStr, 25, 60);
 
-  // Divider
+  // Billed to:
+  doc.setFont("helvetica", "bold");
+  doc.text("Billed to:", 14, 75);
+  doc.setFont("helvetica", "normal");
+  doc.text(order.name.toLowerCase().replace(/\b\w/g, l => l.toUpperCase()) || "Customer", 14, 82);
+  
+  const address = order.address || "Adoni, Kurnool, Andhra Pradesh - 518301";
+  const splitAddress = doc.splitTextToSize(address, 80);
+  doc.text(splitAddress, 14, 87);
+  
+  // Calculate Y position based on address lines
+  const emailY = 87 + (splitAddress.length * 5);
+  doc.text(order.email || "artistic.official12@gmail.com", 14, emailY);
+
+  // From:
+  const fromX = pageWidth / 2 + 10;
+  doc.setFont("helvetica", "bold");
+  doc.text("From:", fromX, 75);
+  doc.setFont("helvetica", "normal");
+  doc.text("Artistic", fromX, 82);
+  doc.text("Adoni, Kurnool, Andhra Pradesh - 518301", fromX, 87);
+  doc.text("artistic.official12@gmail.com", fromX, 92);
+
+  // Table
+  autoTable(doc, {
+    startY: 110,
+    margin: { left: 14, right: 14 },
+    head: [["Item", "Quantity", "Price", "Amount"]],
+    body: [
+      [order.artStyle || "Art Style", "1", `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`, `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`],
+      ...(order.frameOption ? [[order.frameOption, "1", "Rs. 0", "Rs. 0"]] : []),
+    ],
+    theme: "plain",
+    headStyles: {
+      fillColor: [230, 230, 230],
+      textColor: [40, 40, 40],
+      fontStyle: "bold",
+      fontSize: 10,
+      cellPadding: { top: 6, bottom: 6, left: 4, right: 4 },
+    },
+    styles: {
+      fontSize: 10,
+      cellPadding: 4,
+      textColor: [60, 60, 60],
+    },
+    columnStyles: {
+      0: { cellWidth: 80, halign: 'left' },
+      1: { cellWidth: 30, halign: 'center' },
+      2: { cellWidth: 30, halign: 'left' },
+      3: { cellWidth: 30, halign: 'left' },
+    },
+  });
+
+  // Total Line
+  const finalY = doc.lastAutoTable.finalY + 5;
+
   doc.setDrawColor(220, 220, 220);
   doc.setLineWidth(0.5);
-  doc.line(14, 50, pageWidth - 14, 50);
-
-  // ----- Billed To -----
-  doc.setFontSize(9);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(120, 120, 120);
-  doc.text("BILLED TO", 14, 60);
+  doc.line(14, finalY, pageWidth - 14, finalY);
 
   doc.setFontSize(10);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(20, 20, 20);
-  doc.text(order.name || "Customer", 14, 67);
+  
+  // Calculate exact X position of Amount column
+  let amountColX = pageWidth - 42; // safe fallback
+  if (
+    doc.lastAutoTable && 
+    doc.lastAutoTable.columns && 
+    doc.lastAutoTable.columns[3] && 
+    typeof doc.lastAutoTable.columns[3].x === 'number'
+  ) {
+    amountColX = doc.lastAutoTable.columns[3].x + 4; // x + left cellPadding
+  } else if (
+    doc.lastAutoTable &&
+    doc.lastAutoTable.settings &&
+    doc.lastAutoTable.settings.margin
+  ) {
+    // If we can't get the exact column X, we can use the default calculated position
+    amountColX = pageWidth - 14 - 32 + 4; // pageWidth - rightMargin - scaledWidth + padding
+  }
 
+  doc.text("Total", amountColX - 10, finalY + 8, { align: "right" });
+  doc.text(`Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`, amountColX, finalY + 8, { align: "left" });
+
+  doc.line(14, finalY + 12, pageWidth - 14, finalY + 12);
+
+  // Payment method and Note
+  const payY = finalY + 25;
+  doc.setFont("helvetica", "bold");
+  doc.text("Payment method:", 14, payY);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(80, 80, 80);
-  doc.setFontSize(9);
-  doc.text(order.email || "", 14, 73);
-  doc.text(order.phone || "", 14, 79);
-  const splitAddress = doc.splitTextToSize(order.address || "", 90);
-  doc.text(splitAddress, 14, 85);
+  doc.text(order.isAdvancePaid ? "Online" : "Cash", 45, payY);
 
-  // ----- Order Details Table -----
-  autoTable(doc, {
-    startY: 98,
-    margin: { left: 14, right: 14 },
-    head: [["Order Details", "Value"]],
-    body: [
-      ["Art Style", order.artStyle || "-"],
-      ["Frame Option", order.frameOption || "-"],
-      ["Special Instructions", order.instructions || "None"],
-    ],
-    theme: "grid",
-    headStyles: {
-      fillColor: [30, 30, 30],
-      textColor: [255, 255, 255],
-      fontStyle: "bold",
-      fontSize: 9,
-      cellPadding: 5,
-    },
-    styles: {
-      fontSize: 9,
-      cellPadding: 5,
-      textColor: [40, 40, 40],
-      lineColor: [220, 220, 220],
-      lineWidth: 0.3,
-    },
-    columnStyles: {
-      0: { fontStyle: "bold", cellWidth: 55, fillColor: [248, 248, 248] },
-      1: { cellWidth: "auto" },
-    },
-  });
-
-  // ----- Payment Summary Table -----
-  const paymentStartY = doc.lastAutoTable.finalY + 12;
-
-  autoTable(doc, {
-    startY: paymentStartY,
-    margin: { left: 14, right: 14 },
-    head: [["Payment Item", "Transaction ID", "Amount", "Status"]],
-    body: [
-      [
-        "Base Price (Total)",
-        "-",
-        `Rs. ${Number(order.totalPrice).toLocaleString("en-IN")}`,
-        "-",
-      ],
-      [
-        "Advance Payment (25%)",
-        order.transactionId || "N/A",
-        `Rs. ${Number(order.advanceAmount).toLocaleString("en-IN")}`,
-        order.isAdvancePaid ? "Paid" : "Pending",
-      ],
-      [
-        "Balance Payment (75%)",
-        order.balanceTransactionId || "N/A",
-        `Rs. ${Number(order.totalPrice - order.advanceAmount).toLocaleString("en-IN")}`,
-        order.isFullPaid ? "Paid" : "Pending",
-      ],
-    ],
-    theme: "grid",
-    headStyles: {
-      fillColor: [30, 30, 30],
-      textColor: [255, 255, 255],
-      fontStyle: "bold",
-      fontSize: 9,
-      cellPadding: 5,
-    },
-    styles: {
-      fontSize: 9,
-      cellPadding: 5,
-      textColor: [40, 40, 40],
-      lineColor: [220, 220, 220],
-      lineWidth: 0.3,
-    },
-    columnStyles: {
-      0: { fontStyle: "bold", cellWidth: 55, fillColor: [248, 248, 248] },
-      1: { cellWidth: 50, textColor: [100, 100, 100] },
-      2: { cellWidth: 35, halign: "right", fontStyle: "bold" },
-      3: { cellWidth: 28, halign: "center" },
-    },
-    didParseCell: (data) => {
-      if (data.column.index === 3 && data.section === "body") {
-        if (data.cell.raw === "Paid") {
-          data.cell.styles.textColor = [22, 163, 74];
-          data.cell.styles.fontStyle = "bold";
-        } else if (data.cell.raw === "Pending") {
-          data.cell.styles.textColor = [220, 38, 38];
-          data.cell.styles.fontStyle = "bold";
-        }
-      }
-    },
-  });
-
-  // ----- Footer -----
-  const pageHeight = doc.internal.pageSize.height;
-  doc.setDrawColor(220, 220, 220);
-  doc.setLineWidth(0.3);
-  doc.line(14, pageHeight - 24, pageWidth - 14, pageHeight - 24);
-
-  doc.setFontSize(9);
+  doc.setFont("helvetica", "bold");
+  doc.text("Note:", 14, payY + 7);
   doc.setFont("helvetica", "normal");
-  doc.setTextColor(150, 150, 150);
-  doc.text("Thank you for your business with Artistic!", 14, pageHeight - 16);
-  doc.text(`© ${new Date().getFullYear()} Artistic. All rights reserved.`, pageWidth - 14, pageHeight - 16, { align: "right" });
+  doc.text("Thank you for choosing us!", 26, payY + 7);
+
+  // Bottom Shapes
+  // Light gray wave (left)
+  doc.setFillColor(204, 204, 204); 
+  doc.ellipse(10, pageHeight - 10, 80, 50, 'F');
+  
+  // Dark gray wave (right and bottom)
+  doc.setFillColor(77, 77, 77); 
+  doc.ellipse(pageWidth/2 + 20, pageHeight + 20, 150, 60, 'F');
 
   // Save the PDF
   doc.save(`Invoice_Artistic_${order._id.slice(-8).toUpperCase()}.pdf`);
