@@ -303,6 +303,36 @@ export default function UserOrders({ isDark }) {
     }
   };
 
+  const verifyAdvancePayment = async (id) => {
+    setUpdatingId(id);
+    try {
+      const token = localStorage.getItem("adminToken");
+      const res = await fetch(`${API_BASE_URL}/api/orders/status/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ isAdvancePaid: true }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const updatedOrder = data.order;
+        setOrders(orders.map(o => o._id === id ? updatedOrder : o));
+        setSelectedOrder(updatedOrder);
+        toast.success("Advance payment verified successfully!");
+      } else {
+        const errorData = await res.json();
+        toast.error(`Error: ${errorData.message || "Failed to verify advance payment"}`);
+      }
+    } catch (err) {
+      console.error("Failed to verify advance payment", err);
+      toast.error("Network error: Failed to verify advance payment");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const deleteOrder = async (id) => {
     toast((t) => (
       <div className="flex flex-col gap-3">
@@ -1043,20 +1073,31 @@ export default function UserOrders({ isDark }) {
                         </div>
 
                         {selectedOrder.transactionId ? (
-                          <div className={`p-2.5 rounded-xl flex items-center justify-between gap-3  text-xs border ${isDark ? "bg-black/40 border-emerald-500/10 text-emerald-300" : "bg-white border-emerald-200 text-emerald-800"}`}>
-                            <span className="break-all select-all font-medium tracking-wider">
-                              {selectedOrder.transactionId}
-                            </span>
-                            <button
-                              onClick={() => {
-                                navigator.clipboard.writeText(selectedOrder.transactionId);
-                                toast.success("Advance Transaction ID Copied!");
-                              }}
-                              className={`p-1.5 rounded-lg transition-all shrink-0 active:scale-95 ${isDark ? "bg-white/5 hover:bg-white/10 text-emerald-400" : "bg-emerald-50 hover:bg-emerald-100 text-emerald-700"}`}
-                              title="Copy ID"
-                            >
-                              <Copy size={13} />
-                            </button>
+                          <div className="space-y-3">
+                            <div className={`p-2.5 rounded-xl flex items-center justify-between gap-3  text-xs border ${isDark ? "bg-black/40 border-emerald-500/10 text-emerald-300" : "bg-white border-emerald-200 text-emerald-800"}`}>
+                              <span className="break-all select-all font-medium tracking-wider">
+                                {selectedOrder.transactionId}
+                              </span>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(selectedOrder.transactionId);
+                                  toast.success("Advance Transaction ID Copied!");
+                                }}
+                                className={`p-1.5 rounded-lg transition-all shrink-0 active:scale-95 ${isDark ? "bg-white/5 hover:bg-white/10 text-emerald-400" : "bg-emerald-50 hover:bg-emerald-100 text-emerald-700"}`}
+                                title="Copy ID"
+                              >
+                                <Copy size={13} />
+                              </button>
+                            </div>
+
+                            {selectedOrder.transactionId && !selectedOrder.isAdvancePaid && (
+                              <button
+                                onClick={() => verifyAdvancePayment(selectedOrder._id)}
+                                className="w-full py-2.5 rounded-xl uppercase text-[10px] tracking-wider transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                              >
+                                <CircleCheckBig size={12} /> Verify Advance Payment
+                              </button>
+                            )}
                           </div>
                         ) : (
                           <p className={`text-xs italic pl-1 ${isDark ? "text-white/30" : "text-neutral-400"}`}>
