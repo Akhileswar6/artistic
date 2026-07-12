@@ -13,6 +13,7 @@ const validate = (schemas) => (req, res, next) => {
   } catch (err) {
     const issues = err.errors || err.issues;
     if (issues && Array.isArray(issues)) {
+      console.error("❌ Zod Validation Errors:", issues.map(e => ({ field: e.path.join('.'), message: e.message })));
       return res.status(400).json({
         message: "Validation error",
         errors: issues.map(e => ({
@@ -21,6 +22,7 @@ const validate = (schemas) => (req, res, next) => {
         }))
       });
     }
+    console.error("❌ Validation Error:", err.message);
     return res.status(400).json({ message: "Validation error", error: err.message });
   }
 };
