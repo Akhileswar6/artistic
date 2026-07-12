@@ -1,4 +1,4 @@
-import { ShoppingBag, ArrowLeft, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star, ChevronDown, ChevronUp } from "lucide-react";
+import { ShoppingBag, ArrowLeft, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star, ChevronDown, ChevronUp, Download } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../config";
@@ -7,6 +7,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { OrderSkeleton } from "../../Components/Skeleton";
 import OptimizedImage from "../../Components/OptimizedImage";
+import { generateInvoice } from "../../utils/generateInvoice";
 
 export default function OrderDetail({ isDark }) {
   const { id } = useParams();
@@ -194,6 +195,13 @@ export default function OrderDetail({ isDark }) {
             </div>
 
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => generateInvoice(order)}
+                className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-[10px] md:text-xs transition-all ${isDark ? "bg-white/10 hover:bg-white/20 text-white" : "bg-black/5 hover:bg-black/10 text-black"}`}
+              >
+                <Download size={12} />
+                Invoice
+              </button>
               <span className={`px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider ${getStatusInfo(order.status).color}`}>
                 {getStatusInfo(order.status).label}
               </span>
