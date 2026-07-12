@@ -8,7 +8,7 @@ Artistic is a premium, full-stack web application designed for custom art commis
 
 Artistic is engineered to be fast, scalable, and resilient under load:
 - **Stateless Backend Architecture:** The Node.js/Express backend utilizes JWT (JSON Web Tokens) for authentication rather than server-side sessions. This stateless design allows the backend to be horizontally scaled across multiple instances without session mismatch issues.
-- **Optimized Asset Delivery (CDN):** High-resolution image uploads (up to 5MB) are strictly validated by `multer` and offloaded directly to **Cloudinary**. This acts as a global Content Delivery Network (CDN), significantly reducing the bandwidth load on the Node.js server and ensuring rapid image rendering for clients.
+- **Secure S3 Asset Storage:** High-resolution image uploads (up to 5MB) are strictly validated by `multer` and offloaded directly to **AWS S3**. The backend dynamically generates secure pre-signed URLs to grant temporary, authenticated access to private bucket objects, significantly reducing bandwidth load on the Node.js server while maintaining strict data privacy.
 - **Database Efficiency:** The MongoDB database utilizes Mongoose schemas with strictly typed fields and enumerations. Connection pooling ensures efficient database querying even during traffic spikes.
 - **High-Performance Frontend:** The React frontend is bundled using Vite, resulting in highly optimized, minified production assets that ensure rapid First Contentful Paint (FCP) and a snappy user experience.
 
@@ -29,7 +29,7 @@ Security is a primary focus, protecting both user data and system integrity:
 
 ### 👤 Customer Features
 - **Dynamic Commission Ordering**: Three-step ordering wizard (Details ➔ Artwork Upload ➔ Confirmation) with real-time price calculations based on selected art style and framing options.
-- **Client Order Dashboard**: Detailed tracking of active/past orders, status logs, secure payment submission, and invoice downloads.
+- **Client Order Dashboard**: Detailed tracking of active/past orders, status logs, and secure payment submission.
 - **PDF Invoice Generation**: Instantly generate and download PDF invoices/receipts for orders using `jsPDF`.
 - **Two-Stage Payment Flow**: Payment tracking through transaction IDs for the **25% advance** and the remaining **75% balance**.
 - **Interactive Reviews**: Post-delivery feedback portal to submit ratings (1-5 stars) and written reviews.
@@ -83,7 +83,7 @@ sequenceDiagram
 - **Server Environment**: Node.js & Express.js (v5)
 - **Database**: MongoDB (via Mongoose)
 - **Security & Tokens**: JSON Web Tokens (JWT), BcryptJS
-- **File Management**: Multer, Multer-Storage-Cloudinary
+- **File Management**: Multer, Multer-S3, AWS SDK
 - **Social Auth Admin**: Firebase Admin SDK
 - **Email Delivery**: Brevo (Sendinblue) SMTP HTTP API
 
@@ -134,9 +134,10 @@ Create a `.env` file at the root of the `Backend/` directory:
 | `EMAIL_USER` | Sender Address for System Emails | `artistic.official12@gmail.com` |
 | `ADMIN_EMAIL` | Credentials for default admin login | `artistic.official12@gmail.com` |
 | `ADMIN_PASSWORD` | Access password for default admin | `123456` |
-| `CLOUDINARY_CLOUD_NAME` | Cloudinary Account Identifier | `artistic` |
-| `CLOUDINARY_API_KEY` | Cloudinary REST Credential Key | `471939434274861` |
-| `CLOUDINARY_API_SECRET` | Cloudinary Encryption Private Key | `Vc4Cx...` |
+| `AWS_ACCESS_KEY_ID` | IAM User Access Key | `AKIA...` |
+| `AWS_SECRET_ACCESS_KEY` | IAM User Secret Key | `31TO/...` |
+| `AWS_REGION` | AWS Region (e.g., ap-south-1) | `ap-south-1` |
+| `S3_BUCKET_NAME` | AWS S3 Bucket Name | `artistic-users-image-uploads` |
 | `FIREBASE_PROJECT_ID` | Social authentication sync | `artistic-91ca9` |
 | `FIREBASE_CLIENT_EMAIL` | Firebase Service account email | `firebase-adminsdk-...gserviceaccount.com` |
 | `FIREBASE_PRIVATE_KEY` | Private encryption key for Firebase | `-----BEGIN PRIVATE KEY-----\nMIIEv...` |
@@ -161,7 +162,7 @@ Follow these steps to run the application locally on your machine.
 ### Prerequisites
 - Node.js installed (v18+ recommended)
 - MongoDB running locally or a MongoDB Atlas cloud database
-- Cloudinary, Brevo, and Firebase setup accounts
+- AWS S3, Brevo, and Firebase setup accounts
 
 ### 1. Clone the repository and navigate to the project directory
 ```bash
