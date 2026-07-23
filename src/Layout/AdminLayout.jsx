@@ -41,7 +41,7 @@ export default function AdminLayout({ children }) {
        ${isDark ? "bg-[#050505] text-white" : "bg-[#f4f6f8] text-black"}`}>
 
       {/* Sidebar */}
-      <AdminSidebar isDark={isDark} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
+      <AdminSidebar isDark={isDark} setIsDark={setIsDark} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
 
       {/* Mobile Overlay */}
       {!isCollapsed && (
@@ -52,31 +52,17 @@ export default function AdminLayout({ children }) {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto z-10 w-full">
-        {/* Top Bar */}
-        <div
-          className={`sticky top-0 z-20 flex justify-between items-center px-4 md:px-8 py-4 border-b transition-colors duration-300 w-full
-            ${isDark ? "bg-[#050505]/80 backdrop-blur-xl border-white/10" : "bg-white/70 backdrop-blur-md border-black/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)]"}`}
-        >
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className={`md:hidden p-1.5 rounded-lg transition-colors ${isDark ? "hover:bg-white/10" : "hover:bg-black/5"}`}
-            >
-              <Menu size={24} />
-            </button>
-            <h1
-              className="text-[20px] md:text-[22px] font-semibold tracking-tight"
-              style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
-            >
-              Dashboard
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <ThemeToggle isDark={isDark} setIsDark={setIsDark} />
-          </div>
-        </div>
+      <div className="flex-1 flex flex-col h-screen overflow-y-auto z-10 w-full relative">
+        
+        {/* Floating Mobile Menu Button */}
+        {isCollapsed && (
+          <button 
+            onClick={() => setIsCollapsed(false)}
+            className={`md:hidden fixed top-4 right-4 z-50 p-2.5 rounded-full border shadow-lg backdrop-blur-md transition-all duration-300 ${isDark ? "bg-[#111]/80 border-white/10 text-white" : "bg-white/80 border-black/10 text-black"}`}
+          >
+            <Menu size={20} />
+          </button>
+        )}
 
         {/* Content Wrapper */}
         <div className="p-8 pb-20 w-full max-w-[1400px] mx-auto relative">
