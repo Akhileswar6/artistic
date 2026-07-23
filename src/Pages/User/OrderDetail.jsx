@@ -386,20 +386,20 @@ export default function OrderDetail({ isDark }) {
                   </h3>
                   <div className={`p-4 md:p-5 rounded-xl border space-y-4 ${isDark ? "bg-white/5 border-white/5" : "bg-gray-50 border-black/5 shadow-sm"}`}>
                     <div className="space-y-1">
-                      <p className="text-[10px] md:text-[11px] text-white/50 uppercase tracking-wider">Name</p>
+                      <p className={`text-[10px] md:text-[11px] uppercase tracking-wider ${isDark ? "text-white/50" : "text-gray-500"}`}>Name</p>
                       <p className="text-xs md:text-sm font-medium capitalize">{order.name}</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] md:text-[11px] text-white/50 uppercase tracking-wider">Address</p>
+                      <p className={`text-[10px] md:text-[11px] uppercase tracking-wider ${isDark ? "text-white/50" : "text-gray-500"}`}>Address</p>
                       <p className="text-xs md:text-sm leading-relaxed">{order.address}</p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <p className="text-[10px] md:text-[11px] text-white/50 uppercase tracking-wider">Email</p>
+                        <p className={`text-[10px] md:text-[11px] uppercase tracking-wider ${isDark ? "text-white/50" : "text-gray-500"}`}>Email</p>
                         <p className="text-xs md:text-sm truncate">{order.email}</p>
                       </div>
                       <div className="space-y-1">
-                        <p className="text-[10px] md:text-[11px] text-white/50 uppercase tracking-wider">Phone</p>
+                        <p className={`text-[10px] md:text-[11px] uppercase tracking-wider ${isDark ? "text-white/50" : "text-gray-500"}`}>Phone</p>
                         <p className="text-xs md:text-sm">{order.phone}</p>
                       </div>
                     </div>
