@@ -26,6 +26,8 @@ const UserOrders = lazy(() => import("./Pages/Admin/UserOrders"));
 const Messages = lazy(() => import("./Pages/Admin/Messages"));
 const Settings = lazy(() => import("./Pages/Admin/Settings"));
 const ActivityLog = lazy(() => import("./Pages/Admin/ActivityLog"));
+const Analytics = lazy(() => import("./Pages/Admin/Analytics"));
+const Transactions = lazy(() => import("./Pages/Admin/Transactions"));
 
 // Lazy Loaded Main Pages
 const Home = lazy(() => import("./Pages/Home"));
@@ -182,6 +184,18 @@ export default function App() {
               }
             />
             <Route
+              path="/admin/analytics"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <PageTransition>
+                      <Analytics />
+                    </PageTransition>
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
               path="/admin/users"
               element={
                 <AdminRoute>
@@ -236,6 +250,18 @@ export default function App() {
                   <AdminLayout>
                     <PageTransition>
                       <UserOrders />
+                    </PageTransition>
+                  </AdminLayout>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/transactions"
+              element={
+                <AdminRoute>
+                  <AdminLayout>
+                    <PageTransition>
+                      <Transactions />
                     </PageTransition>
                   </AdminLayout>
                 </AdminRoute>
