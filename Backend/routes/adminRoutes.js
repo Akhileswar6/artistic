@@ -293,12 +293,13 @@ router.get("/stats-summary", verifyAdmin, async (req, res) => {
 // ============================
 router.get("/analytics", verifyAdmin, async (req, res) => {
   try {
-    // 1. Revenue by Day (Last 7 days)
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const days = parseInt(req.query.days) || 7;
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
 
+    // 1. Revenue by Day
     const revenueData = await Order.aggregate([
-      { $match: { createdAt: { $gte: sevenDaysAgo }, isFullPaid: true } },
+      { $match: { createdAt: { $gte: startDate }, isFullPaid: true } },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -319,9 +320,9 @@ router.get("/analytics", verifyAdmin, async (req, res) => {
       { $group: { _id: "$status", value: { $sum: 1 } } }
     ]);
 
-    // 4. User Growth (Last 7 days)
+    // 4. User Growth
     const userData = await User.aggregate([
-      { $match: { createdAt: { $gte: sevenDaysAgo } } },
+      { $match: { createdAt: { $gte: startDate } } },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -331,9 +332,9 @@ router.get("/analytics", verifyAdmin, async (req, res) => {
       { $sort: { "_id": 1 } }
     ]);
 
-    // 5. Message Trends (Last 7 days)
+    // 5. Message Trends
     const messageData = await Message.aggregate([
-      { $match: { createdAt: { $gte: sevenDaysAgo } } },
+      { $match: { createdAt: { $gte: startDate } } },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
