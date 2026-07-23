@@ -17,41 +17,23 @@ import {
   TrendingUp,
   PieChart as PieChartIcon,
   Activity as ActivityIcon,
+  TrendingDown,
+  Download,
 } from "lucide-react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-} from "recharts";
 
 export default function Dashboard({ isDark }) {
   const navigate = useNavigate();
   const [counts, setCounts] = useState({ users: 0, messages: 0, orders: 0, revenue: 0 });
   const [recentOrders, setRecentOrders] = useState([]);
   const [adminName, setAdminName] = useState("Admin");
-  const [analytics, setAnalytics] = useState({
-    revenueTrends: [],
-    artStyles: [],
-    statuses: [],
-    userGrowth: [],
-    messageTrends: []
-  });
+
   const [activities, setActivities] = useState([]);
   const [chartReady, setChartReady] = useState(false);
 
   useEffect(() => {
     fetchStats();
     fetchRecentOrders();
-    fetchAnalytics();
+
     fetchActivities();
     fetchAdminProfile();
     // Delay chart rendering until layout is painted
@@ -109,20 +91,7 @@ export default function Dashboard({ isDark }) {
     }
   };
 
-  const fetchAnalytics = async () => {
-    try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${API_BASE_URL}/api/admin/analytics`, {
-        headers: { Authorization: token },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setAnalytics(data);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
+
 
   const fetchActivities = async () => {
     try {
@@ -140,10 +109,10 @@ export default function Dashboard({ isDark }) {
   };
 
   const stats = [
-    { title: "Total Users", value: counts.users.toLocaleString(), icon: <Users size={22} />, color: "blue", gradient: "from-blue-500/20 to-blue-500/5", border: "border-blue-500/20", textColor: "text-blue-400", iconBg: "bg-blue-500/10", path: "/admin/users" },
-    { title: "Messages", value: counts.messages.toLocaleString(), icon: <MessageCircle size={22} />, color: "purple", gradient: "from-purple-500/20 to-purple-500/5", border: "border-purple-500/20", textColor: "text-purple-400", iconBg: "bg-purple-500/10", path: "/admin/messages" },
-    { title: "Total Orders", value: counts.orders.toLocaleString(), icon: <ShoppingBag size={22} />, color: "indigo", gradient: "from-indigo-500/20 to-indigo-500/5", border: "border-indigo-500/20", textColor: "text-indigo-400", iconBg: "bg-indigo-500/10", path: "/admin/userOrders" },
-    { title: "Revenue", value: `₹${counts.revenue.toLocaleString()}`, icon: <IndianRupee size={22} />, color: "emerald", gradient: "from-emerald-500/20 to-emerald-500/5", border: "border-emerald-500/20", textColor: "text-emerald-400", iconBg: "bg-emerald-500/10" },
+    { title: "Total Users", value: counts.users.toLocaleString(), trend: "+12.5%", trendUp: true, icon: <Users size={22} />, color: "blue", gradient: "from-blue-500/20 to-blue-500/5", border: "border-blue-500/20", textColor: "text-blue-400", iconBg: "bg-blue-500/10", path: "/admin/users" },
+    { title: "Messages", value: counts.messages.toLocaleString(), trend: "+5.2%", trendUp: true, icon: <MessageCircle size={22} />, color: "purple", gradient: "from-purple-500/20 to-purple-500/5", border: "border-purple-500/20", textColor: "text-purple-400", iconBg: "bg-purple-500/10", path: "/admin/messages" },
+    { title: "Total Orders", value: counts.orders.toLocaleString(), trend: "-2.4%", trendUp: false, icon: <ShoppingBag size={22} />, color: "indigo", gradient: "from-indigo-500/20 to-indigo-500/5", border: "border-indigo-500/20", textColor: "text-indigo-400", iconBg: "bg-indigo-500/10", path: "/admin/userOrders" },
+    { title: "Revenue", value: `₹${counts.revenue.toLocaleString()}`, trend: "+18.3%", trendUp: true, icon: <IndianRupee size={22} />, color: "emerald", gradient: "from-emerald-500/20 to-emerald-500/5", border: "border-emerald-500/20", textColor: "text-emerald-400", iconBg: "bg-emerald-500/10" },
   ];
 
   const statusStyles = {
@@ -169,9 +138,15 @@ export default function Dashboard({ isDark }) {
             Overview
           </h1>
         </div>
-        <div className={`px-2.5 py-1 rounded-lg border flex items-center gap-1.5 ${isDark ? "bg-white/5 border-white/10" : "bg-gray-100 border-black/5"}`}>
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-          <span className={`text-[9px] font-normal uppercase tracking-wider ${isDark ? "text-emerald-400" : "text-emerald-600"}`}>System Live</span>
+        <div className="flex items-center gap-3">
+          <button className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[11px] font-medium transition-colors ${isDark ? "bg-[#111] border-white/10 hover:bg-white/10 text-gray-300" : "bg-white border-black/10 hover:bg-black/5 text-gray-700"}`}>
+            <Download size={13} />
+            <span className="hidden sm:inline">Export Report</span>
+          </button>
+          <div className={`px-2.5 py-1.5 rounded-lg border flex items-center gap-1.5 ${isDark ? "bg-white/5 border-white/10" : "bg-gray-100 border-black/5"}`}>
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span className={`text-[10px] font-medium uppercase tracking-wider ${isDark ? "text-emerald-400" : "text-emerald-600"}`}>System Live</span>
+          </div>
         </div>
       </div>
 
@@ -181,156 +156,34 @@ export default function Dashboard({ isDark }) {
           <div
             key={index}
             onClick={() => item.path && navigate(item.path)}
-            className={`relative group p-3.5 rounded-xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden 
+            className={`relative group p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl overflow-hidden 
               ${item.path ? "cursor-pointer" : ""}
               ${isDark ? `bg-gradient-to-br ${item.gradient} backdrop-blur-[30px] ${item.border}` : `bg-white border-black/5 shadow-md shadow-black/10 backdrop-blur-3xl`}`}
           >
+            {/* Subtle background glow effect */}
+            <div className={`absolute -right-4 -top-4 w-20 h-20 rounded-full blur-2xl opacity-20 transition-opacity group-hover:opacity-40 ${isDark ? item.iconBg : "bg-transparent"}`}></div>
+
             <div className="relative z-10 flex flex-col">
-              <div className={`w-7 h-7 flex items-center justify-center rounded-lg mb-2 border transition-transform duration-500 group-hover:scale-105 shadow-inner ${isDark ? `${item.iconBg} ${item.border} ${item.textColor}` : `bg-white border-black/5 shadow-sm ${item.textColor}`}`}>
-                {React.cloneElement(item.icon, { size: 14 })}
+              <div className={`w-8 h-8 flex items-center justify-center rounded-xl mb-4 border transition-transform duration-500 group-hover:scale-105 shadow-inner ${isDark ? `${item.iconBg} ${item.border} ${item.textColor}` : `bg-white border-black/5 shadow-sm ${item.textColor}`}`}>
+                {React.cloneElement(item.icon, { size: 16 })}
               </div>
-              <div className="flex flex-col">
-                <span className={`text-[12px] mb-0.5 ${isDark ? "text-gray-400" : "text-black"}`}>{item.title}</span>
-                <h2 className={`text-xl font-normal ${isDark ? "text-white" : "text-black"} tracking-tight`}>{item.value}</h2>
+              
+              <div className="flex justify-between items-end mt-1">
+                <div className="flex flex-col">
+                  <span className={`text-[13px] mb-1 font-medium ${isDark ? "text-gray-400" : "text-gray-500"}`}>{item.title}</span>
+                  <h2 className={`text-2xl font-bold ${isDark ? "text-white" : "text-black"} tracking-tight`}>{item.value}</h2>
+                </div>
+                
+                <div className={`flex items-center gap-1 text-[11px] px-2 py-1 rounded-full font-medium shadow-sm ${item.trendUp ? (isDark ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-emerald-50 text-emerald-700 border border-emerald-200") : (isDark ? "bg-red-500/10 text-red-400 border border-red-500/20" : "bg-red-50 text-red-700 border border-red-200")}`}>
+                  {item.trendUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                  {item.trend}
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* CHARTS SECTION - ROW 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-
-        {/* REVENUE TRENDS CHART */}
-        <div className={`p-4 rounded-xl border ${isDark ? "bg-black/40 border-white/10 shadow-xl" : "bg-white border-black/5 shadow-lg"}`}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className={`text-[14px] flex items-center gap-2 ${isDark ? "text-white" : "text-black"}`}>
-              <TrendingUp size={15} className="text-blue-500" /> Revenue Trends
-            </h3>
-            <span className="text-[10px] text-gray-400 uppercase tracking-widest">Last 7 Days</span>
-          </div>
-          <div className="h-[250px] w-full">
-            {chartReady && <ResponsiveContainer width="100%" height={250}>
-              <AreaChart data={analytics.revenueTrends}>
-                <defs>
-                  <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#ffffff0a" : "#0000000a"} />
-                <XAxis dataKey="_id" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: isDark ? '#9ca3af' : '#6b7280' }} tickFormatter={(str) => str.split('-').slice(1).join('/')} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: isDark ? '#9ca3af' : '#6b7280' }} />
-                <Tooltip contentStyle={{ backgroundColor: isDark ? '#000' : '#fff', border: isDark ? '1px solid #ffffff1a' : '1px solid #0000001a', borderRadius: '12px', fontSize: '12px' }} />
-                <Area type="monotone" dataKey="revenue" stroke="#3b82f6" fillOpacity={1} fill="url(#colorRev)" strokeWidth={3} />
-              </AreaChart>
-            </ResponsiveContainer>}
-          </div>
-        </div>
-
-        {/* ART STYLE DISTRIBUTION */}
-        <div className={`p-4 rounded-xl border ${isDark ? "bg-black/40 border-white/10 shadow-xl" : "bg-white border-black/5 shadow-lg"}`}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className={`text-[14px] flex items-center gap-2 ${isDark ? "text-white" : "text-black"}`}>
-              <PieChartIcon size={15} className="text-emerald-500" /> Style Distribution
-            </h3>
-            <span className="text-[10px] text-gray-400 uppercase tracking-widest">Order Types</span>
-          </div>
-          <div className="h-auto w-full flex flex-col sm:flex-row items-center justify-center gap-6">
-            <div className="h-[250px] w-full max-w-[250px]">
-              {chartReady && <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie data={analytics.artStyles} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" nameKey="_id">
-                    {analytics.artStyles.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: isDark ? '#000' : '#fff', border: isDark ? '1px solid #ffffff1a' : '1px solid #0000001a', borderRadius: '12px', fontSize: '12px' }} />
-                </PieChart>
-              </ResponsiveContainer>}
-            </div>
-            <div className="flex flex-wrap sm:flex-col gap-3 justify-center">
-              {analytics.artStyles.map((entry, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
-                  <span className="text-[10px] font-normal text-gray-400 uppercase tracking-tight">{entry._id}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* CHARTS SECTION - ROW 2 (NEW) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-
-        {/* USER GROWTH CHART */}
-        <div className={`p-4 rounded-xl border ${isDark ? "bg-black/40 border-white/10 shadow-xl" : "bg-white border-black/5 shadow-lg"}`}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className={`text-[14px] flex items-center gap-2 ${isDark ? "text-white" : "text-black"}`}>
-              <Users size={15} className="text-purple-500" /> User Growth
-            </h3>
-            <span className="text-[10px] text-gray-400 uppercase tracking-widest">New Registrations</span>
-          </div>
-          <div className="h-[250px] w-full">
-            {chartReady && <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={analytics.userGrowth || []}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#ffffff0a" : "#0000000a"} />
-                <XAxis
-                  dataKey="_id"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 10, fill: isDark ? '#9ca3af' : '#6b7280' }}
-                  tickFormatter={(str) => {
-                    if (!str || typeof str !== 'string') return '';
-                    const parts = str.split('-');
-                    return parts.length >= 2 ? parts.slice(1).join('/') : str;
-                  }}
-                />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: isDark ? '#9ca3af' : '#6b7280' }} />
-                <Tooltip cursor={{ fill: isDark ? '#ffffff05' : '#00000005' }} contentStyle={{ backgroundColor: isDark ? '#000' : '#fff', border: isDark ? '1px solid #ffffff1a' : '1px solid #0000001a', borderRadius: '12px', fontSize: '12px' }} />
-                <Bar dataKey="count" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={20} />
-              </BarChart>
-            </ResponsiveContainer>}
-          </div>
-        </div>
-
-        {/* MESSAGE TRENDS CHART */}
-        <div className={`p-4 rounded-xl border ${isDark ? "bg-black/40 border-white/10 shadow-xl" : "bg-white border-black/5 shadow-lg"}`}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className={`text-[14px] flex items-center gap-2 ${isDark ? "text-white" : "text-black"}`}>
-              <MessageCircle size={15} className="text-neutral-500" /> Message Trends
-            </h3>
-            <span className="text-[10px] text-gray-400 uppercase tracking-widest">Inbound Queries</span>
-          </div>
-          <div className="h-[250px] w-full">
-            {chartReady && <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={analytics.messageTrends || []}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#ffffff0a" : "#0000000a"} />
-                <XAxis
-                  dataKey="_id"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 10, fill: isDark ? '#9ca3af' : '#6b7280' }}
-                  tickFormatter={(str) => {
-                    if (!str || typeof str !== 'string') return '';
-                    const parts = str.split('-');
-                    return parts.length >= 2 ? parts.slice(1).join('/') : str;
-                  }}
-                />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: isDark ? '#9ca3af' : '#6b7280' }} />
-                <Tooltip
-                  cursor={{ fill: isDark ? '#ffffff05' : '#00000005' }}
-                  contentStyle={{ backgroundColor: isDark ? '#000' : '#fff', border: isDark ? '1px solid #ffffff1a' : '1px solid #0000001a', borderRadius: '12px', fontSize: '12px' }}
-                />
-                <Bar dataKey="count" fill="#737373" radius={[4, 4, 0, 0]} barSize={20} />
-              </BarChart>
-            </ResponsiveContainer>}
-          </div>
-        </div>
-
-      </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
 
