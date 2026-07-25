@@ -358,6 +358,28 @@ router.get("/analytics", verifyAdmin, async (req, res) => {
 });
 
 // ============================
+// 🔔 NOTIFICATIONS / LATEST UPDATES
+// ============================
+router.get("/notifications-updates", verifyAdmin, async (req, res) => {
+  try {
+    const latestUser = await User.findOne().sort({ createdAt: -1 }).select('createdAt');
+    const latestOrder = await Order.findOne().sort({ createdAt: -1 }).select('createdAt');
+    const latestMessage = await Message.findOne().sort({ createdAt: -1 }).select('createdAt');
+    const latestRevenue = await Activity.findOne({ action: { $in: ["Advance Payment Verified", "Balance Payment Verified"] } }).sort({ timestamp: -1 }).select('timestamp');
+
+    res.json({
+      users: latestUser ? latestUser.createdAt : null,
+      orders: latestOrder ? latestOrder.createdAt : null,
+      messages: latestMessage ? latestMessage.createdAt : null,
+      revenue: latestRevenue ? latestRevenue.timestamp : null,
+    });
+  } catch (err) {
+    console.error("Notifications Updates Error:", err);
+    res.status(500).json({ message: "Failed to fetch updates" });
+  }
+});
+
+// ============================
 // 📜 ACTIVITY LOGS
 // ============================
 router.get("/activities", verifyAdmin, async (req, res) => {
