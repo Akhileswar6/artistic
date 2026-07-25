@@ -321,6 +321,31 @@ const deleteOrder = async (req, res) => {
   }
 };
 
+// USER - DELETE ORDER
+const userDeleteOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = await Order.findById(id);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (order.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Unauthorized action" });
+    }
+
+    if (order.status !== "pending") {
+      return res.status(400).json({ message: "Artist approved the art, you can no longer delete it" });
+    }
+
+    await Order.findByIdAndDelete(id);
+    res.json({ success: true, message: "Order deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createOrder,
   getUserOrders,
@@ -328,6 +353,7 @@ module.exports = {
   getAllOrders,
   updateOrderStatus,
   deleteOrder,
+  userDeleteOrder,
   updatePaymentInfo,
   submitFeedback
 };

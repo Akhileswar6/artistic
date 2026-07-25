@@ -6,6 +6,7 @@ const {
   getAllOrders,
   updateOrderStatus,
   deleteOrder,
+  userDeleteOrder,
   updatePaymentInfo,
   submitFeedback,
 } = require("../controllers/orderController");
@@ -36,6 +37,8 @@ router.get("/all", verifyAdmin, getAllOrders);
 router.get("/:id", verifyToken, validate({ params: orderIdParamSchema }), getOrderById);
 router.put("/payment/:id", verifyToken, validate({ params: orderIdParamSchema, body: updatePaymentInfoSchema }), updatePaymentInfo);
 router.put("/feedback/:id", verifyToken, validate({ params: orderIdParamSchema, body: submitFeedbackSchema }), submitFeedback);
+
+router.delete("/user/:id", verifyToken, validate({ params: orderIdParamSchema }), userDeleteOrder);
 
 // ============================
 // 🕵️ ADMIN ORDERS
