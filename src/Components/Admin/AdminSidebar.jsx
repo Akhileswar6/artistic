@@ -2,10 +2,68 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ShoppingBag, Image, Settings, MessageCircle, Users, ChartColumnIncreasing, LogOut, ChevronLeft, ChevronRight, Activity, PieChart, IndianRupee, Sun, Moon } from "lucide-react";
 import { motion } from "framer-motion";
 import ThemeToggle from "../ThemeToggle";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { API_BASE_URL } from "../../config";
 
 export default function AdminSidebar({ isDark, setIsDark, isCollapsed, setIsCollapsed }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [updates, setUpdates] = useState({});
+
+  useEffect(() => {
+    const fetchUpdates = async () => {
+      try {
+        const token = localStorage.getItem("adminToken");
+        if (!token) return;
+        const res = await axios.get(`${API_BASE_URL}/api/admin/notifications-updates`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUpdates(res.data);
+      } catch (err) {
+        console.error("Failed to fetch notification updates:", err);
+      }
+    };
+    fetchUpdates();
+    const interval = setInterval(fetchUpdates, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const hasNew = (categoryLabel) => {
+    const categoryMap = {
+      "Users": "users",
+      "Orders": "orders",
+      "Messages": "messages",
+      "Revenue": "revenue",
+    };
+    const key = categoryMap[categoryLabel];
+    if (!key || !updates[key]) return false;
+    
+    const lastViewed = localStorage.getItem(`admin_lastViewed_${key}`);
+    if (!lastViewed) return true; // Never viewed, so it's new
+    
+    return new Date(updates[key]) > new Date(lastViewed);
+  };
+
+  const handleMenuClick = (item) => {
+    const categoryMap = {
+      "Users": "users",
+      "Orders": "orders",
+      "Messages": "messages",
+      "Revenue": "revenue",
+    };
+    const key = categoryMap[item.label];
+    if (key && updates[key]) {
+      localStorage.setItem(`admin_lastViewed_${key}`, new Date().toISOString());
+      // Optionally optimistically remove the dot:
+      setUpdates(prev => ({ ...prev, [key]: null }));
+    }
+
+    navigate(item.path);
+    if (window.innerWidth < 768) {
+      setIsCollapsed(true);
+    }
+  };
 
   const menuClass = (path) => {
     const isActive = location.pathname === path;
@@ -82,16 +140,15 @@ export default function AdminSidebar({ isDark, setIsDark, isCollapsed, setIsColl
           return (
             <div
               key={item.path}
-              onClick={() => {
-                navigate(item.path);
-                // Auto-close sidebar on mobile after navigation
-                if (window.innerWidth < 768) {
-                  setIsCollapsed(true);
-                }
-              }}
+              onClick={() => handleMenuClick(item)}
               className={menuClass(item.path)}
             >
-              <Icon size={18} className={`${isActive ? "opacity-100" : "opacity-60 group-hover:opacity-100"} transition-all duration-300`} />
+              <div className="relative">
+                <Icon size={18} className={`${isActive ? "opacity-100" : "opacity-60 group-hover:opacity-100"} transition-all duration-300`} />
+                {hasNew(item.label) && (
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#050505]"></span>
+                )}
+              </div>
               {!isCollapsed ? (
                 <span className="animate-in fade-in slide-in-from-left-5 duration-500">{item.label}</span>
               ) : (
