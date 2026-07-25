@@ -1,4 +1,4 @@
-import { ShoppingBag, ArrowRight, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star } from "lucide-react";
+import { ShoppingBag, ArrowRight, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../config";
@@ -44,6 +44,26 @@ export default function Orders({ isDark }) {
     const interval = setInterval(fetchOrders, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleDeleteOrder = async (orderId, status) => {
+    if (status !== "pending") {
+      toast.error("Artist approved the art, you can no longer delete it");
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to delete this order?")) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_BASE_URL}/api/orders/user/${orderId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success("Order deleted successfully");
+      fetchOrders();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete order");
+    }
+  };
 
   const getStatusInfo = (status) => {
     const map = {
@@ -165,7 +185,17 @@ export default function Orders({ isDark }) {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-end pt-2 border-t border-white/5">
+                      <div className="flex items-center justify-end pt-2 border-t border-white/5 gap-2">
+                        <button
+                          onClick={() => handleDeleteOrder(order._id, order.status)}
+                          className={`group/btn flex items-center gap-2 text-[12px] md:text-[13px] font-medium cursor-pointer transition-all px-3 py-1.5 rounded-lg ${isDark
+                            ? "text-red-400 hover:bg-red-400/10"
+                            : "text-red-600 hover:bg-red-50"
+                            }`}
+                        >
+                          Delete
+                          <Trash2 size={14} className="transition-transform" />
+                        </button>
                         <button
                           onClick={() => navigate(`/orders/${order._id}`)}
                           className={`group/btn flex items-center gap-2 text-[12px] md:text-[13px] font-medium cursor-pointer transition-all px-3 py-1.5 rounded-lg ${isDark

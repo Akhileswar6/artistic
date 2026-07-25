@@ -1,4 +1,4 @@
-import { ShoppingBag, ArrowLeft, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star, ChevronDown, ChevronUp, Download } from "lucide-react";
+import { ShoppingBag, ArrowLeft, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star, ChevronDown, ChevronUp, Download, Trash2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../config";
@@ -36,6 +36,26 @@ export default function OrderDetail({ isDark }) {
       localStorage.setItem("showFeedbackHub", JSON.stringify(next));
       return next;
     });
+  };
+
+  const handleDeleteOrder = async () => {
+    if (order.status !== "pending") {
+      toast.error("Artist approved the art, you can no longer delete it");
+      return;
+    }
+
+    if (!window.confirm("Are you sure you want to delete this order?")) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_BASE_URL}/api/orders/user/${order._id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success("Order deleted successfully");
+      navigate("/orders");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete order");
+    }
   };
 
   const fetchOrder = async () => {
@@ -201,6 +221,13 @@ export default function OrderDetail({ isDark }) {
               >
                 <Download size={12} />
                 Invoice
+              </button>
+              <button
+                onClick={handleDeleteOrder}
+                className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-[10px] md:text-xs transition-all ${isDark ? "bg-red-500/10 hover:bg-red-500/20 text-red-400" : "bg-red-50 hover:bg-red-100 text-red-600"}`}
+              >
+                <Trash2 size={12} />
+                Delete
               </button>
               <span className={`px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider ${getStatusInfo(order.status).color}`}>
                 {getStatusInfo(order.status).label}
