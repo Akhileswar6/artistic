@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Calendar, ExternalLink, X, Instagram, Star, Quote } from "lucide-react";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
-const showcaseItems = [
+const defaultShowcaseItems = [
   {
     id: 1,
     title: "Realistic Girl Portrait",
@@ -47,8 +48,36 @@ const showcaseItems = [
 ];
 
 export default function CustomerShowcase({ isDark }) {
+  const [showcaseItemsList, setShowcaseItemsList] = useState(defaultShowcaseItems);
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/gallery`);
+        if (res.ok) {
+          const data = await res.json();
+          const showcaseWorks = data
+            .filter(item => item.displayLocations?.includes('customer_showcase'))
+            .map(item => ({
+              id: item._id,
+              image: item.imageUrl,
+              title: item.title,
+              style: item.category,
+              customer: "Customer", // You could parse this from description if needed, or add a customer field later
+              date: item.date,
+              rating: 5, // Default rating for gallery uploads
+              testimonial: item.description
+            }));
+          setShowcaseItemsList([...showcaseWorks, ...defaultShowcaseItems]);
+        }
+      } catch (err) {
+        console.error("Failed to load gallery");
+      }
+    };
+    fetchGallery();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -104,7 +133,7 @@ export default function CustomerShowcase({ isDark }) {
 
         {/* Showcase Grid - 2 Columns on Mobile */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-          {showcaseItems.map((item, index) => (
+          {showcaseItemsList.map((item, index) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 30 }}
