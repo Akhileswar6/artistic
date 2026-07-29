@@ -36,6 +36,7 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const galleryRoutes = require("./routes/galleryRoutes");
 
 
 app.use("/api/auth", authRoutes);
@@ -43,8 +44,22 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/gallery", galleryRoutes);
 
-
+// Public Config Endpoint (Maintenance Mode)
+const SystemConfig = require("./models/SystemConfig");
+app.get("/api/config", async (req, res) => {
+  try {
+    const config = await SystemConfig.findOne();
+    res.json({ 
+      maintenanceMode: config?.maintenanceMode || false,
+      basePricing: config?.basePricing || {},
+      framePricing: config?.framePricing || {}
+    });
+  } catch(err) {
+    res.status(500).json({ maintenanceMode: false, basePricing: {}, framePricing: {} });
+  }
+});
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
