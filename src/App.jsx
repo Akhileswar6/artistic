@@ -29,6 +29,10 @@ const ActivityLog = lazy(() => import("./Pages/Admin/ActivityLog"));
 const Analytics = lazy(() => import("./Pages/Admin/Analytics"));
 const Transactions = lazy(() => import("./Pages/Admin/Transactions"));
 
+import Maintenance from "./Pages/Maintenance";
+import axios from "axios";
+import { API_BASE_URL } from "./config";
+
 // Lazy Loaded Main Pages
 const Home = lazy(() => import("./Pages/Home"));
 const Gallery = lazy(() => import("./Pages/Gallery"));
@@ -128,6 +132,22 @@ export default function App() {
   const [isDark, setIsDark] = useState(
     localStorage.getItem("theme") !== "light"
   );
+  
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/config`);
+        setMaintenanceMode(res.data.maintenanceMode);
+      } catch (err) {
+        console.error("Failed to fetch config", err);
+      }
+    };
+    fetchConfig();
+    const interval = setInterval(fetchConfig, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (isDark) {
@@ -139,7 +159,7 @@ export default function App() {
     }
   }, [isDark]);
 
-
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
     <>
@@ -269,8 +289,12 @@ export default function App() {
             />
 
             {/* Main Website Routes */}
-            <Route
-              element={
+            {maintenanceMode && !isAdminRoute ? (
+              <Route path="*" element={<Maintenance isDark={isDark} />} />
+            ) : (
+              <>
+                <Route
+                  element={
                 <Layout
                   isDark={isDark}
                   setIsDark={setIsDark}
@@ -402,7 +426,9 @@ export default function App() {
                   </PageTransition>
                 }
               />
-            </Route>
+              </Route>
+              </>
+            )}
           </Routes>
         </Suspense>
       </div>
