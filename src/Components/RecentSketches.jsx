@@ -2,15 +2,18 @@ import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, X, Calendar, Tag, User, Instagram, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { API_BASE_URL } from "../config";
 
 export default function RecentSketches({ isDark }) {
-  const sketches = [
+  const defaultSketches = [
     { id: 1, img: "/RecentArtworks/Lord%20hanuman.webp", title: "Divine Hanuman", category: "Sketch", artist: "Internal Studio", date: "February 2026", instagramUrl: "https://www.instagram.com/p/DVk8LsUkd8p/", description: "A detailed divine portrait capturing the powerful yet serene essence of Lord Hanuman. जय श्री राम" },
     { id: 2, img: "/RecentArtworks/Durga.webp", title: "Goddess Durga", category: "Realistic", artist: "Internal Studio", date: "October 2025", instagramUrl: "https://www.instagram.com/p/DPTl3WfEbtJ/", description: "Intricate charcoal study focusing on the fierce and protective nature of Goddess Durga." },
     { id: 3, img: "/RecentArtworks/Hanuman.webp", title: "Lord Hanuman", category: "Realistic", artist: "Internal Studio", date: "January 2026", instagramUrl: "https://www.instagram.com/p/DTCofNoEaYq/", description: "Vibrant color study showcasing divine strength and spiritual devotion." },
     { id: 4, img: "/RecentArtworks/Akhil.webp", title: "Realistic Portrait", category: "Realistic Potrait", artist: "Internal Studio", date: "January 2025", instagramUrl: "https://www.instagram.com/p/DE9pYusSont/", description: "High-fidelity pencil portrait focusing on realistic skin textures and lighting." },
     { id: 5, img: "/RecentArtworks/Pawan%20Kalyan.webp", title: "Pawan Kalyan Sketch", category: "Realistic Potrait", artist: "Internal Studio", date: "September 2023", instagramUrl: "https://www.instagram.com/p/C7y-VdkyKKr/", description: "Character study sketch capturing the iconic persona through detailed pencil work." },
   ];
+
+  const [sketches, setSketches] = useState(defaultSketches);
   // ... rest of the component
 
 
@@ -30,6 +33,33 @@ export default function RecentSketches({ isDark }) {
 
     if (gridRef.current) observer.observe(gridRef.current);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/gallery`);
+        if (res.ok) {
+          const data = await res.json();
+          const latestWorks = data
+            .filter(item => item.displayLocations?.includes('latest_works'))
+            .map(item => ({
+              id: item._id,
+              img: item.imageUrl,
+              title: item.title,
+              category: item.category,
+              artist: "Internal Studio",
+              date: item.date,
+              instagramUrl: item.instagramLink,
+              description: item.description
+            }));
+          setSketches([...latestWorks, ...defaultSketches]);
+        }
+      } catch (err) {
+        console.error("Failed to load gallery");
+      }
+    };
+    fetchGallery();
   }, []);
 
   // Prevent scroll when modal is open
