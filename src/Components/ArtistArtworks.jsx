@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, X, User, Tag, Calendar, Instagram, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { API_BASE_URL } from "../config";
 
-const artworks = [
+const defaultArtworks = [
   {
     id: 1,
     title: "Chatrapati Shivaji Maharaj",
@@ -67,9 +68,37 @@ const artworks = [
 ];
 
 export default function ArtistArtworks({ isDark }) {
+  const [artworksList, setArtworksList] = useState(defaultArtworks);
   const [selectedArt, setSelectedArt] = useState(null);
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/gallery`);
+        if (res.ok) {
+          const data = await res.json();
+          const artistsWorks = data
+            .filter(item => item.displayLocations?.includes('artists_works'))
+            .map(item => ({
+              id: item._id,
+              image: item.imageUrl,
+              title: item.title,
+              category: item.category,
+              artist: "Internal Studio",
+              date: item.date,
+              instagramUrl: item.instagramLink,
+              description: item.description
+            }));
+          setArtworksList([...artistsWorks, ...defaultArtworks]);
+        }
+      } catch (err) {
+        console.error("Failed to load gallery");
+      }
+    };
+    fetchGallery();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -122,7 +151,6 @@ export default function ArtistArtworks({ isDark }) {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <Link
-              
               to="/gallery"
               className={`inline-flex items-center justify-center gap-2 px-4 py-2 text-[13px] font-medium rounded-full transition-all duration-300   border ${isDark
                   ? "bg-white/5 text-neutral-300 border-white/10 hover:text-white hover:border-white/20 hover:bg-white/10 shadow-md"
@@ -148,7 +176,7 @@ export default function ArtistArtworks({ isDark }) {
           animate={isVisible ? "visible" : "hidden"}
           className="columns-2 lg:columns-4 gap-4 sm:gap-6 px-2 sm:px-4 space-y-4 sm:space-y-6"
         >
-          {artworks.map((art) => (
+          {artworksList.map((art) => (
             <motion.div
               key={art.id}
               variants={{
