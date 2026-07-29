@@ -412,7 +412,7 @@ router.get("/config", verifyAdmin, async (req, res) => {
 router.put("/config", verifyAdmin, validate({ body: systemConfigSchema }), async (req, res) => {
   try {
     const update = req.body;
-    let config = await SystemConfig.findOneAndUpdate({}, update, { new: true, upsert: true });
+    let config = await SystemConfig.findOneAndUpdate({}, update, { returnDocument: 'after', upsert: true });
 
     // Log this action
     const admin = await Admin.findById(req.user.id);

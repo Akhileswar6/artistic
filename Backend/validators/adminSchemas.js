@@ -33,9 +33,16 @@ const blockUsersSchema = z.object({
 const systemConfigSchema = z.object({
   maintenanceMode: z.boolean().optional(),
   basePricing: z.object({
-    pencilSketch: z.number().nonnegative().optional(),
-    oilPainting: z.number().nonnegative().optional(),
-    digitalArt: z.number().nonnegative().optional(),
+    realistic: z.number().nonnegative().optional(),
+    charcoal: z.number().nonnegative().optional(),
+    sketch: z.number().nonnegative().optional(),
+    caricature: z.number().nonnegative().optional(),
+  }).optional(),
+  framePricing: z.object({
+    noframe: z.number().nonnegative().optional(),
+    standard8x10: z.number().nonnegative().optional(),
+    standard12x16: z.number().nonnegative().optional(),
+    custom: z.number().nonnegative().optional(),
   }).optional(),
   discountPercentage: z.number().min(0).max(100).optional(),
   contactPhone: z.string().optional(),
