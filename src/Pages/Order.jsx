@@ -47,12 +47,21 @@ export default function Order({ isDark }) {
 
 
 
+  const [systemConfig, setSystemConfig] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/config`)
+      .then(res => res.json())
+      .then(data => setSystemConfig(data))
+      .catch(console.error);
+  }, []);
+
   // Price Configuration
   const stylePrices = {
-    realistic: 1500,
-    charcoal: 1500,
-    sketch: 2000,
-    caricature: 1800,
+    realistic: systemConfig?.basePricing?.realistic ?? 1500,
+    charcoal: systemConfig?.basePricing?.charcoal ?? 1500,
+    sketch: systemConfig?.basePricing?.sketch ?? 2000,
+    caricature: systemConfig?.basePricing?.caricature ?? 1800,
   };
 
   const styleLabels = {
@@ -63,10 +72,10 @@ export default function Order({ isDark }) {
   };
 
   const framePrices = {
-    noframe: 0,
-    standard8x10: 200,
-    standard12x16: 400,
-    custom: 600,
+    noframe: systemConfig?.framePricing?.noframe ?? 0,
+    standard8x10: systemConfig?.framePricing?.standard8x10 ?? 200,
+    standard12x16: systemConfig?.framePricing?.standard12x16 ?? 400,
+    custom: systemConfig?.framePricing?.custom ?? 600,
   };
 
   const frameLabels = {
@@ -147,7 +156,7 @@ export default function Order({ isDark }) {
         return toast.error("Please upload a photo first");
       }
 
-      const response = await axios.post(
+      await axios.post(
         `${API_BASE_URL}/api/orders/create`,
         formData,
         {
@@ -276,7 +285,8 @@ export default function Order({ isDark }) {
                     setZoom={setZoom}
                     user={user}
                     setShowAuthModal={() => setShowAuthModal(true)}
-
+                    stylePrices={stylePrices}
+                    framePrices={framePrices}
                   />
                 )}
 

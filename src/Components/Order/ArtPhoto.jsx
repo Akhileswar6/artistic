@@ -9,7 +9,9 @@ export default function ArtPhoto({
   removePhoto,
   setZoom,
   user,
-  setShowAuthModal
+  setShowAuthModal,
+  stylePrices,
+  framePrices
 }) {
 
   const handleInteraction = (e) => {
@@ -59,7 +61,7 @@ export default function ArtPhoto({
           >
             <div className="flex justify-between items-center">
               <span className="text-[15px]">Realistic Pencil</span>
-              <span className={`text-[14px] ${orderData.artStyle === "realistic" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-500" : "text-neutral-400")}`}>₹1,500</span>
+              <span className={`text-[14px] ${orderData.artStyle === "realistic" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-500" : "text-neutral-400")}`}>₹{stylePrices.realistic.toLocaleString()}</span>
             </div>
             <p className="text-[12px] opacity-70 leading-relaxed font-medium">
               Detailed, lifelike portrait captured with hyper-realistic precision.
@@ -87,7 +89,7 @@ export default function ArtPhoto({
             <div className="flex justify-between items-center">
               <span className="text-[15px]">Charcoal Art</span>
               <span className={`text-[14px] ${orderData.artStyle === "charcoal" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-500" : "text-neutral-400")}`}>
-                ₹1,500
+                ₹{stylePrices.charcoal.toLocaleString()}
               </span>
             </div>
 
@@ -119,7 +121,7 @@ export default function ArtPhoto({
             <div className="flex justify-between items-center">
               <span className="text-[15px]">Pencil Sketch</span>
               <span className={`text-[14px]  ${orderData.artStyle === "sketch" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-500" : "text-neutral-400")}`}>
-                ₹2,000
+                ₹{stylePrices.sketch.toLocaleString()}
               </span>
             </div>
 
@@ -151,7 +153,7 @@ export default function ArtPhoto({
             <div className="flex justify-between items-center">
               <span className="text-[15px]">Caricature</span>
               <span className={`text-[14px] ${orderData.artStyle === "caricature" ? (isDark ? "text-white" : "text-black") : (isDark ? "text-neutral-500" : "text-neutral-400")}`}>
-                ₹1,800
+                ₹{stylePrices.caricature.toLocaleString()}
               </span>
             </div>
             <p className="text-[12px] opacity-70 leading-relaxed font-medium">Fun, stylized exaggeration designed to uniquely capture personality.</p>
@@ -181,10 +183,10 @@ export default function ArtPhoto({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
-            { id: "noframe", label: "No Frame", extra: "Included" },
-            { id: "standard8x10", label: "Standard 8x10\"", extra: "+₹200" },
-            { id: "standard12x16", label: "Standard 12x16\"", extra: "+₹400" },
-            { id: "custom", label: "Custom Frame", extra: "+₹600" },
+            { id: "noframe", label: "No Frame", extra: framePrices.noframe === 0 ? "Included" : `+₹${framePrices.noframe.toLocaleString()}` },
+            { id: "standard8x10", label: "Standard 8x10\"", extra: `+₹${framePrices.standard8x10.toLocaleString()}` },
+            { id: "standard12x16", label: "Standard 12x16\"", extra: `+₹${framePrices.standard12x16.toLocaleString()}` },
+            { id: "custom", label: "Custom Frame", extra: `+₹${framePrices.custom.toLocaleString()}` },
           ].map((option) => (
             <div
               key={option.id}

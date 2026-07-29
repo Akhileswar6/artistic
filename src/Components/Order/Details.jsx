@@ -1,6 +1,9 @@
-import { Info, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Info, ArrowRight, MapPin, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function Details({ isDark, setStep, orderData, handleInputChange, user, setShowAuthModal }) {
+  const [gettingLocation, setGettingLocation] = useState(false);
 
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orderData.email);
 
@@ -9,6 +12,43 @@ export default function Details({ isDark, setStep, orderData, handleInputChange,
       e.target.blur();
       setShowAuthModal(true);
     }
+  };
+
+  const handleGetLocation = () => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+    
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported by your browser");
+      return;
+    }
+
+    setGettingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+          const data = await res.json();
+          if (data && data.display_name) {
+            handleInputChange({ target: { name: "address", value: data.display_name } });
+            toast.success("Location retrieved successfully!");
+          } else {
+            toast.error("Could not determine address from coordinates");
+          }
+        } catch (err) {
+          toast.error("Failed to fetch address details");
+        } finally {
+          setGettingLocation(false);
+        }
+      },
+      (error) => {
+        setGettingLocation(false);
+        toast.error("Location access denied or failed");
+      }
+    );
   };
 
   return (
@@ -93,8 +133,25 @@ export default function Details({ isDark, setStep, orderData, handleInputChange,
         </div>
       </div>
 
-      <div className="mt-8 space-y-2">
-        <label className={`text-[11px]  uppercase tracking-widest ml-1 ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>Delivery Location <span className="text-red-500">*</span></label>
+      <div className="mt-8 space-y-2 relative">
+        <div className="flex justify-between items-center px-1 mb-2">
+          <label className={`text-[11px] uppercase tracking-widest ${isDark ? "text-neutral-500" : "text-neutral-500"}`}>
+            Delivery Location <span className="text-red-500">*</span>
+          </label>
+          <button
+            type="button"
+            onClick={handleGetLocation}
+            disabled={gettingLocation}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] uppercase font-medium transition-all ${
+              isDark 
+                ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20" 
+                : "bg-blue-50 text-blue-600 hover:bg-blue-100"
+            } ${gettingLocation ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {gettingLocation ? <Loader2 size={12} className="animate-spin" /> : <MapPin size={12} />}
+            {gettingLocation ? "Detecting..." : "Access Live Location"}
+          </button>
+        </div>
         <textarea
           name="address"
           value={orderData.address}
