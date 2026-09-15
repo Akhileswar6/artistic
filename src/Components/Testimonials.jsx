@@ -100,7 +100,7 @@ const testimonials = [
 />
       <div className="scroll-row scroll-left">
 
-        {[...testimonials, ...testimonials].map((t, i) => (
+        {[...testimonials.slice(0, 5), ...testimonials.slice(0, 5)].map((t, i) => (
 
   <div
   key={i}
@@ -139,7 +139,7 @@ const testimonials = [
       {/* BOTTOM ROW */}
       <div className="scroll-row scroll-right mt-6">
 
-        {[...testimonials, ...testimonials].map((t, i) => (
+        {[...testimonials.slice(5), ...testimonials.slice(5)].map((t, i) => (
 
           <div
   key={i}
