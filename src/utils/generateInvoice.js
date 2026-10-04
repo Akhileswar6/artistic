@@ -76,15 +76,28 @@ export const generateInvoice = async (order) => {
   doc.text("Adoni, Kurnool, Andhra Pradesh - 518301", fromX, 87);
   doc.text("artistic.official12@gmail.com", fromX, 92);
 
+  const snap = order.pricingSnapshot;
+  const qty = String(order.quantity || snap?.details?.quantity || 1);
+  const tableRows = snap ? [
+    ...(snap.baseArtworkPrice > 0 ? [["Base Artwork", qty, `Rs. ${Number(snap.baseArtworkPrice).toLocaleString("en-IN")}`, `Rs. ${(snap.baseArtworkPrice * Number(qty)).toLocaleString("en-IN")}`]] : []),
+    [`Style: ${order.artStyle}`, qty, `Rs. ${Number(snap.styleCharge).toLocaleString("en-IN")}`, `Rs. ${(snap.styleCharge * Number(qty)).toLocaleString("en-IN")}`],
+    ...(snap.frameCharge > 0 ? [[`Frame: ${order.frameOption}`, qty, `Rs. ${Number(snap.frameCharge).toLocaleString("en-IN")}`, `Rs. ${(snap.frameCharge * Number(qty)).toLocaleString("en-IN")}`]] : []),
+    ...(snap.extraPersonCharge > 0 ? [[`Extra Subjects (${order.extraPeople || 1})`, "1", `Rs. ${Number(snap.extraPersonCharge).toLocaleString("en-IN")}`, `Rs. ${Number(snap.extraPersonCharge).toLocaleString("en-IN")}`]] : []),
+    ...(snap.rushDeliveryCharge > 0 ? [["Express Rush Delivery", "1", `Rs. ${Number(snap.rushDeliveryCharge).toLocaleString("en-IN")}`, `Rs. ${Number(snap.rushDeliveryCharge).toLocaleString("en-IN")}`]] : []),
+    ...(snap.discount > 0 ? [[`Discount (${snap.couponCode || 'PROMO'})`, "1", `-Rs. ${Number(snap.discount).toLocaleString("en-IN")}`, `-Rs. ${Number(snap.discount).toLocaleString("en-IN")}`]] : []),
+    ...(snap.shipping > 0 ? [["Standard Shipping", "1", `Rs. ${Number(snap.shipping).toLocaleString("en-IN")}`, `Rs. ${Number(snap.shipping).toLocaleString("en-IN")}`]] : []),
+    ...(snap.tax > 0 ? [["GST / Tax", "1", `Rs. ${Number(snap.tax).toLocaleString("en-IN")}`, `Rs. ${Number(snap.tax).toLocaleString("en-IN")}`]] : []),
+  ] : [
+    [order.artStyle || "Art Style", "1", `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`, `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`],
+    ...(order.frameOption ? [[order.frameOption, "1", "Rs. 0", "Rs. 0"]] : []),
+  ];
+
   // Table
   autoTable(doc, {
     startY: 110,
     margin: { left: 14, right: 14 },
     head: [["Item", "Quantity", "Price", "Amount"]],
-    body: [
-      [order.artStyle || "Art Style", "1", `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`, `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`],
-      ...(order.frameOption ? [[order.frameOption, "1", "Rs. 0", "Rs. 0"]] : []),
-    ],
+    body: tableRows,
     theme: "plain",
     headStyles: {
       fillColor: [230, 230, 230],

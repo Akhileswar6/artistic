@@ -38,24 +38,43 @@ export default function OrderDetail({ isDark }) {
     });
   };
 
-  const handleDeleteOrder = async () => {
+  const handleDeleteOrder = () => {
     if (order.status !== "pending") {
       toast.error("Artist approved the art, you can no longer delete it");
       return;
     }
 
-    if (!window.confirm("Are you sure you want to delete this order?")) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`${API_BASE_URL}/api/orders/user/${order._id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success("Order deleted successfully");
-      navigate("/orders");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to delete order");
-    }
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="text-xs font-medium">Delete this order forever?</p>
+        <div className="flex gap-2">
+          <button
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const token = localStorage.getItem("token");
+                await axios.delete(`${API_BASE_URL}/api/orders/user/${order._id}`, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+                toast.success("Order deleted successfully");
+                navigate("/orders");
+              } catch (error) {
+                toast.error(error.response?.data?.message || "Failed to delete order");
+              }
+            }}
+            className="px-3 py-1 bg-red-500 text-white rounded text-[10px] font-bold uppercase tracking-wider hover:bg-red-600 transition-colors"
+          >
+            Confirm
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1 bg-neutral-200 text-black rounded text-[10px] font-bold uppercase tracking-wider hover:bg-neutral-300 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 5000, position: "top-center" });
   };
 
   const fetchOrder = async () => {
@@ -384,19 +403,77 @@ export default function OrderDetail({ isDark }) {
                   <div className={`p-4 md:p-5 rounded-xl border space-y-3.5 ${isDark ? "bg-white/5 border-white/5" : "bg-gray-50 border-black/5 shadow-sm"}`}>
                     <div className="flex justify-between text-xs md:text-sm">
                       <span className="opacity-50">Style</span>
-                      <span className="font-medium">{order.artStyle}</span>
+                      <span className="font-medium capitalize">{order.artStyle}</span>
                     </div>
                     <div className="flex justify-between text-xs md:text-sm">
                       <span className="opacity-50">Frame</span>
                       <span className="font-medium">{order.frameOption}</span>
                     </div>
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="opacity-50">Total Price</span>
+                    {(order.quantity > 1 || order.pricingSnapshot?.details?.quantity > 1) && (
+                      <div className="flex justify-between text-xs md:text-sm">
+                        <span className="opacity-50">Quantity</span>
+                        <span className="font-medium">{order.quantity || order.pricingSnapshot?.details?.quantity || 1}</span>
+                      </div>
+                    )}
+                    {((order.extraPeople > 0) || (order.pricingSnapshot?.extraPersonCharge > 0)) && (
+                      <div className="flex justify-between text-xs md:text-sm">
+                        <span className="opacity-50">Extra People</span>
+                        <span className="font-medium">{order.extraPeople || 0} person(s) (+₹{order.pricingSnapshot?.extraPersonCharge || 0})</span>
+                      </div>
+                    )}
+                    {order.pricingSnapshot && (
+                      <>
+                        <div className="flex justify-between text-xs md:text-sm pt-2 border-t border-dashed border-gray-500/20">
+                          <span className="opacity-50">Base Artwork</span>
+                          <span className="font-medium">₹{order.pricingSnapshot.baseArtworkPrice?.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between text-xs md:text-sm">
+                          <span className="opacity-50">Style Charge</span>
+                          <span className="font-medium">+₹{order.pricingSnapshot.styleCharge?.toLocaleString()}</span>
+                        </div>
+                        {order.pricingSnapshot.frameCharge > 0 && (
+                          <div className="flex justify-between text-xs md:text-sm">
+                            <span className="opacity-50">Frame Charge</span>
+                            <span className="font-medium">+₹{order.pricingSnapshot.frameCharge?.toLocaleString()}</span>
+                          </div>
+                        )}
+                        {order.pricingSnapshot.rushDeliveryCharge > 0 && (
+                          <div className="flex justify-between text-xs md:text-sm text-amber-500 font-medium">
+                            <span>Rush Delivery</span>
+                            <span>+₹{order.pricingSnapshot.rushDeliveryCharge?.toLocaleString()}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-xs md:text-sm">
+                          <span className="opacity-50">Subtotal</span>
+                          <span className="font-medium">₹{order.pricingSnapshot.subtotal?.toLocaleString()}</span>
+                        </div>
+                        {order.pricingSnapshot.discount > 0 && (
+                          <div className="flex justify-between text-xs md:text-sm text-green-500 font-medium">
+                            <span>Discount ({order.pricingSnapshot.couponCode || 'Coupon'})</span>
+                            <span>-₹{order.pricingSnapshot.discount?.toLocaleString()}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-xs md:text-sm">
+                          <span className="opacity-50">Shipping</span>
+                          <span className="font-medium">+₹{order.pricingSnapshot.shipping?.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between text-xs md:text-sm">
+                          <span className="opacity-50">GST / Tax</span>
+                          <span className="font-medium">+₹{order.pricingSnapshot.tax?.toLocaleString()}</span>
+                        </div>
+                      </>
+                    )}
+                    <div className="flex justify-between text-xs md:text-sm pt-2 border-t border-gray-500/30">
+                      <span className="font-bold">Total Price</span>
                       <span className="font-bold text-emerald-500">₹{order.totalPrice.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-xs md:text-sm">
-                      <span className="opacity-50">Advance Amount</span>
+                      <span className="opacity-50">Advance Amount (25%)</span>
                       <span className="font-medium">₹{order.advanceAmount.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-xs md:text-sm">
+                      <span className="opacity-50">Balance (75%)</span>
+                      <span className="font-medium">₹{(order.totalPrice - order.advanceAmount).toLocaleString()}</span>
                     </div>
                     <div className={`flex justify-between text-[11px] md:text-sm pt-2 border-t ${isDark ? "border-white/5" : "border-black/5"}`}>
                       <span className="opacity-50">Advance Status</span>

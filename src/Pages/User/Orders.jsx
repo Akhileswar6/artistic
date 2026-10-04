@@ -45,24 +45,43 @@ export default function Orders({ isDark }) {
     return () => clearInterval(interval);
   }, []);
 
-  const handleDeleteOrder = async (orderId, status) => {
+  const handleDeleteOrder = (orderId, status) => {
     if (status !== "pending") {
       toast.error("Artist approved the art, you can no longer delete it");
       return;
     }
 
-    if (!window.confirm("Are you sure you want to delete this order?")) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`${API_BASE_URL}/api/orders/user/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success("Order deleted successfully");
-      fetchOrders();
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to delete order");
-    }
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="text-xs font-medium">Delete this order forever?</p>
+        <div className="flex gap-2">
+          <button
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const token = localStorage.getItem("token");
+                await axios.delete(`${API_BASE_URL}/api/orders/user/${orderId}`, {
+                  headers: { Authorization: `Bearer ${token}` }
+                });
+                toast.success("Order deleted successfully");
+                fetchOrders();
+              } catch (error) {
+                toast.error(error.response?.data?.message || "Failed to delete order");
+              }
+            }}
+            className="px-3 py-1 bg-red-500 text-white rounded text-[10px] font-bold uppercase tracking-wider hover:bg-red-600 transition-colors"
+          >
+            Confirm
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1 bg-neutral-200 text-black rounded text-[10px] font-bold uppercase tracking-wider hover:bg-neutral-300 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 5000, position: "top-center" });
   };
 
   const getStatusInfo = (status) => {

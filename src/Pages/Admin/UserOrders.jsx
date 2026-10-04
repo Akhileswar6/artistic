@@ -154,36 +154,54 @@ export default function UserOrders({ isDark }) {
     }
   };
 
-  const handleBulkStatusUpdate = async (newStatus) => {
+  const handleBulkStatusUpdate = (newStatus) => {
     if (selectedIds.length === 0) return;
-    if (!window.confirm(`Update ${selectedIds.length} orders to ${newStatus}?`)) return;
 
-    setLoading(true);
-    let successCount = 0;
-    try {
-      const token = localStorage.getItem("adminToken");
-      // For now, we loop through and update each one. 
-      // In a production app, we'd add a bulk endpoint on the backend.
-      for (const id of selectedIds) {
-        const res = await fetch(`${API_BASE_URL}/api/orders/status/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ status: newStatus }),
-        });
-        if (res.ok) successCount++;
-      }
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="text-xs font-medium">Update {selectedIds.length} orders to {newStatus}?</p>
+        <div className="flex gap-2">
+          <button
+            onClick={async () => {
+              toast.dismiss(t.id);
+              setLoading(true);
+              let successCount = 0;
+              try {
+                const token = localStorage.getItem("adminToken");
+                for (const id of selectedIds) {
+                  const res = await fetch(`${API_BASE_URL}/api/orders/status/${id}`, {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ status: newStatus }),
+                  });
+                  if (res.ok) successCount++;
+                }
 
-      toast.success(`Successfully updated ${successCount} orders!`);
-      await fetchOrders();
-      setSelectedIds([]);
-    } catch (err) {
-      toast.error("Something went wrong during bulk update.");
-    } finally {
-      setLoading(false);
-    }
+                toast.success(`Successfully updated ${successCount} orders!`);
+                await fetchOrders();
+                setSelectedIds([]);
+              } catch (err) {
+                toast.error("Something went wrong during bulk update.");
+              } finally {
+                setLoading(false);
+              }
+            }}
+            className="px-3 py-1 bg-red-500 text-white rounded text-[10px] font-bold uppercase tracking-wider hover:bg-red-600 transition-colors"
+          >
+            Confirm
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1 bg-neutral-200 text-black rounded text-[10px] font-bold uppercase tracking-wider hover:bg-neutral-300 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 5000, position: "top-center" });
   };
 
   const exportToCSV = () => {
