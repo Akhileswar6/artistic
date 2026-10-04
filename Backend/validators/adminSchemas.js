@@ -32,22 +32,45 @@ const blockUsersSchema = z.object({
 
 const systemConfigSchema = z.object({
   maintenanceMode: z.boolean().optional(),
-  basePricing: z.object({
-    realistic: z.number().nonnegative().optional(),
-    charcoal: z.number().nonnegative().optional(),
-    sketch: z.number().nonnegative().optional(),
-    caricature: z.number().nonnegative().optional(),
-  }).optional(),
-  framePricing: z.object({
-    noframe: z.number().nonnegative().optional(),
-    standard8x10: z.number().nonnegative().optional(),
-    standard12x16: z.number().nonnegative().optional(),
-    custom: z.number().nonnegative().optional(),
-  }).optional(),
+  baseArtworkPrice: z.number().nonnegative().optional(),
+  artworkStyles: z.record(z.string(), z.number().nonnegative()).optional(),
+  basePricing: z.record(z.string(), z.number().nonnegative()).optional(),
+  framePricing: z.record(z.string(), z.number().nonnegative()).optional(),
+  extraPersonCharge: z.number().nonnegative().optional(),
+  rushDeliveryCharge: z.number().nonnegative().optional(),
+  shippingCharge: z.number().nonnegative().optional(),
+  gstPercentage: z.number().min(0).max(100).optional(),
+  allowRushDelivery: z.boolean().optional(),
+  maxQuantity: z.number().int().min(1).optional(),
+  maxExtraPeople: z.number().int().min(0).optional(),
   discountPercentage: z.number().min(0).max(100).optional(),
   contactPhone: z.string().optional(),
   contactEmail: z.string().email("Invalid email format").optional(),
   announcement: z.string().optional().or(z.literal("")),
+});
+
+const createCouponSchema = z.object({
+  code: z.string().min(2, "Coupon code must be at least 2 characters").max(25, "Coupon code too long").trim(),
+  discountType: z.enum(["percentage", "fixed"], {
+    errorMap: () => ({ message: "Discount type must be either 'percentage' or 'fixed'" }),
+  }),
+  discountValue: z.number().positive("Discount value must be greater than 0"),
+  minOrderValue: z.number().nonnegative("Min order value cannot be negative").optional().default(0),
+  maxDiscount: z.number().positive("Max discount must be greater than 0").nullable().optional(),
+  expiryDate: z.string().nullable().optional().or(z.date()),
+  startDate: z.string().nullable().optional().or(z.date()),
+  usageLimit: z.number().int().positive("Usage limit must be a positive integer").nullable().optional(),
+  userLimit: z.number().int().positive("User limit must be a positive integer").optional().default(1),
+  description: z.string().max(250, "Description cannot exceed 250 characters").optional().default(""),
+  isActive: z.boolean().optional().default(true),
+}).refine((data) => {
+  if (data.discountType === "percentage" && data.discountValue > 100) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Percentage discount cannot exceed 100%",
+  path: ["discountValue"],
 });
 
 module.exports = {
@@ -57,4 +80,5 @@ module.exports = {
   changePasswordSchema,
   blockUsersSchema,
   systemConfigSchema,
+  createCouponSchema,
 };
