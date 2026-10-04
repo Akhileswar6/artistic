@@ -36,7 +36,7 @@ const adminRoutes = require("./routes/adminRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const galleryRoutes = require("./routes/galleryRoutes");
-
+const testimonialRoutes = require("./routes/testimonialRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/notifications", notificationRoutes);
@@ -44,16 +44,41 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/gallery", galleryRoutes);
+app.use("/api/testimonials", testimonialRoutes);
 
-// Public Config Endpoint (Maintenance Mode)
+// Public / User Available Coupons Endpoint
+const { getAvailableCoupons } = require("./controllers/orderController");
+const { optionalAuth } = require("./middleware/authMiddleware");
+app.get("/api/coupons/available", optionalAuth, getAvailableCoupons);
+
+// Public Config Endpoint (Maintenance Mode & Pricing Configuration)
 const SystemConfig = require("./models/SystemConfig");
 app.get("/api/config", async (req, res) => {
   try {
     const config = await SystemConfig.findOne();
     res.json({ 
       maintenanceMode: config?.maintenanceMode || false,
+      baseArtworkPrice: config?.baseArtworkPrice ?? 0,
+      artworkStyles: config?.artworkStyles || {
+        sketch: 300,
+        realistic: 500,
+        charcoal: 500,
+        caricature: 400,
+        digital: 200,
+      },
       basePricing: config?.basePricing || {},
-      framePricing: config?.framePricing || {}
+      framePricing: config?.framePricing || {},
+      extraPersonCharge: config?.extraPersonCharge ?? 300,
+      rushDeliveryCharge: config?.rushDeliveryCharge ?? 400,
+      shippingCharge: config?.shippingCharge ?? 0,
+      gstPercentage: config?.gstPercentage ?? 0,
+      allowRushDelivery: config?.allowRushDelivery ?? true,
+      maxQuantity: config?.maxQuantity ?? 10,
+      maxExtraPeople: config?.maxExtraPeople ?? 10,
+      discountPercentage: config?.discountPercentage ?? 0,
+      contactPhone: config?.contactPhone || "+91 8886044716",
+      contactEmail: config?.contactEmail || "support@artistic.com",
+      announcement: config?.announcement || "Welcome to Artistic!",
     });
   } catch(err) {
     res.status(500).json({ maintenanceMode: false, basePricing: {}, framePricing: {} });

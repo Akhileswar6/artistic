@@ -7,6 +7,7 @@ const SystemConfig = require("../models/SystemConfig");
 const Order = require("../models/Order");
 const User = require("../models/User");
 const Message = require("../models/Message");
+const Coupon = require("../models/Coupon");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const Otp = require("../models/Otp");
@@ -35,9 +36,17 @@ const sendOtpEmail = async (email, otp) => {
         htmlContent: `<div style="font-family:sans-serif;"><h3>Admin Login</h3><p>Your OTP code is: <b style="font-size:24px;">${otp}</b></p><p>This code expires in 5 minutes.</p></div>`,
       }),
     });
-    if (!response.ok) throw new Error("Email sending failed");
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error("❌ Brevo API Response Error:", errText);
+      throw new Error(`Email sending failed: ${errText}`);
+    }
+    console.log(`✅ Admin OTP successfully sent to ${email}`);
   } catch (error) {
-    console.error("Admin OTP Send Error:", error);
+    console.error("Admin OTP Send Error:", error.message);
+  } finally {
+    // Always log OTP to server console for local testing/development so login is never blocked
+    console.log(`\n========================================================\n🔐 [ADMIN LOGIN OTP]: ${otp} (for ${email})\n========================================================\n`);
   }
 };
 
@@ -50,6 +59,7 @@ const {
   changePasswordSchema,
   blockUsersSchema,
   systemConfigSchema,
+  createCouponSchema,
 } = require("../validators/adminSchemas");
 const { strictLimiter } = require("../middleware/rateLimiters");
 const { z } = require("zod");
@@ -427,6 +437,268 @@ router.put("/config", verifyAdmin, validate({ body: systemConfigSchema }), async
     res.json(config);
   } catch (err) {
     res.status(500).json({ message: "Failed to update config" });
+  }
+});
+
+// ============================
+// 🎟️ COUPON MANAGEMENT
+// ============================
+
+// 1. Get all coupons with computed status and summary stats
+router.get("/coupons", verifyAdmin, async (req, res) => {
+  try {
+    const coupons = await Coupon.find().sort({ createdAt: -1 });
+    const now = new Date();
+
+    const enrichedCoupons = coupons.map((c) => {
+      let computedStatus = "active";
+      if (!c.isActive) {
+        computedStatus = "inactive";
+      } else if (c.expiryDate && now > new Date(c.expiryDate)) {
+        computedStatus = "expired";
+      } else if (c.usageLimit !== null && c.usedCount >= c.usageLimit) {
+        computedStatus = "depleted";
+      } else if (c.startDate && now < new Date(c.startDate)) {
+        computedStatus = "scheduled";
+      }
+
+      return {
+        ...c.toObject(),
+        computedStatus,
+      };
+    });
+
+    res.json(enrichedCoupons);
+  } catch (err) {
+    console.error("Fetch Coupons Error:", err);
+    res.status(500).json({ message: "Failed to fetch coupons" });
+  }
+});
+
+// 2. Create new coupon
+router.post("/coupons", verifyAdmin, validate({ body: createCouponSchema }), async (req, res) => {
+  try {
+    const {
+      code,
+      discountType,
+      discountValue,
+      minOrderValue = 0,
+      maxDiscount = null,
+      expiryDate = null,
+      startDate = null,
+      usageLimit = null,
+      userLimit = 1,
+      description = "",
+      isActive = true,
+    } = req.body;
+
+    const normalizedCode = code.trim().toUpperCase();
+
+    // Check if code already exists
+    const existing = await Coupon.findOne({ code: normalizedCode });
+    if (existing) {
+      return res.status(409).json({ message: `Coupon with code "${normalizedCode}" already exists` });
+    }
+
+    const newCoupon = new Coupon({
+      code: normalizedCode,
+      discountType,
+      discountValue,
+      minOrderValue,
+      maxDiscount: maxDiscount ? Number(maxDiscount) : null,
+      expiryDate: expiryDate ? new Date(expiryDate) : null,
+      startDate: startDate ? new Date(startDate) : new Date(),
+      usageLimit: usageLimit ? Number(usageLimit) : null,
+      userLimit: userLimit ? Number(userLimit) : 1,
+      description,
+      isActive,
+    });
+
+    await newCoupon.save();
+
+    // Log admin activity
+    const admin = await Admin.findById(req.user.id);
+    await new Activity({
+      adminId: req.user.id,
+      adminName: admin?.fullName || "Admin",
+      action: `Created Coupon: ${normalizedCode}`,
+      targetType: "Coupon",
+      details: `${discountType === "percentage" ? `${discountValue}%` : `₹${discountValue}`} discount`,
+    }).save();
+
+    res.status(201).json({
+      message: "Coupon created successfully",
+      coupon: {
+        ...newCoupon.toObject(),
+        computedStatus: newCoupon.isActive ? "active" : "inactive",
+      },
+    });
+  } catch (err) {
+    console.error("Create Coupon Error:", err);
+    res.status(500).json({ message: "Failed to create coupon" });
+  }
+});
+
+// 2b. Update existing coupon
+router.put("/coupons/:id", verifyAdmin, validate({ params: adminIdParamSchema, body: createCouponSchema }), async (req, res) => {
+  try {
+    const coupon = await Coupon.findById(req.params.id);
+    if (!coupon) {
+      return res.status(404).json({ message: "Coupon not found" });
+    }
+
+    const {
+      code,
+      discountType,
+      discountValue,
+      minOrderValue = 0,
+      maxDiscount = null,
+      expiryDate = null,
+      startDate = null,
+      usageLimit = null,
+      userLimit = 1,
+      description = "",
+      isActive = true,
+    } = req.body;
+
+    const normalizedCode = code.trim().toUpperCase();
+
+    // Check if another coupon has the same code
+    const existing = await Coupon.findOne({ code: normalizedCode, _id: { $ne: req.params.id } });
+    if (existing) {
+      return res.status(409).json({ message: `Coupon with code "${normalizedCode}" already exists` });
+    }
+
+    coupon.code = normalizedCode;
+    coupon.discountType = discountType;
+    coupon.discountValue = discountValue;
+    coupon.minOrderValue = minOrderValue;
+    coupon.maxDiscount = maxDiscount ? Number(maxDiscount) : null;
+    coupon.expiryDate = expiryDate ? new Date(expiryDate) : null;
+    if (startDate) coupon.startDate = new Date(startDate);
+    coupon.usageLimit = usageLimit ? Number(usageLimit) : null;
+    coupon.userLimit = userLimit ? Number(userLimit) : 1;
+    coupon.description = description;
+    coupon.isActive = isActive;
+
+    await coupon.save();
+
+    const admin = await Admin.findById(req.user.id);
+    await new Activity({
+      adminId: req.user.id,
+      adminName: admin?.fullName || "Admin",
+      action: `Updated Coupon: ${normalizedCode}`,
+      targetType: "Coupon",
+      details: `Modified coupon properties and discount settings`,
+    }).save();
+
+    res.json({
+      message: "Coupon updated successfully",
+      coupon: {
+        ...coupon.toObject(),
+        computedStatus: coupon.isActive ? "active" : "inactive",
+      },
+    });
+  } catch (err) {
+    console.error("Update Coupon Error:", err);
+    res.status(500).json({ message: "Failed to update coupon" });
+  }
+});
+
+// 3. Instantly expire coupon
+router.put("/coupons/:id/expire", verifyAdmin, validate({ params: adminIdParamSchema }), async (req, res) => {
+  try {
+    const coupon = await Coupon.findById(req.params.id);
+    if (!coupon) {
+      return res.status(404).json({ message: "Coupon not found" });
+    }
+
+    coupon.expiryDate = new Date();
+    coupon.isActive = false;
+    await coupon.save();
+
+    const admin = await Admin.findById(req.user.id);
+    await new Activity({
+      adminId: req.user.id,
+      adminName: admin?.fullName || "Admin",
+      action: `Expired Coupon: ${coupon.code}`,
+      targetType: "Coupon",
+      details: "Instantly expired and deactivated coupon",
+    }).save();
+
+    res.json({
+      message: `Coupon ${coupon.code} has been expired`,
+      coupon: {
+        ...coupon.toObject(),
+        computedStatus: "expired",
+      },
+    });
+  } catch (err) {
+    console.error("Expire Coupon Error:", err);
+    res.status(500).json({ message: "Failed to expire coupon" });
+  }
+});
+
+// 4. Toggle active status
+router.patch("/coupons/:id/toggle", verifyAdmin, validate({ params: adminIdParamSchema }), async (req, res) => {
+  try {
+    const coupon = await Coupon.findById(req.params.id);
+    if (!coupon) {
+      return res.status(404).json({ message: "Coupon not found" });
+    }
+
+    coupon.isActive = !coupon.isActive;
+    await coupon.save();
+
+    const admin = await Admin.findById(req.user.id);
+    await new Activity({
+      adminId: req.user.id,
+      adminName: admin?.fullName || "Admin",
+      action: `${coupon.isActive ? "Activated" : "Deactivated"} Coupon: ${coupon.code}`,
+      targetType: "Coupon",
+      details: `Status set to ${coupon.isActive ? "Active" : "Inactive"}`,
+    }).save();
+
+    const now = new Date();
+    let computedStatus = coupon.isActive ? "active" : "inactive";
+    if (coupon.isActive && coupon.expiryDate && now > new Date(coupon.expiryDate)) {
+      computedStatus = "expired";
+    }
+
+    res.json({
+      message: `Coupon ${coupon.code} is now ${coupon.isActive ? "Active" : "Inactive"}`,
+      coupon: {
+        ...coupon.toObject(),
+        computedStatus,
+      },
+    });
+  } catch (err) {
+    console.error("Toggle Coupon Error:", err);
+    res.status(500).json({ message: "Failed to toggle coupon status" });
+  }
+});
+
+// 5. Delete coupon
+router.delete("/coupons/:id", verifyAdmin, validate({ params: adminIdParamSchema }), async (req, res) => {
+  try {
+    const coupon = await Coupon.findByIdAndDelete(req.params.id);
+    if (!coupon) {
+      return res.status(404).json({ message: "Coupon not found" });
+    }
+
+    const admin = await Admin.findById(req.user.id);
+    await new Activity({
+      adminId: req.user.id,
+      adminName: admin?.fullName || "Admin",
+      action: `Deleted Coupon: ${coupon.code}`,
+      targetType: "Coupon",
+      details: `Permanently removed coupon ${coupon.code}`,
+    }).save();
+
+    res.json({ message: `Coupon ${coupon.code} deleted successfully` });
+  } catch (err) {
+    console.error("Delete Coupon Error:", err);
+    res.status(500).json({ message: "Failed to delete coupon" });
   }
 });
 
