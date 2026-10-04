@@ -234,12 +234,16 @@ const sendOtpEmail = async (email, otp) => {
     });
 
     if (!response.ok) {
-      throw new Error("Email sending failed");
+      const errText = await response.text();
+      console.error("❌ Brevo API Response Error:", errText);
+      throw new Error(`Email sending failed: ${errText}`);
     }
-
-    
+    console.log(`✅ Verification OTP sent to ${email}`);
   } catch (error) {
+    console.error("OTP Send Error:", error.message);
     throw error;
+  } finally {
+    console.log(`\n========================================================\n🔐 [USER OTP]: ${otp} (for ${email})\n========================================================\n`);
   }
 };
 

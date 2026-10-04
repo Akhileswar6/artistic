@@ -22,6 +22,23 @@ const verifyToken = (req, res, next) => {
 };
 
 
+const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return next();
+
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+  } catch (err) {
+    // Ignore invalid token for optional auth
+  }
+  next();
+};
+
 const verifyAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
     if (!req.user || req.user.role !== "admin") {
@@ -31,4 +48,4 @@ const verifyAdmin = (req, res, next) => {
   });
 };
 
-module.exports = { verifyToken, verifyAdmin };
+module.exports = { verifyToken, optionalAuth, verifyAdmin };
