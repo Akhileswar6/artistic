@@ -29,6 +29,14 @@ const gallerySchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  price: {
+    type: Number,
+    default: 1000,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Gallery", gallerySchema);
