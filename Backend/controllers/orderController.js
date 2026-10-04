@@ -2,7 +2,59 @@ const Order = require("../models/Order");
 const User = require("../models/User");
 const Activity = require("../models/Activity");
 const Admin = require("../models/Admin");
+const Coupon = require("../models/Coupon");
 const { generatePresignedUrl } = require("../utils/s3utils");
+const { PricingService, PricingError } = require("../services/pricingService");
+
+// PREVIEW ORDER PRICE (CALCULATE PRICE)
+const calculatePrice = async (req, res) => {
+  try {
+    const {
+      artworkId,
+      style,
+      artStyle,
+      frame,
+      frameOption,
+      quantity,
+      extraPeople,
+      rushDelivery,
+      couponCode,
+    } = req.body;
+
+    const selectedStyle = style || artStyle;
+    const selectedFrame = frame || frameOption;
+    const userId = req.user?.id || null;
+
+    const pricing = await PricingService.calculateOrderPrice({
+      artworkId,
+      style: selectedStyle,
+      frame: selectedFrame,
+      quantity,
+      extraPeople,
+      rushDelivery,
+      couponCode,
+      userId,
+    });
+
+    res.json({
+      success: true,
+      ...pricing,
+      pricing,
+    });
+  } catch (error) {
+    if (error instanceof PricingError || error.name === "PricingError") {
+      return res.status(error.statusCode || 400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+    console.error("❌ Calculate Price Error:", error);
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to calculate order price",
+    });
+  }
+};
 
 // CREATE ORDER
 const createOrder = async (req, res) => {
@@ -12,10 +64,17 @@ const createOrder = async (req, res) => {
       email, 
       phone, 
       address, 
+      artworkId,
+      style,
       artStyle, 
+      frame,
       frameOption, 
       instructions, 
-      price 
+      quantity,
+      extraPeople,
+      rushDelivery,
+      couponCode,
+      // Note: price, subtotal, discount, tax, shipping, finalTotal are NEVER trusted from req.body
     } = req.body;
 
     const photo = req.file ? req.file.key : null;
@@ -25,20 +84,63 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ success: false, message: "Photo is required" });
     }
 
-    // Calculate advance (25%)
-    const totalPrice = Number(price);
+    const selectedStyle = style || artStyle;
+    const selectedFrame = frame || frameOption;
+
+    // Authoritative Server-side Price Calculation
+    const pricing = await PricingService.calculateOrderPrice({
+      artworkId,
+      style: selectedStyle,
+      frame: selectedFrame,
+      quantity,
+      extraPeople,
+      rushDelivery,
+      couponCode,
+      userId: req.user.id,
+    });
+
+    const totalPrice = pricing.finalTotal;
     const advanceAmount = Math.round(totalPrice * 0.25);
 
+    const pricingSnapshot = {
+      currency: pricing.currency || "INR",
+      baseArtworkPrice: pricing.baseArtworkPrice,
+      styleCharge: pricing.styleCharge,
+      frameCharge: pricing.frameCharge,
+      extraPersonCharge: pricing.extraPersonCharge,
+      rushDeliveryCharge: pricing.rushDeliveryCharge,
+      subtotal: pricing.subtotal,
+      couponCode: pricing.couponCode,
+      discount: pricing.discount,
+      shipping: pricing.shipping,
+      tax: pricing.tax,
+      finalTotal: pricing.finalTotal,
+      calculatedAt: pricing.calculatedAt,
+      details: {
+        quantity: pricing.quantity,
+        extraPeople: pricing.extraPeople,
+        rushDelivery: pricing.rushDelivery,
+        gstPercentage: pricing.gstPercentage,
+        artworkTitle: pricing.artworkTitle,
+      },
+    };
+
     const newOrder = new Order({
-      user: req.user.id, // from verifyToken middleware
+      user: req.user.id,
+      artworkId: artworkId || undefined,
       name,
       email,
       phone,
       address,
-      artStyle,
-      frameOption,
+      artStyle: selectedStyle,
+      frameOption: selectedFrame,
+      quantity: pricing.quantity,
+      extraPeople: pricing.extraPeople,
+      rushDelivery: pricing.rushDelivery,
+      couponCode: pricing.couponCode,
       instructions,
       photo,
+      pricingSnapshot,
       totalPrice,
       advanceAmount,
       status: "pending",
@@ -52,12 +154,26 @@ const createOrder = async (req, res) => {
 
     const savedOrder = await newOrder.save();
 
+    // Record coupon usage if applied
+    if (pricing.couponCode) {
+      await PricingService.recordCouponUsage(pricing.couponCode, req.user.id);
+    }
+
+    // Server-side audit log
+    console.log(`🛒 [Order Created] ID: ${savedOrder._id}, User: ${req.user.id}, Subtotal: ₹${pricing.subtotal}, Discount: ₹${pricing.discount} (${pricing.couponCode || 'None'}), Shipping: ₹${pricing.shipping}, Tax: ₹${pricing.tax}, Total: ₹${totalPrice}`);
+
     res.status(201).json({
       success: true,
       message: "Order placed successfully",
       order: savedOrder,
     });
   } catch (error) {
+    if (error instanceof PricingError || error.name === "PricingError") {
+      return res.status(error.statusCode || 400).json({
+        success: false,
+        message: error.message,
+      });
+    }
     console.error("❌ Create Order Error:", error.message, error);
     res.status(500).json({
       success: false,
@@ -346,7 +462,74 @@ const userDeleteOrder = async (req, res) => {
   }
 };
 
+// GET AVAILABLE ACTIVE COUPONS (FOR EXPLORER/CHECKOUT)
+const getAvailableCoupons = async (req, res) => {
+  try {
+    const now = new Date();
+    const userId = req.user?.id || null;
+
+    const coupons = await Coupon.find({
+      isActive: true,
+      $and: [
+        {
+          $or: [
+            { startDate: { $exists: false } },
+            { startDate: null },
+            { startDate: { $lte: now } },
+          ],
+        },
+        {
+          $or: [
+            { expiryDate: { $exists: false } },
+            { expiryDate: null },
+            { expiryDate: { $gt: now } },
+          ],
+        },
+      ],
+    }).sort({ minOrderValue: 1, discountValue: -1 });
+
+    const availableCoupons = coupons
+      .filter((c) => {
+        if (c.usageLimit !== null && c.usedCount >= c.usageLimit) {
+          return false;
+        }
+        if (userId && c.userLimit !== null && Array.isArray(c.usedBy)) {
+          const userRecord = c.usedBy.find(
+            (u) => u.userId && u.userId.toString() === userId.toString()
+          );
+          if (userRecord && userRecord.count >= c.userLimit) {
+            return false;
+          }
+        }
+        return true;
+      })
+      .map((c) => ({
+        _id: c._id,
+        code: c.code,
+        discountType: c.discountType,
+        discountValue: c.discountValue,
+        minOrderValue: c.minOrderValue || 0,
+        maxDiscount: c.maxDiscount || null,
+        description: c.description || "",
+        expiryDate: c.expiryDate,
+      }));
+
+    res.json({
+      success: true,
+      count: availableCoupons.length,
+      coupons: availableCoupons,
+    });
+  } catch (error) {
+    console.error("❌ Get Available Coupons Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to load available coupons",
+    });
+  }
+};
+
 module.exports = {
+  calculatePrice,
   createOrder,
   getUserOrders,
   getOrderById,
@@ -355,6 +538,7 @@ module.exports = {
   deleteOrder,
   userDeleteOrder,
   updatePaymentInfo,
-  submitFeedback
+  submitFeedback,
+  getAvailableCoupons,
 };
 

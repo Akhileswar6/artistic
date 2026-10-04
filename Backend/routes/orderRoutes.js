@@ -1,5 +1,6 @@
 const express = require("express");
 const {
+  calculatePrice,
   createOrder,
   getUserOrders,
   getOrderById,
@@ -9,12 +10,14 @@ const {
   userDeleteOrder,
   updatePaymentInfo,
   submitFeedback,
+  getAvailableCoupons,
 } = require("../controllers/orderController");
 
-const { verifyToken, verifyAdmin } = require("../middleware/authMiddleware");
+const { verifyToken, optionalAuth, verifyAdmin } = require("../middleware/authMiddleware");
 const upload = require("../middleware/uploadMiddleware");
 const { validate } = require("../middleware/validationMiddleware");
 const {
+  calculatePriceSchema,
   createOrderSchema,
   updatePaymentInfoSchema,
   submitFeedbackSchema,
@@ -23,6 +26,16 @@ const {
 } = require("../validators/orderSchemas");
 
 const router = express.Router();
+
+// ============================
+// 💰 PRICE PREVIEW (CALCULATE PRICE)
+// ============================
+router.post("/calculate-price", optionalAuth, validate({ body: calculatePriceSchema }), calculatePrice);
+
+// ============================
+// 🎟️ AVAILABLE PROMOTIONS & COUPONS
+// ============================
+router.get("/available-coupons", optionalAuth, getAvailableCoupons);
 
 // ============================
 // 🛒 CREATE ORDER
