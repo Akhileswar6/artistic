@@ -102,6 +102,18 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
                   </div>
                 </div>
 
+                {orderData.couponCode && (
+                  <div className={`p-3.5 rounded-xl border flex items-center justify-between ${isDark ? "bg-green-500/10 border-green-500/20 text-green-400" : "bg-green-50 border-green-200 text-green-800"}`}>
+                    <span className="text-[12px] font-semibold uppercase tracking-wider flex items-center gap-2">
+                      <Check size={14} className="text-green-500" />
+                      Promo Code Applied
+                    </span>
+                    <span className="text-[13px] font-bold font-mono px-2.5 py-0.5 rounded bg-green-500/20">
+                      {orderData.couponCode}
+                    </span>
+                  </div>
+                )}
+
                 {orderData.instructions && (
                   <div className={`p-4 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/5" : "bg-black/[0.02] border-black/5"}`}>
                     <span className={`text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 mb-2 ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>

@@ -11,7 +11,8 @@ export default function ArtPhoto({
   user,
   setShowAuthModal,
   stylePrices,
-  framePrices
+  framePrices,
+  systemConfig
 }) {
 
   const handleInteraction = (e) => {
@@ -216,9 +217,6 @@ export default function ArtPhoto({
           </p>
         </div>
       </div>
-
-
-
 
       {/* PHOTO UPLOAD */}
       <div className={`rounded-2xl border p-5 md:p-8 transition-all duration-300 ${isDark
