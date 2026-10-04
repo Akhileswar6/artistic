@@ -1,24 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { API_BASE_URL } from "../../config";
 
-import { User, Lock, Save, LogOut, Shield, Activity as ActivityIcon, ShieldCheck, RefreshCcw, ShieldUser, Settings as SettingsIcon, IndianRupee, Image as ImageIcon } from "lucide-react";
+import { Lock, Save, LogOut, Shield, Activity as ActivityIcon, ShieldCheck, RefreshCcw, ShieldUser, Settings as SettingsIcon, IndianRupee, Image as ImageIcon, X, Star, Tag, ChevronLeft, ChevronRight } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import TestimonialSettings from "./TestimonialSettings";
+import CouponSettings from "./CouponSettings";
 
 export default function Settings({ isDark }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
   const [loading, setLoading] = useState(false);
+  const [isNavCollapsed, setIsNavCollapsed] = useState(() => {
+    return localStorage.getItem("settings_nav_collapsed") === "true";
+  });
+
+  const toggleNavCollapsed = () => {
+    setIsNavCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem("settings_nav_collapsed", next ? "true" : "false");
+      return next;
+    });
+  };
 
   const [admins, setAdmins] = useState([]);
   const [newAdmin, setNewAdmin] = useState({
     email: "",
     password: "",
     fullName: ""
-  });
-  const [myIdentity, setMyIdentity] = useState({
-    fullName: "",
-    email: ""
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -44,10 +53,10 @@ export default function Settings({ isDark }) {
     displayLocations: [] // Array of selected locations
   });
   const [galleryFile, setGalleryFile] = useState(null);
+  const galleryFileRef = useRef(null);
 
   useEffect(() => {
     fetchAdmins();
-    fetchMyIdentity();
     fetchSystemConfig();
     fetchGalleryItems();
   }, []);
@@ -136,45 +145,6 @@ export default function Settings({ isDark }) {
     }
   };
 
-  const fetchMyIdentity = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/profile`, {
-        headers: { Authorization: localStorage.getItem("adminToken") },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setMyIdentity({ fullName: data.fullName, email: data.email });
-      }
-    } catch (err) {
-      console.error("Failed to load identity");
-    }
-  };
-
-  const handleIdentityUpdate = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/profile`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("adminToken"),
-        },
-        body: JSON.stringify({ fullName: myIdentity.fullName }),
-      });
-      if (res.ok) {
-        toast.success("Identity updated successfully");
-        fetchMyIdentity();
-        fetchAdmins(); // refresh list too
-      } else {
-        toast.error("Failed to update identity");
-      }
-    } catch (err) {
-      toast.error("An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchAdmins = async () => {
     try {
@@ -330,41 +300,77 @@ export default function Settings({ isDark }) {
     }
   };
 
-  const handleDeleteGalleryItem = async (id) => {
-    if(!window.confirm("Delete this image?")) return;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/gallery/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: localStorage.getItem("adminToken") }
-      });
-      if (res.ok) {
-        toast.success("Gallery item deleted");
-        fetchGalleryItems();
-      } else {
-        toast.error("Failed to delete item");
-      }
-    } catch (err) {
-      toast.error("An error occurred");
-    }
+  const handleDeleteGalleryItem = (id) => {
+    toast((t) => (
+      <div className="flex flex-col gap-3">
+        <p className="text-xs font-medium">Delete this image forever?</p>
+        <div className="flex gap-2">
+          <button 
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const res = await fetch(`${API_BASE_URL}/api/gallery/${id}`, {
+                  method: "DELETE",
+                  headers: { Authorization: localStorage.getItem("adminToken") }
+                });
+                if (res.ok) {
+                  toast.success("Gallery item deleted");
+                  fetchGalleryItems();
+                } else {
+                  toast.error("Failed to delete item");
+                }
+              } catch (err) {
+                toast.error("An error occurred");
+              }
+            }}
+            className="px-3 py-1 bg-red-500 text-white rounded text-[10px] font-bold uppercase tracking-wider hover:bg-red-600 transition-colors"
+          >
+            Confirm
+          </button>
+          <button 
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1 bg-neutral-200 text-black rounded text-[10px] font-bold uppercase tracking-wider hover:bg-neutral-300 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 5000, position: "top-center" });
   };
 
-  const TabButton = ({ id, label, icon: Icon }) => (
-    <button
-      onClick={() => setActiveTab(id)}
-      className={`relative flex items-center justify-center md:justify-start gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-500 flex-1 md:w-full group
-        ${activeTab === id 
-          ? isDark 
-            ? "bg-white text-black shadow-[0_10px_30px_rgba(255,255,255,0.05)] scale-[1.01]" 
-            : "bg-black text-white shadow-xl scale-[1.01]"
-          : isDark 
-            ? "text-gray-500 hover:text-white hover:bg-white/5" 
-            : "text-gray-400 hover:text-black hover:bg-black/5"
+  const TabButton = ({ id, label, icon: Icon }) => {
+    const isActive = activeTab === id;
+    return (
+      <button
+        type="button"
+        onClick={() => setActiveTab(id)}
+        title={label}
+        className={`relative flex items-center ${
+          isNavCollapsed ? "justify-center px-0 w-full h-10" : "justify-start px-3.5 py-2.5 w-full"
+        } rounded-xl transition-all duration-200 group cursor-pointer ${
+          isActive
+            ? isDark
+              ? "bg-white text-black font-semibold shadow-md shadow-white/5 scale-[1.01]"
+              : "bg-black text-white font-semibold shadow-md shadow-black/10 scale-[1.01]"
+            : isDark
+            ? "text-neutral-400 hover:text-white hover:bg-white/[0.06]"
+            : "text-neutral-600 hover:text-black hover:bg-black/[0.04]"
         }`}
-    >
-      <Icon size={17} className={`transition-transform duration-500 ${activeTab === id ? "scale-110" : "group-hover:scale-110"}`} />
-      <span className="text-[12px] md:text-[13px] tracking-tight">{label}</span>
-    </button>
-  );
+      >
+        <Icon
+          size={17}
+          className={`shrink-0 transition-transform duration-200 ${
+            isActive ? "scale-105" : "group-hover:scale-105 opacity-80 group-hover:opacity-100"
+          }`}
+        />
+        {!isNavCollapsed && (
+          <span className="text-xs font-medium tracking-tight truncate ml-3 select-none">
+            {label}
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
     <div style={{ fontFamily: "Inter, sans-serif" }} className="animate-in fade-in slide-in-from-bottom-6 duration-1000 ease-out pb-20">
@@ -372,10 +378,25 @@ export default function Settings({ isDark }) {
       {/* Editorial Header */}
       <div className={`mb-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-4 rounded-2xl transition-all duration-300
           ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-white border border-black/5 shadow-sm"}`}>
-        <div>
-          <h1 className={`text-lg md:text-xl ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-            Admin Access & Security
-          </h1>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={toggleNavCollapsed}
+            className={`p-2 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 text-xs font-medium ${
+              isDark
+                ? "bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border-white/10"
+                : "bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-black border-black/10"
+            }`}
+            title={isNavCollapsed ? "Open sidebar menu" : "Close sidebar menu"}
+          >
+            {isNavCollapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
+            <span className="hidden sm:inline">{isNavCollapsed ? "Open Menu" : "Close Menu"}</span>
+          </button>
+          <div>
+            <h1 className={`text-lg md:text-xl ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+              Admin Access & Security
+            </h1>
+          </div>
         </div>
         <div className={`hidden md:flex items-center gap-3 px-3 py-2 rounded-xl border ${isDark ? "bg-white/[0.05] border-white/10" : "bg-gray-50 border-black/5"}`}>
            <div className="text-right">
@@ -388,18 +409,46 @@ export default function Settings({ isDark }) {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-5">
+      <div className="flex flex-col lg:flex-row gap-5 items-start">
         
         {/* Navigation Sidebar */}
-        <div className="lg:w-[240px] flex-shrink-0">
-          <div className={`sticky top-24 p-1.5 rounded-xl border transition-all duration-500 flex flex-row lg:flex-col gap-1.5 overflow-x-auto no-scrollbar
-            ${isDark ? "bg-black/50 backdrop-blur-3xl border-white/5" : "bg-gray-100/50 border-black/5"}`}>
-            <TabButton id="profile" label="Admin Access" icon={ShieldUser} />
-            <TabButton id="identity" label="My Identity" icon={User} />
-            <TabButton id="security" label="My Security" icon={Lock} />
-            <TabButton id="system" label="System Settings" icon={SettingsIcon} />
-            <TabButton id="pricing" label="Pricing" icon={IndianRupee} />
-            <TabButton id="gallery" label="Gallery" icon={ImageIcon} />
+        <div className={`transition-all duration-300 ease-in-out flex-shrink-0 ${
+          isNavCollapsed ? "w-[68px]" : "w-[240px]"
+        }`}>
+          <div className={`sticky top-24 p-2 rounded-2xl border transition-all duration-300 flex flex-col gap-1.5 shadow-sm overflow-hidden select-none
+            ${isDark ? "bg-[#0b0b0e] border-white/10" : "bg-white border-black/10 shadow-sm"}`}>
+            
+            {/* Collapse / Expand Toggle Arrow Bar */}
+            <div className={`flex items-center ${isNavCollapsed ? "justify-center" : "justify-between"} px-1 pb-2.5 mb-1 border-b ${isDark ? "border-white/5" : "border-black/5"}`}>
+              {!isNavCollapsed && (
+                <span className={`text-[10px] font-bold uppercase tracking-wider pl-1 ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+                  Settings Menu
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={toggleNavCollapsed}
+                className={`w-7 h-7 rounded-lg border transition-all cursor-pointer flex items-center justify-center ${
+                  isDark
+                    ? "bg-white/5 hover:bg-white/10 text-neutral-300 hover:text-white border-white/10"
+                    : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-black border-black/10"
+                }`}
+                title={isNavCollapsed ? "Open sidebar" : "Close sidebar"}
+              >
+                {isNavCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+              </button>
+            </div>
+
+            {/* Navigation Tabs - Pure Vertical, No Scrollbar */}
+            <div className="flex flex-col gap-1 w-full overflow-hidden">
+              <TabButton id="profile" label="Admin Access" icon={ShieldUser} />
+              <TabButton id="security" label="My Security" icon={Lock} />
+              <TabButton id="system" label="System Settings" icon={SettingsIcon} />
+              <TabButton id="pricing" label="Pricing" icon={IndianRupee} />
+              <TabButton id="coupons" label="Coupons" icon={Tag} />
+              <TabButton id="gallery" label="Gallery" icon={ImageIcon} />
+              <TabButton id="testimonials" label="Testimonials" icon={Star} />
+            </div>
           </div>
         </div>
 
@@ -512,56 +561,6 @@ export default function Settings({ isDark }) {
               </div>
             )}
 
-            {/* MY IDENTITY SECTION */}
-            {activeTab === "identity" && (
-              <form onSubmit={handleIdentityUpdate} className="animate-in fade-in slide-in-from-bottom-10 duration-700 space-y-6">
-                <div className="space-y-1">
-                   <h3 className={`text-lg ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Personal Identity</h3>
-                   <p className={`text-[12px] font-normal ${isDark ? "text-gray-500" : "text-gray-400"}`}>Update your public administrative name displayed across the system.</p>
-                </div>
-
-                <div className="space-y-6">
-                  <div className="group space-y-2.5">
-                    <label className={`text-[10px] uppercase ${isDark ? "text-gray-500 group-focus-within:text-white" : "text-gray-400 group-focus-within:text-black"} transition-colors px-1`}>Your Full Name</label>
-                    <input 
-                      type="text" 
-                      required
-                      value={myIdentity.fullName}
-                      onChange={(e) => setMyIdentity({...myIdentity, fullName: e.target.value})}
-                      placeholder="e.g. Akhileswar"
-                      className={`w-full py-2.5 px-4 mt-1.5 rounded-lg text-[13px] transition-all duration-200 outline-none border
-                        ${isDark
-                          ? "border-white/10 bg-black/40 text-white focus:border-white/30"
-                          : "border-gray-200 bg-gray-50 text-black focus:border-gray-400"
-                        }`}
-                    />
-                  </div>
-                  
-                  <div className="group space-y-2.5 opacity-50">
-                    <label className={`text-[10px] uppercase ${isDark ? "text-gray-500" : "text-gray-400"} px-1`}>Vault Email (Read-Only)</label>
-                    <input 
-                      type="email" 
-                      readOnly
-                      value={myIdentity.email}
-                      className={`w-full py-2.5 px-4 mt-1.5 rounded-lg text-[13px] outline-none border cursor-not-allowed
-                        ${isDark ? "border-white/5 bg-white/5 text-gray-500" : "border-gray-200 bg-gray-100 text-gray-500"}`}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className={`w-full md:w-auto flex items-center justify-center gap-3 px-4 py-2 rounded-lg  uppercase text-[12px]  transition-all transform hover:scale-[1.02] shadow-xl
-                        ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-neutral-800"}`}
-                    >
-                      {loading ? <RefreshCcw size={14} className="animate-spin" /> : <Save size={16} />}
-                      {loading ? "Updating..." : "Save Identity"}
-                    </button>
-                  </div>
-              </form>
-            )}
 
             {/* SECURITY SECTION */}
             {activeTab === "security" && (
@@ -850,7 +849,8 @@ export default function Settings({ isDark }) {
 
                   <div className="space-y-1">
                     <label className={`text-[10px] uppercase font-bold ${isDark ? "text-gray-500" : "text-gray-500"}`}>Image File *</label>
-                    <input type="file" required accept="image/*" onChange={e => setGalleryFile(e.target.files[0])} className={`w-full text-[12px] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[11px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 ${isDark ? "text-gray-400" : "text-gray-600"}`} />
+                    <input type="file" ref={galleryFileRef} required accept="image/*" onChange={e => setGalleryFile(e.target.files[0])} className={`w-full text-[12px] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[11px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 ${isDark ? "text-gray-400" : "text-gray-600"}`} />
+                    {galleryFile && ( <div className="mt-4 relative rounded-xl overflow-hidden border border-black/10 dark:border-white/10 w-full sm:w-64 group"> <img src={URL.createObjectURL(galleryFile)} alt="Preview" className="w-full h-40 object-cover" /> <button type="button" onClick={() => { setGalleryFile(null); if(galleryFileRef.current) galleryFileRef.current.value = ""; }} className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"><X size={14} /></button> </div> )}
                   </div>
 
                   <div className="flex justify-end pt-2">
@@ -885,11 +885,13 @@ export default function Settings({ isDark }) {
 
               </div>
             )}
+            {activeTab === "testimonials" && <TestimonialSettings isDark={isDark} />} 
+            {activeTab === "coupons" && <CouponSettings isDark={isDark} />} 
           </div>
         </div>
-
       </div>
-
     </div>
   );
 }
+
+
