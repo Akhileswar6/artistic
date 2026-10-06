@@ -288,7 +288,7 @@ exports.googleAuth = async (req, res) => {
     const userToken = jwt.sign(
       { id: user._id, email: user.email, role: "user" },
       process.env.JWT_SECRET,
-      { expiresIn: "2h" }
+      { expiresIn: "7d" }
     );
 
     const userObj = user.toObject();
@@ -412,7 +412,7 @@ exports.verifyOtp = async (req, res) => {
     const userToken = jwt.sign(
       { id: user._id, email: user.email, role: "user" },
       process.env.JWT_SECRET,
-      { expiresIn: "2h" }
+      { expiresIn: "7d" }
     );
 
     const userObj = user.toObject();

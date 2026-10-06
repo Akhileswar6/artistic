@@ -85,9 +85,9 @@ export default function App() {
 
       if (storedUser && loginTimestamp) {
         const now = Date.now();
-        const twoHours = 2 * 60 * 60 * 1000;
+        const sessionDuration = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-        if (now - parseInt(loginTimestamp) > twoHours) {
+        if (now - parseInt(loginTimestamp) > sessionDuration) {
           localStorage.removeItem("user");
           localStorage.removeItem("token");
           localStorage.removeItem("loginTimestamp");
