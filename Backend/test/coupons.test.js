@@ -59,7 +59,7 @@ test("Coupon Lifecycle - Create, Apply at Checkout, Instant Expire, Reject at Ch
     code: testCode,
     discountType: "percentage",
     discountValue: 25,
-    minOrderValue: 1000,
+    minOrderValue: 500,
     maxDiscount: 500,
     expiryDate: new Date(Date.now() + 86400000), // tomorrow
     isActive: true,
@@ -172,6 +172,42 @@ test("Available Coupons - getAvailableCoupons returns active non-expired coupons
 
   // Cleanup
   await Coupon.deleteMany({ code: { $in: [activeCode, expiredCode] } });
+});
+
+test("Available Coupons - getAvailableCoupons retains already-used coupons with alreadyUsed: true", async () => {
+  const { getAvailableCoupons } = require("../controllers/orderController");
+
+  const usedCode = `USED_${Date.now()}`;
+  const mockUserId = new mongoose.Types.ObjectId();
+
+  await Coupon.create({
+    code: usedCode,
+    discountType: "percentage",
+    discountValue: 15,
+    userLimit: 1,
+    isActive: true,
+    usedBy: [
+      { userId: mockUserId, count: 1, usedAt: new Date() }
+    ],
+  });
+
+  let responseData = null;
+  const mockReq = { user: { id: mockUserId.toString() } };
+  const mockRes = {
+    json: (data) => { responseData = data; },
+    status: () => mockRes,
+  };
+
+  await getAvailableCoupons(mockReq, mockRes);
+
+  assert.strictEqual(responseData.success, true);
+  const found = responseData.coupons.find((c) => c.code === usedCode);
+  assert.ok(found, "Already used coupon should still be present in available coupons");
+  assert.strictEqual(found.alreadyUsed, true);
+  assert.strictEqual(found.isAlreadyUsed, true);
+
+  // Cleanup
+  await Coupon.deleteOne({ code: usedCode });
 });
 
 test("Coupons Admin Suite - Close DB", async () => {

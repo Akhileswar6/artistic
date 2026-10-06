@@ -466,7 +466,7 @@ const userDeleteOrder = async (req, res) => {
 const getAvailableCoupons = async (req, res) => {
   try {
     const now = new Date();
-    const userId = req.user?.id || null;
+    const userId = req.user?.id || req.user?._id || null;
 
     const coupons = await Coupon.find({
       isActive: true,
@@ -490,29 +490,37 @@ const getAvailableCoupons = async (req, res) => {
 
     const availableCoupons = coupons
       .filter((c) => {
+        // If overall global limit reached, it cannot be used by anyone
         if (c.usageLimit !== null && c.usedCount >= c.usageLimit) {
           return false;
         }
+        return true;
+      })
+      .map((c) => {
+        let isAlreadyUsed = false;
         if (userId && c.userLimit !== null && Array.isArray(c.usedBy)) {
           const userRecord = c.usedBy.find(
             (u) => u.userId && u.userId.toString() === userId.toString()
           );
           if (userRecord && userRecord.count >= c.userLimit) {
-            return false;
+            isAlreadyUsed = true;
           }
         }
-        return true;
-      })
-      .map((c) => ({
-        _id: c._id,
-        code: c.code,
-        discountType: c.discountType,
-        discountValue: c.discountValue,
-        minOrderValue: c.minOrderValue || 0,
-        maxDiscount: c.maxDiscount || null,
-        description: c.description || "",
-        expiryDate: c.expiryDate,
-      }));
+
+        return {
+          _id: c._id,
+          code: c.code,
+          discountType: c.discountType,
+          discountValue: c.discountValue,
+          minOrderValue: c.minOrderValue || 0,
+          maxDiscount: c.maxDiscount || null,
+          description: c.description || "",
+          expiryDate: c.expiryDate,
+          userLimit: c.userLimit,
+          alreadyUsed: isAlreadyUsed,
+          isAlreadyUsed: isAlreadyUsed,
+        };
+      });
 
     res.json({
       success: true,

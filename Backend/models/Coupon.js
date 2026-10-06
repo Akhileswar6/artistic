@@ -96,7 +96,7 @@ couponSchema.methods.isValid = function (subtotal, userId = null) {
       (u) => u.userId && u.userId.toString() === userId.toString()
     );
     if (userUsage && userUsage.count >= this.userLimit) {
-      return { valid: false, message: "You have already reached the usage limit for this coupon" };
+      return { valid: false, message: "You have already used this coupon" };
     }
   }
 
