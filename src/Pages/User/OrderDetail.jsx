@@ -1,4 +1,4 @@
-import { ShoppingBag, ArrowLeft, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star, ChevronDown, ChevronUp, Download, Trash2 } from "lucide-react";
+import { ShoppingBag, ArrowLeft, Package, Clock, CheckCircle2, CheckCircle, ChevronRight, IndianRupee, X, Check, Copy, AlertCircle, ExternalLink, MapPin, Star, ChevronDown, ChevronUp, Download, Trash2, ShieldCheck, Tag, Sparkles, RefreshCcw } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../config";
@@ -8,6 +8,51 @@ import toast from "react-hot-toast";
 import { OrderSkeleton } from "../../Components/Skeleton";
 import OptimizedImage from "../../Components/OptimizedImage";
 import { generateInvoice } from "../../utils/generateInvoice";
+
+const styleLabels = {
+  realistic: "Realistic Portrait",
+  sketch: "Pencil Sketch",
+  couple: "Couple Art",
+  anime: "Cartoon Anime Style",
+  cartoon: "Cartoon Anime Style",
+  cartoon_anime: "Cartoon Anime Style",
+};
+
+const PREDEFINED_FEEDBACK_OPTIONS = [
+  {
+    label: "Exceptional Artwork",
+    text: "The artwork is absolutely breathtaking! Every facial detail and stroke was captured with stunning precision.",
+  },
+  {
+    label: "Exceeded Expectations",
+    text: "The portrait turned out even better in person than the digital preview. Incredible craftsmanship and lifelike shading!",
+  },
+  {
+    label: "Heartfelt Gift",
+    text: "Ordered this as a special gift for my loved ones and it brought tears of joy. Truly an unforgettable masterpiece.",
+  },
+  {
+    label: "Safe Packaging & Fast",
+    text: "Extremely secure packaging, arrived in pristine condition, and delivery was right on schedule.",
+  },
+  {
+    label: "Highly Recommended",
+    text: "Exceptional experience with Artistic from start to finish. Highly recommend to anyone wanting a custom portrait.",
+  },
+  {
+    label: "Realistic Precision",
+    text: "The hyper-realistic shading and pencil strokes are masterclass. The likeness is 100% spot-on!",
+  },
+];
+
+const QUICK_TAGS = [
+  "#Incredible Details",
+  "#Perfect Gift",
+  "#Lifelike Shading",
+  "#Safe Delivery",
+  "#10/10 Quality",
+  "#Professional Artist",
+];
 
 export default function OrderDetail({ isDark }) {
   const { id } = useParams();
@@ -25,6 +70,53 @@ export default function OrderDetail({ isDark }) {
     const saved = localStorage.getItem("showFeedbackHub");
     return saved !== null ? JSON.parse(saved) : true;
   });
+
+  const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(null);
+
+  // Automatically open Feedback Hub when order is delivered and hasn't been reviewed yet
+  useEffect(() => {
+    if (order && order.status === "delivered" && !(order.rating > 0)) {
+      setShowFeedbackHub(true);
+    }
+  }, [order?.status, order?.rating]);
+
+  const handleSelectTemplate = (templateText, index) => {
+    setSelectedTemplateIndex(index);
+    if (rating === 0) {
+      setRating(5);
+    }
+    setFeedbackText((prev) => {
+      const existingTags = QUICK_TAGS.filter(tag => prev.includes(tag));
+      if (existingTags.length > 0) {
+        return `${templateText}\n${existingTags.join(" ")}`;
+      }
+      return templateText;
+    });
+  };
+
+  const handleToggleTag = (tag) => {
+    if (rating === 0) {
+      setRating(5);
+    }
+    setFeedbackText((prev) => {
+      const trimmed = prev.trim();
+      if (!trimmed) {
+        return tag;
+      }
+      if (trimmed.includes(tag)) {
+        return trimmed
+          .replace(new RegExp(`(^|\\s+)${tag.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}(\\s+|$)`, 'gi'), ' ')
+          .replace(/\n\s*$/, '')
+          .trim();
+      } else {
+        if (trimmed.includes("\n")) {
+          return `${trimmed} ${tag}`;
+        } else {
+          return `${trimmed}\n${tag}`;
+        }
+      }
+    });
+  };
 
   const togglePaymentHub = () => {
     setShowPaymentHub(prev => !prev);
@@ -396,90 +488,144 @@ export default function OrderDetail({ isDark }) {
             {/* Commission Details Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
               <div className="space-y-6 md:space-y-8">
-                <div>
-                  <h3 className="text-sm md:text-[15px] mb-4 uppercase tracking-wide">
-                    Order Details
-                  </h3>
-                  <div className={`p-4 md:p-5 rounded-xl border space-y-3.5 ${isDark ? "bg-white/5 border-white/5" : "bg-gray-50 border-black/5 shadow-sm"}`}>
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="opacity-50">Style</span>
-                      <span className="font-medium capitalize">{order.artStyle}</span>
+                {/* Commission Summary */}
+                <div
+                  className={`rounded-2xl md:rounded-3xl border p-5 md:p-6 transition-all relative overflow-hidden ${
+                    isDark
+                      ? "bg-[#141416]/90 backdrop-blur-2xl border-white/[0.08] shadow-2xl shadow-black/60"
+                      : "bg-white/95 backdrop-blur-2xl border-black/[0.06] shadow-xl shadow-neutral-200/50"
+                  }`}
+                >
+                  {/* Subtle Ambient Glow */}
+                  <div className="absolute -top-20 -right-20 w-44 h-44 bg-emerald-500/[0.06] rounded-full blur-3xl pointer-events-none" />
+
+                  {/* Header */}
+                  <div className="flex justify-between items-center mb-5 relative z-10">
+                    <div>
+                      <h3 className="text-base md:text-lg font-medium tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                        Commission Summary
+                      </h3>
+                      <p className={`text-[11px] font-medium pt-0.5 ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+                        Handcrafted Custom Portrait
+                      </p>
                     </div>
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="opacity-50">Frame</span>
-                      <span className="font-medium">{order.frameOption}</span>
+                    <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                      order.isAdvancePaid
+                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                        : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${order.isAdvancePaid ? "bg-emerald-400" : "bg-amber-400 animate-pulse"}`} />
+                      {order.isAdvancePaid ? "Paid & Verified" : "Pending Verification"}
+                    </span>
+                  </div>
+
+                  <div className="space-y-3.5 text-xs md:text-sm relative z-10">
+                    {/* Art Style Price */}
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">{styleLabels[order.artStyle] || (order.artStyle ? order.artStyle.charAt(0).toUpperCase() + order.artStyle.slice(1) + " Portrait" : "Custom Portrait")}</span>
+                      <span className="text-sm font-medium">₹{(order.pricingSnapshot?.styleCharge || order.totalPrice)?.toLocaleString()}</span>
                     </div>
+
                     {(order.quantity > 1 || order.pricingSnapshot?.details?.quantity > 1) && (
-                      <div className="flex justify-between text-xs md:text-sm">
-                        <span className="opacity-50">Quantity</span>
-                        <span className="font-medium">{order.quantity || order.pricingSnapshot?.details?.quantity || 1}</span>
+                      <div className="flex justify-between items-center text-xs opacity-75">
+                        <span className="uppercase font-medium tracking-wider">Quantity</span>
+                        <span className="font-medium">× {order.quantity || order.pricingSnapshot?.details?.quantity || 1}</span>
                       </div>
                     )}
+
                     {((order.extraPeople > 0) || (order.pricingSnapshot?.extraPersonCharge > 0)) && (
-                      <div className="flex justify-between text-xs md:text-sm">
-                        <span className="opacity-50">Extra People</span>
-                        <span className="font-medium">{order.extraPeople || 0} person(s) (+₹{order.pricingSnapshot?.extraPersonCharge || 0})</span>
+                      <div className="flex justify-between items-center text-xs opacity-75">
+                        <span className="uppercase font-medium tracking-wider">Extra People ({order.extraPeople || order.pricingSnapshot?.details?.extraPeople})</span>
+                        <span className="font-medium">+₹{order.pricingSnapshot?.extraPersonCharge || 0}</span>
                       </div>
                     )}
-                    {order.pricingSnapshot && (
-                      <>
-                        <div className="flex justify-between text-xs md:text-sm pt-2 border-t border-dashed border-gray-500/20">
-                          <span className="opacity-50">Base Artwork</span>
-                          <span className="font-medium">₹{order.pricingSnapshot.baseArtworkPrice?.toLocaleString()}</span>
-                        </div>
-                        <div className="flex justify-between text-xs md:text-sm">
-                          <span className="opacity-50">Style Charge</span>
-                          <span className="font-medium">+₹{order.pricingSnapshot.styleCharge?.toLocaleString()}</span>
-                        </div>
-                        {order.pricingSnapshot.frameCharge > 0 && (
-                          <div className="flex justify-between text-xs md:text-sm">
-                            <span className="opacity-50">Frame Charge</span>
-                            <span className="font-medium">+₹{order.pricingSnapshot.frameCharge?.toLocaleString()}</span>
-                          </div>
-                        )}
-                        {order.pricingSnapshot.rushDeliveryCharge > 0 && (
-                          <div className="flex justify-between text-xs md:text-sm text-amber-500 font-medium">
-                            <span>Rush Delivery</span>
-                            <span>+₹{order.pricingSnapshot.rushDeliveryCharge?.toLocaleString()}</span>
-                          </div>
-                        )}
-                        <div className="flex justify-between text-xs md:text-sm">
-                          <span className="opacity-50">Subtotal</span>
-                          <span className="font-medium">₹{order.pricingSnapshot.subtotal?.toLocaleString()}</span>
-                        </div>
-                        {order.pricingSnapshot.discount > 0 && (
-                          <div className="flex justify-between text-xs md:text-sm text-green-500 font-medium">
-                            <span>Discount ({order.pricingSnapshot.couponCode || 'Coupon'})</span>
-                            <span>-₹{order.pricingSnapshot.discount?.toLocaleString()}</span>
-                          </div>
-                        )}
-                        <div className="flex justify-between text-xs md:text-sm">
-                          <span className="opacity-50">Shipping</span>
-                          <span className="font-medium">+₹{order.pricingSnapshot.shipping?.toLocaleString()}</span>
-                        </div>
-                        <div className="flex justify-between text-xs md:text-sm">
-                          <span className="opacity-50">GST / Tax</span>
-                          <span className="font-medium">+₹{order.pricingSnapshot.tax?.toLocaleString()}</span>
-                        </div>
-                      </>
+
+                    {order.pricingSnapshot?.rushDeliveryCharge > 0 && (
+                      <div className="flex justify-between items-center text-xs text-amber-500 font-medium">
+                        <span className="uppercase tracking-wider">Express Rush Delivery</span>
+                        <span>+₹{order.pricingSnapshot.rushDeliveryCharge?.toLocaleString()}</span>
+                      </div>
                     )}
-                    <div className="flex justify-between text-xs md:text-sm pt-2 border-t border-gray-500/30">
-                      <span className="font-bold">Total Price</span>
-                      <span className="font-bold text-emerald-500">₹{order.totalPrice.toLocaleString()}</span>
+
+                    <div className={`h-[1px] w-full my-1 ${isDark ? "bg-white/[0.08]" : "bg-black/[0.06]"}`} />
+
+                    {/* Subtotal */}
+                    <div className="flex justify-between items-center text-xs opacity-75">
+                      <span className="uppercase font-medium tracking-wider">Subtotal</span>
+                      <span className="font-medium">₹{(order.pricingSnapshot?.subtotal || order.totalPrice)?.toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="opacity-50">Advance Amount (25%)</span>
-                      <span className="font-medium">₹{order.advanceAmount.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between text-xs md:text-sm">
-                      <span className="opacity-50">Balance (75%)</span>
-                      <span className="font-medium">₹{(order.totalPrice - order.advanceAmount).toLocaleString()}</span>
-                    </div>
-                    <div className={`flex justify-between text-[11px] md:text-sm pt-2 border-t ${isDark ? "border-white/5" : "border-black/5"}`}>
-                      <span className="opacity-50">Advance Status</span>
-                      <span className={`text-[9px] md:text-[10px] px-2 py-0.5 rounded ${order.isAdvancePaid ? "text-emerald-500 bg-emerald-500/10" : "text-amber-500 bg-amber-500/10"}`}>
-                        {order.isAdvancePaid ? "Paid & Verified" : "Pending Verification"}
+
+                    {/* Coupon Discount */}
+                    {order.pricingSnapshot?.discount > 0 && (
+                      <div className="flex justify-between items-center text-emerald-400 font-medium">
+                        <span className="flex items-center gap-1.5 text-xs">
+                          <Tag size={13} className="text-emerald-400" />
+                          Coupon Discount ({order.pricingSnapshot.couponCode || 'Coupon'})
+                        </span>
+                        <span className="font-medium text-sm">-₹{order.pricingSnapshot.discount?.toLocaleString()}</span>
+                      </div>
+                    )}
+
+                    <div className={`h-[1px] w-full my-1 ${isDark ? "bg-white/[0.08]" : "bg-black/[0.06]"}`} />
+
+                    {/* Final Total */}
+                    <div className="flex justify-between items-baseline py-1">
+                      <div>
+                        <span className="text-xs uppercase font-medium tracking-wider opacity-70 block">Total Amount</span>
+                      </div>
+                      <span className="text-xl md:text-2xl font-medium text-emerald-400 tracking-tight" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
+                        ₹{order.totalPrice.toLocaleString()}
                       </span>
+                    </div>
+
+                    {/* Professional Milestone Payment Breakdown Card */}
+                    <div className={`p-3.5 rounded-2xl border transition-all ${
+                      isDark ? "bg-white/[0.03] border-white/[0.08]" : "bg-neutral-50/80 border-black/[0.06]"
+                    }`}>
+                      <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.06]">
+                        <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                          <div className="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-400 shrink-0">
+                            <ShieldCheck size={14} />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-xs font-medium flex items-center gap-1.5 flex-nowrap">
+                              <span className="truncate">Advance (25%)</span>
+                              <span className={`text-[8px] px-1.5 py-0.5 rounded font-bold uppercase border shrink-0 ${
+                                order.isAdvancePaid
+                                  ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                                  : "bg-amber-500/20 text-amber-400 border-amber-500/30"
+                              }`}>
+                                {order.isAdvancePaid ? "Paid & Verified" : "Pending Verification"}
+                              </span>
+                            </div>
+                            <p className={`text-[10px] font-medium pt-0.5 truncate ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+                              To confirm & begin artwork
+                            </p>
+                          </div>
+                        </div>
+                        <span className={`text-sm font-medium shrink-0 ${isDark ? "text-white" : "text-black"}`}>
+                          ₹{order.advanceAmount.toLocaleString()}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2.5">
+                        <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                          <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-neutral-400 shrink-0">
+                            <Clock size={13} />
+                          </div>
+                          <div className="min-w-0">
+                            <div className={`text-xs font-medium truncate ${isDark ? "text-neutral-300" : "text-neutral-700"}`}>
+                              Balance on Completion (75%)
+                            </div>
+                            <p className={`text-[10px] font-medium pt-0.5 truncate ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>
+                              Payable after approving preview
+                            </p>
+                          </div>
+                        </div>
+                        <span className={`text-sm font-medium shrink-0 ${isDark ? "text-white" : "text-black"}`}>
+                          ₹{(order.totalPrice - order.advanceAmount).toLocaleString()}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -762,42 +908,135 @@ export default function OrderDetail({ isDark }) {
                       </div>
                     ) : (
                       <form onSubmit={handleFeedbackSubmit} className="space-y-5 md:space-y-6">
+                        {/* Rating Stars with label */}
                         <div className="space-y-2 md:space-y-3">
-                          <p className="text-[10px] md:text-xs  uppercase tracking-wider opacity-50">Rate the Experience</p>
-                          <div className="flex gap-2 md:gap-3">
+                          <div className="flex items-center justify-between">
+                            <p className="text-[10px] md:text-xs uppercase tracking-wider opacity-60 font-medium">Rate your experience</p>
+                            {rating > 0 && (
+                              <span className="text-[12px] font-medium text-amber-400">
+                                {rating === 5 ? "⭐⭐⭐⭐⭐ Exceptional Masterpiece!" :
+                                 rating === 4 ? "⭐⭐⭐⭐ Very Good" :
+                                 rating === 3 ? "⭐⭐⭐ Good" :
+                                 rating === 2 ? "⭐⭐ Fair" : "⭐ Needs Improvement"}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 md:gap-3">
                             {[1, 2, 3, 4, 5].map((star) => (
                               <button
                                 key={star}
                                 type="button"
                                 onClick={() => setRating(star)}
-                                className="transition-all transform hover:scale-125 active:scale-90"
+                                className="transition-all transform hover:scale-125 active:scale-95 cursor-pointer p-1"
                               >
                                 <Star
                                   size={30}
-                                  className={`${star <= rating ? "text-amber-500 fill-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]" : "text-gray-400 opacity-30"} transition-colors`}
+                                  className={`${star <= rating ? "text-amber-500 fill-amber-500 " : "text-gray-400 opacity-25"} transition-all`}
                                 />
                               </button>
                             ))}
                           </div>
                         </div>
 
-                        <div className="space-y-2 md:space-y-3">
-                          <p className="text-[10px] md:text-xs uppercase tracking-wider opacity-50">Your Thoughts</p>
+                        {/* Predefined Quick Feedback Suggestions */}
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between">
+                            <p className="text-[10px] md:text-xs uppercase tracking-wider opacity-60 font-medium flex items-center gap-1.5">
+                              Predefined Feedback (Click to select)
+                            </p>
+                          </div>
+
+                          {/* Small & Simple Predefined Chips */}
+                          <div className="flex flex-wrap gap-2">
+                            {PREDEFINED_FEEDBACK_OPTIONS.map((item, idx) => {
+                              const isSelected = selectedTemplateIndex === idx || feedbackText === item.text;
+                              return (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={() => handleSelectTemplate(item.text, idx)}
+                                  className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 ${
+                                    isSelected
+                                      ? "bg-amber-500/15 border-amber-500/60 text-amber-400 font-semibold"
+                                      : isDark
+                                        ? "bg-white/[0.03] border-white/10 hover:bg-white/[0.08] text-neutral-300"
+                                        : "bg-white border-black/10 hover:bg-neutral-50 text-neutral-700 shadow-sm"
+                                  }`}
+                                >
+                                  <span>{item.label}</span>
+                                  {isSelected && <Check size={12} className="text-amber-400" />}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {/* Quick Tag Pills */}
+                          <div className="pt-2">
+                            <p className="text-[10px] uppercase tracking-wider opacity-50 mb-2 font-medium">Quick Tag Additions</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {QUICK_TAGS.map((tag, idx) => {
+                                const isTagged = feedbackText.includes(tag);
+                                return (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => handleToggleTag(tag)}
+                                    className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer flex items-center gap-1 ${
+                                      isTagged
+                                        ? "bg-amber-500 text-black border-amber-400 font-bold shadow-sm"
+                                        : isDark
+                                          ? "bg-white/5 border-white/10 text-neutral-300 hover:bg-white/10"
+                                          : "bg-white border-black/10 text-neutral-700 hover:bg-black/5"
+                                    }`}
+                                  >
+                                    <span>{tag}</span>
+                                    {isTagged && <Check size={10} strokeWidth={3} />}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Textarea for review */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <p className="text-[10px] md:text-xs uppercase tracking-wider opacity-60 font-medium">Your Review Details</p>
+                            <span className="text-[10px] opacity-40 font-mono">{feedbackText.length} / 1000</span>
+                          </div>
                           <textarea
                             value={feedbackText}
-                            onChange={(e) => setFeedbackText(e.target.value)}
-                            placeholder="What did you love about the artwork?..."
-                            className={`w-full bg-black/40 border border-white/10 rounded-2xl p-4 md:p-5 text-sm outline-none focus:border-amber-500 transition-all min-h-[100px] md:min-h-[120px] 
-                            ${isDark ? "text-white placeholder:text-white/20" : "text-black bg-white border-black/5 placeholder:text-black/20"}`}
+                            onChange={(e) => {
+                              setFeedbackText(e.target.value);
+                              setSelectedTemplateIndex(null);
+                            }}
+                            placeholder="Selected predefined feedback or write your own custom thoughts about the artwork..."
+                            maxLength={1000}
+                            className={`w-full bg-black/40 border border-white/10 rounded-2xl p-4 md:p-5 text-xs md:text-sm outline-none focus:border-amber-500 transition-all min-h-[100px] leading-relaxed ${
+                              isDark ? "text-white placeholder:text-white/20" : "text-black bg-white border-black/10 placeholder:text-black/30"
+                            }`}
                           />
                         </div>
 
                         <button
                           type="submit"
-                          disabled={submittingFeedback}
-                          className="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 md:py-4 rounded-xl text-xs md:text-sm uppercase tracking-widest transition-all active:scale-[0.98] "
+                          disabled={submittingFeedback || !feedbackText.trim() || rating === 0}
+                          className={`w-full py-3.5 md:py-4 rounded-xl text-xs md:text-sm font-medium uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                            submittingFeedback || !feedbackText.trim() || rating === 0
+                              ? "bg-neutral-500/20 text-neutral-500 border border-neutral-500/20 cursor-not-allowed"
+                              : "bg-amber-500 hover:bg-amber-600 text-white active:scale-[0.99]"
+                          }`}
                         >
-                          {submittingFeedback ? "Submitting..." : "Submit Review"}
+                          {submittingFeedback ? (
+                            <>
+                              <RefreshCcw size={16} className="animate-spin" />
+                              Submitting Review...
+                            </>
+                          ) : (
+                            <>
+                              Submit Feedback
+                            </>
+                          )}
                         </button>
                       </form>
                     ))}

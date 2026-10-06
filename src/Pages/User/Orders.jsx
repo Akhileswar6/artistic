@@ -8,6 +8,15 @@ import toast from "react-hot-toast";
 import { OrderSkeleton } from "../../Components/Skeleton";
 import OptimizedImage from "../../Components/OptimizedImage";
 
+const styleLabels = {
+  realistic: "Realistic Portrait",
+  sketch: "Pencil Sketch",
+  couple: "Couple Art",
+  anime: "Cartoon Anime Style",
+  cartoon: "Cartoon Anime Style",
+  cartoon_anime: "Cartoon Anime Style",
+};
+
 export default function Orders({ isDark }) {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -135,7 +144,7 @@ export default function Orders({ isDark }) {
             </div>
 
             <button
-              onClick={() => navigate("/order")}
+              onClick={() => navigate("/order", { state: { resetOrder: true } })}
               className={`w-full sm:w-auto px-5 py-3 md:py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 transition-all duration-300 cursor-pointer backdrop-blur-xl border ${isDark ? "bg-white/[0.05] border-white/10 text-white hover:bg-white/[0.08] hover:border-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.03)]" : "bg-white/60 border-white/80 text-purple-800 shadow-[0_8px_32px_rgba(168,85,247,0.1)] hover:bg-white/90"}`}
             >
               New Order
@@ -177,7 +186,7 @@ export default function Orders({ isDark }) {
                         <div className="space-y-1.5">
                           <div className="flex items-center gap-3">
                             <h3 className="text-base md:text-[17px]" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-                              {order.artStyle.charAt(0).toUpperCase() + order.artStyle.slice(1)} Portrait
+                              {styleLabels[order.artStyle] || (order.artStyle ? order.artStyle.charAt(0).toUpperCase() + order.artStyle.slice(1) + " Portrait" : "Custom Portrait")}
                             </h3>
                             <span className={`px-2.5 py-1 rounded-full text-[9px] md:text-[10px]  uppercase tracking-wider ${statusInfo.color}`}>
                               {statusInfo.label}
@@ -249,7 +258,7 @@ export default function Orders({ isDark }) {
               </div>
 
               <button
-                onClick={() => navigate("/order")}
+                onClick={() => navigate("/order", { state: { resetOrder: true } })}
                 className={`inline-flex items-center gap-2 text-xs md:text-sm  transition-colors ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"
                   }`}
               >
