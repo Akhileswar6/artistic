@@ -1,20 +1,15 @@
-import { Check, Edit2, MapPin, Mail, Phone, User, Brush, Frame, MessageSquare, AlertTriangle, Package, ArrowLeft, ShieldCheck } from "lucide-react";
+import { Check, Edit2, MapPin, Mail, Phone, User, Brush, MessageSquare, AlertTriangle, Package, ArrowLeft, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Review({ isDark, setStep, orderData, handleSubmit, loading }) {
 
   const styleLabels = {
-    realistic: "Realistic Pencil Drawing",
-    charcoal: "Charcoal Art",
+    realistic: "Realistic Portrait",
     sketch: "Pencil Sketch",
-    caricature: "Caricature",
-  };
-
-  const frameLabels = {
-    noframe: "No Frame (Digital Delivery)",
-    standard8x10: "Standard Frame 8×10 inch",
-    standard12x16: "Standard Frame 12×16 inch",
-    custom: "Custom Frame Size",
+    couple: "Couple Art",
+    anime: "Cartoon Anime",
+    cartoon: "Cartoon Anime",
+    cartoon_anime: "Cartoon Anime",
   };
 
   return (
@@ -39,7 +34,7 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
               <h3 className={`text-[13px]  uppercase flex items-center gap-2 ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>
                 <User size={15} className="text-neutral-500" /> Client Information
               </h3>
-              <button onClick={() => setStep(1)} className={`text-[12px]  flex items-center gap-1.5 transition-all ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}>
+              <button onClick={() => { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); setStep(1); }} className={`text-[12px]  flex items-center gap-1.5 transition-all ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}>
                 <Edit2 size={12} /> Modify
               </button>
             </div>
@@ -56,11 +51,18 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
                 <span className={`text-[10px] md:text-[12px]  uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Contact Number</span>
                 <p className="text-[13px] md:text-[14px] font-medium flex items-center gap-2"><Phone size={14} className="shrink-0" /> +91 {orderData.phone}</p>
               </div>
-              <div className="space-y-1 md:col-span-2 pt-2 border-t border-dashed border-gray-500/20">
-                <span className={`text-[12px] uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Shipping Destination</span>
-                <p className="text-[14px] font-medium flex items-start gap-2 leading-relaxed mt-2">
-                  <MapPin size={16} className={`${isDark ? "text-white" : "text-black"} shrink-0 mt-0.5`} />
-                  <span className={isDark ? "text-neutral-300" : "text-black"}>{orderData.address}</span>
+              <div className="space-y-1.5 md:col-span-2 pt-3 border-t border-dashed border-gray-500/20">
+                <div className="flex items-center justify-between">
+                  <span className={`text-[12px] uppercase tracking-widest ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>Shipping Destination</span>
+                  {orderData.addressType && (
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      {orderData.addressType}
+                    </span>
+                  )}
+                </div>
+                <p className="text-[14px] font-medium flex items-start gap-2.5 leading-relaxed mt-1">
+                  <MapPin size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+                  <span className={isDark ? "text-neutral-200" : "text-neutral-800"}>{orderData.address}</span>
                 </p>
               </div>
             </div>
@@ -72,7 +74,7 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
               <h3 className={`text-[13px]  uppercase  flex items-center gap-2 ${isDark ? "text-neutral-500" : "text-neutral-400"}`}>
                 <Brush size={14} className="text-neutral-500" /> Commission Specifications
               </h3>
-              <button onClick={() => setStep(2)} className={`text-[12px]  flex items-center gap-1.5 transition-all ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}>
+              <button onClick={() => { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); setStep(2); }} className={`text-[12px]  flex items-center gap-1.5 transition-all ${isDark ? "text-neutral-500 hover:text-white" : "text-neutral-400 hover:text-black"}`}>
                 <Edit2 size={12} /> Modify
               </button>
             </div>
@@ -86,20 +88,11 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
               </div>
 
               <div className="md:col-span-8 lg:col-span-9 space-y-4">
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className={`p-4 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/5" : "bg-black/[0.02] border-black/5"}`}>
-                    <span className={`text-[10px] md:text-[11px] font-bold uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Selected Style</span>
-                    <p className="text-[13px] md:text-[15px] mt-2 flex items-center gap-2 leading-tight">
-                      <Check size={14} className="text-green-500 shrink-0" /> {styleLabels[orderData.artStyle]}
-                    </p>
-                  </div>
-
-                  <div className={`p-4 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/5" : "bg-black/[0.02] border-black/5"}`}>
-                    <span className={`text-[10px] md:text-[11px] font-bold uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Selected Frame</span>
-                    <p className="text-[13px] md:text-[14px] mt-2 flex items-center gap-2 leading-tight">
-                      <Frame size={14} className="text-green-500 shrink-0" /> {frameLabels[orderData.frameOption]}
-                    </p>
-                  </div>
+                <div className={`p-4 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/5" : "bg-black/[0.02] border-black/5"}`}>
+                  <span className={`text-[10px] md:text-[11px] font-bold uppercase tracking-widest ${isDark ? "text-neutral-600" : "text-neutral-400"}`}>Selected Art Style</span>
+                  <p className="text-[13px] md:text-[15px] mt-2 flex items-center gap-2 leading-tight">
+                    <Check size={14} className="text-green-500 shrink-0" /> {styleLabels[orderData.artStyle] || orderData.artStyle}
+                  </p>
                 </div>
 
                 {orderData.couponCode && (
@@ -159,10 +152,11 @@ export default function Review({ isDark, setStep, orderData, handleSubmit, loadi
 
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6 pt-4 pb-10">
+      {/* BUTTONS (Desktop only; on mobile rendered under Order Summary) */}
+      <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6 pt-4 pb-10">
 
         <button
-          onClick={() => setStep(2)}
+          onClick={() => { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); setStep(2); }}
           className={`group px-6 py-3 md:py-3.5 text-[13px] md:text-[14px] uppercase font-bold rounded-lg md:rounded-xl transition-all cursor-pointer flex items-center justify-center gap-3 ${isDark
               ? "bg-[#141416] text-white border border-white/10 hover:bg-neutral-800"
               : "bg-white text-black border border-black/10 shadow-sm hover:bg-neutral-50"

@@ -16,9 +16,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
-// ==========================================
-// 🎨 MASCOT SVGS MATCHING THE USER'S IMAGE
-// ==========================================
+
 const Mascots = [
   // 1. Orange Mascot (Joyful round dumpling with open smile)
   (
@@ -167,9 +165,7 @@ const Mascots = [
   ),
 ];
 
-// ==========================================
-// 🎨 6 COLOR THEMES MATCHING USER'S IMAGE
-// ==========================================
+
 const CardThemes = [
   // 0: Orange
   {
@@ -258,6 +254,16 @@ export default function CouponExplorerModal({
       setManualError("Please enter a coupon code");
       return;
     }
+
+    // Immediate check if user already used this coupon
+    const usedMatch = coupons.find(
+      (c) => c.code?.toUpperCase() === code && (c.alreadyUsed || c.isAlreadyUsed)
+    );
+    if (usedMatch) {
+      setManualError("You have already used this coupon");
+      return;
+    }
+
     setManualLoading(true);
     setManualError("");
 
@@ -282,21 +288,27 @@ export default function CouponExplorerModal({
     return Math.min(coupon.discountValue, subtotal);
   };
 
-  // Separate coupons into eligible and locked
-  const { eligibleCoupons, lockedCoupons } = useMemo(() => {
+  // Separate coupons into eligible, locked, and already used
+  const { eligibleCoupons, lockedCoupons, alreadyUsedCoupons } = useMemo(() => {
     const eligible = [];
     const locked = [];
+    const used = [];
 
     coupons.forEach((coupon) => {
-      const minRequired = coupon.minOrderValue || 0;
-      if (subtotal >= minRequired) {
-        eligible.push(coupon);
+      const isUsed = Boolean(coupon.alreadyUsed || coupon.isAlreadyUsed);
+      if (isUsed) {
+        used.push(coupon);
       } else {
-        locked.push(coupon);
+        const minRequired = coupon.minOrderValue || 0;
+        if (subtotal >= minRequired) {
+          eligible.push(coupon);
+        } else {
+          locked.push(coupon);
+        }
       }
     });
 
-    return { eligibleCoupons: eligible, lockedCoupons: locked };
+    return { eligibleCoupons: eligible, lockedCoupons: locked, alreadyUsedCoupons: used };
   }, [coupons, subtotal]);
 
   if (!isOpen) return null;
@@ -558,7 +570,7 @@ export default function CouponExplorerModal({
                 {lockedCoupons.length > 0 && (
                   <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-extrabold uppercase tracking-widest text-neutral-400 flex items-center gap-1.5">
+                      <span className="text-[11px] font-medium uppercase tracking-widest text-neutral-400 flex items-center gap-1.5">
                         <Lock size={12} /> Unlock With Higher Order Value ({lockedCoupons.length})
                       </span>
                     </div>
@@ -639,6 +651,109 @@ export default function CouponExplorerModal({
                                   style={{ width: `${progress}%` }}
                                 />
                               </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. ALREADY USED COUPONS (VISIBLE BUT NOT REDEEMABLE / SELECTABLE) */}
+                {alreadyUsedCoupons.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-medium uppercase tracking-widest text-neutral-400 flex items-center gap-1.5">
+                        <AlertCircle size={12} className="text-amber-400" /> Already Used By You ({alreadyUsedCoupons.length})
+                      </span>
+                      <span className="text-[10px] text-neutral-400 font-medium">
+                        Usage limit reached
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {alreadyUsedCoupons.map((coupon, index) => {
+                        const themeIndex = (index + eligibleCoupons.length + lockedCoupons.length) % CardThemes.length;
+                        const theme = CardThemes[themeIndex];
+                        const mascot = Mascots[themeIndex];
+
+                        return (
+                          <div
+                            key={coupon._id || coupon.code}
+                            className="rounded-2xl relative overflow-hidden shadow-md flex flex-col justify-between border border-white/10 select-none grayscale-[0.45] opacity-75 hover:opacity-90 transition-all cursor-not-allowed group"
+                            style={{
+                              background: `linear-gradient(135deg, ${themeIndex % 6 === 0 ? "#7a3e14, #663008" :
+                                  themeIndex % 6 === 1 ? "#7c6412, #6a5308" :
+                                    themeIndex % 6 === 2 ? "#454f5c, #333d47" :
+                                      themeIndex % 6 === 3 ? "#18665c, #0f544c" :
+                                        themeIndex % 6 === 4 ? "#782236, #631728" :
+                                          "#462d73, #371e62"
+                                })`,
+                            }}
+                          >
+                            {/* Left & Right Circular Cutout Notches */}
+                            <div
+                              className={`absolute -left-3.5 bottom-[35px] -translate-y-1/2 w-7 h-7 rounded-full ${isDark ? "bg-[#181a20]" : "bg-[#1f232c]"
+                                } shadow-inner pointer-events-none z-10`}
+                            />
+                            <div
+                              className={`absolute -right-3.5 bottom-[35px] -translate-y-1/2 w-7 h-7 rounded-full ${isDark ? "bg-[#181a20]" : "bg-[#1f232c]"
+                                } shadow-inner pointer-events-none z-10`}
+                            />
+
+                            {/* Upper Area */}
+                            <div className="p-4 sm:p-5 relative flex items-start justify-between min-h-[120px]">
+                              <div className="space-y-1 z-10 pr-2 max-w-[68%]">
+                                <h4
+                                  className="text-2xl sm:text-3xl font-black text-white/90 tracking-tight leading-none drop-shadow-sm"
+                                  style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+                                >
+                                  {coupon.discountType === "percentage"
+                                    ? `${coupon.discountValue}% off`
+                                    : `₹${coupon.discountValue} off`}
+                                </h4>
+
+                                <p className="text-xs font-semibold text-white/80 leading-tight line-clamp-2 pt-1 drop-shadow-sm">
+                                  {coupon.description || "Artistic portrait special order discount"}
+                                </p>
+
+                                <div className="pt-2 flex items-center gap-2 flex-wrap">
+                                  <div
+                                    onClick={(e) => handleCopy(coupon.code, e)}
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/40 hover:bg-black/60 text-white/80 text-[11px] font-mono font-bold uppercase tracking-wider backdrop-blur-sm cursor-pointer transition-all"
+                                    title="Click to copy coupon code"
+                                  >
+                                    <span>{coupon.code}</span>
+                                    {copiedCode === coupon.code ? (
+                                      <Check size={12} className="text-emerald-300" />
+                                    ) : (
+                                      <Copy size={11} className="opacity-70" />
+                                    )}
+                                  </div>
+
+                                  {/* Disabled "Already Used" Pill */}
+                                  <div
+                                    className="inline-flex items-center gap-1.5 bg-neutral-900/90 text-amber-300 font-medium text-[11px] px-3 py-1 rounded-full border border-amber-500/30 shadow-sm uppercase tracking-wider cursor-not-allowed select-none"
+                                    title="You have already reached the usage limit for this coupon"
+                                  >
+                                    <AlertCircle size={12} className="text-amber-400" />
+                                    Already Used
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Right Playful Mascot SVG (subtly visible) */}
+                              <div className="absolute right-1 -bottom-2 pointer-events-none opacity-40">
+                                {mascot}
+                              </div>
+                            </div>
+
+                            {/* Bottom Strip with Warning */}
+                            <div className="bg-black/40 px-5 py-2.5 text-[10px] sm:text-[11px] font-bold text-neutral-300 uppercase tracking-wider flex items-center justify-between z-10 border-t border-black/20">
+                              <span className="flex items-center gap-1.5 truncate text-amber-200/90">
+                                <AlertCircle size={11} /> You have already used this coupon
+                              </span>
+
                             </div>
                           </div>
                         );
