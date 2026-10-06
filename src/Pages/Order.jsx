@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { API_BASE_URL } from "../config";
 
 import axios from "axios";
-import { Clock, Package, Info, Check, X, ShieldCheck, Lock, Tag, Loader2, AlertCircle, Sparkles, ChevronRight, TicketPercent } from "lucide-react";
+import { Clock, Package, Info, Check, X, ShieldCheck, Lock, Tag, Loader2, AlertCircle, Sparkles, ChevronRight, TicketPercent, ArrowLeft, ArrowRight } from "lucide-react";
 import { useNavigate, useOutletContext, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,40 +11,116 @@ import Details from "../Components/Order/Details";
 import ArtPhoto from "../Components/Order/ArtPhoto";
 import Review from "../Components/Order/Review";
 import CouponExplorerModal from "../Components/Order/CouponExplorerModal";
+import {
+  saveOrderDraftText,
+  getOrderDraftText,
+  saveDraftPhoto,
+  getDraftPhoto,
+  clearDraftPhoto,
+  clearOrderDraft,
+  disableOrderDraftSaving,
+  enableOrderDraftSaving,
+} from "../utils/orderDraftStorage";
+import { triggerPartyBlasters } from "../utils/confettiBlaster";
 
 export default function Order({ isDark }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, setShowSignIn } = useOutletContext();
 
-  const [step, setStep] = useState(1);
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  // If navigating with resetOrder flag, clear draft first
+  if (location.state?.resetOrder) {
+    clearOrderDraft();
+  }
 
-  // Form State
-  const [orderData, setOrderData] = useState({
-    name: user?.fullName || "",
-    email: user?.email || "",
-    phone: "",
-    address: "",
-    artStyle: "realistic",
-    frameOption: "noframe",
-    quantity: 1,
-    extraPeople: 0,
-    rushDelivery: false,
-    couponCode: "",
-    artworkId: location.state?.artworkId || null,
-    instructions: "",
-    photo: null,
-    rawFile: null,
-    metadata: null,
+  // Load saved draft from localStorage if available
+  const initialDraft = location.state?.resetOrder ? null : getOrderDraftText();
+
+  // Always start on Step 1 (Select art style & photo) for any new/active session
+  // Never trap or jump the user directly into Review page (Step 3) on entry
+  const [step, setStep] = useState(1);
+  const isSubmittedRef = useRef(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showSuccessBlast, setShowSuccessBlast] = useState(false);
+  const [successOrderInfo, setSuccessOrderInfo] = useState(null);
+
+  // Form State (hydrated from saved draft so user data persists across refresh)
+  const [orderData, setOrderData] = useState(() => {
+    return {
+      name: initialDraft?.name || user?.fullName || "",
+      email: initialDraft?.email || user?.email || "",
+      phone: initialDraft?.phone || "",
+      address: initialDraft?.address || "",
+      doorNo: initialDraft?.doorNo || "",
+      street: initialDraft?.street || "",
+      landmark: initialDraft?.landmark || "",
+      city: initialDraft?.city || "",
+      state: initialDraft?.state || "",
+      pincode: initialDraft?.pincode || "",
+      addressType: initialDraft?.addressType || "Home",
+      artStyle: initialDraft?.artStyle || "realistic",
+      frameOption: initialDraft?.frameOption || "noframe",
+      quantity: initialDraft?.quantity ?? 1,
+      extraPeople: initialDraft?.extraPeople ?? 0,
+      rushDelivery: Boolean(initialDraft?.rushDelivery),
+      couponCode: initialDraft?.couponCode || "",
+      artworkId: location.state?.artworkId || initialDraft?.artworkId || null,
+      instructions: initialDraft?.instructions || "",
+      photo: null,
+      rawFile: null,
+      metadata: null,
+    };
   });
+
+  // Restore saved photo from IndexedDB on initial load
+  useEffect(() => {
+    let isMounted = true;
+    getDraftPhoto().then((draftPhotoRecord) => {
+      if (isMounted && draftPhotoRecord?.file) {
+        const file = draftPhotoRecord.file;
+        const previewUrl = URL.createObjectURL(file);
+        setOrderData((prev) => ({
+          ...prev,
+          photo: previewUrl,
+          rawFile: file,
+          metadata: draftPhotoRecord.metadata || {
+            name: file.name,
+            size: (file.size / 1024 / 1024).toFixed(2) + " MB",
+            type: file.type,
+          },
+        }));
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Re-enable draft saving on mount for new active drafting sessions
+  useEffect(() => {
+    enableOrderDraftSaving();
+    isSubmittedRef.current = false;
+  }, []);
+
+  // Persist order data and current step to localStorage whenever they change
+  useEffect(() => {
+    if (isSubmittedRef.current) return;
+    saveOrderDraftText(orderData, step);
+  }, [orderData, step]);
+
+  // Scroll to top whenever step changes so user starts at the top of the new step
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+  }, [step]);
 
   useEffect(() => {
     if (user) {
       setOrderData(prev => ({
         ...prev,
-        name: user.fullName || "",
-        email: user.email || ""
+        name: prev.name?.trim() ? prev.name : (user.fullName || ""),
+        email: prev.email?.trim() ? prev.email : (user.email || "")
       }));
     }
   }, [user]);
@@ -56,7 +132,7 @@ export default function Order({ isDark }) {
   // Backend Pricing Calculation State
   const [pricingBreakdown, setPricingBreakdown] = useState(null);
   const [isPricingLoading, setIsPricingLoading] = useState(false);
-  const [couponInput, setCouponInput] = useState("");
+  const [couponInput, setCouponInput] = useState(() => initialDraft?.couponCode || "");
   const [couponError, setCouponError] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
 
@@ -94,31 +170,19 @@ export default function Order({ isDark }) {
 
   // Labels
   const styleLabels = {
-    realistic: "Realistic Pencil Drawing",
-    charcoal: "Charcoal Art",
+    realistic: "Realistic Portrait",
     sketch: "Pencil Sketch",
-    caricature: "Caricature",
-  };
-
-  const frameLabels = {
-    noframe: "No Frame (Digital Delivery)",
-    standard8x10: "Standard Frame 8×10 inch",
-    standard12x16: "Standard Frame 12×16 inch",
-    custom: "Custom Frame Size",
+    couple: "Couple Art",
+    anime: "Cartoon Anime",
+    cartoon: "Cartoon Anime",
+    cartoon_anime: "Cartoon Anime",
   };
 
   const stylePrices = {
-    realistic: systemConfig?.artworkStyles?.realistic ?? 500,
-    charcoal: systemConfig?.artworkStyles?.charcoal ?? 500,
-    sketch: systemConfig?.artworkStyles?.sketch ?? 300,
-    caricature: systemConfig?.artworkStyles?.caricature ?? 400,
-  };
-
-  const framePrices = {
-    noframe: systemConfig?.framePricing?.noframe ?? 0,
-    standard8x10: systemConfig?.framePricing?.standard8x10 ?? 200,
-    standard12x16: systemConfig?.framePricing?.standard12x16 ?? 400,
-    custom: systemConfig?.framePricing?.custom ?? 600,
+    realistic: systemConfig?.artworkStyles?.realistic ?? systemConfig?.basePricing?.realistic ?? 500,
+    sketch: systemConfig?.artworkStyles?.sketch ?? systemConfig?.basePricing?.sketch ?? 300,
+    couple: systemConfig?.artworkStyles?.couple ?? systemConfig?.basePricing?.couple ?? 700,
+    anime: systemConfig?.artworkStyles?.anime ?? systemConfig?.basePricing?.anime ?? 600,
   };
 
   // Authoritative Backend Price Calculation API call
@@ -175,6 +239,18 @@ export default function Order({ isDark }) {
       setCouponError("Please enter a coupon code");
       return { success: false, message: "Please enter a coupon code" };
     }
+
+    // Check if the user already used this coupon
+    const usedMatch = availableCoupons.find(
+      (c) => c.code?.toUpperCase() === code && (c.alreadyUsed || c.isAlreadyUsed)
+    );
+    if (usedMatch) {
+      const msg = "You have already used this coupon";
+      setCouponError(msg);
+      toast.error(msg);
+      return { success: false, message: msg };
+    }
+
     setCouponLoading(true);
     setCouponError("");
 
@@ -235,18 +311,20 @@ export default function Order({ isDark }) {
     const url = URL.createObjectURL(file);
 
     img.onload = () => {
+      const metadata = {
+        name: file.name,
+        size: (file.size / 1024 / 1024).toFixed(2) + " MB",
+        type: file.type,
+        width: img.width,
+        height: img.height,
+      };
       setOrderData((prev) => ({
         ...prev,
         photo: url,
         rawFile: file,
-        metadata: {
-          name: file.name,
-          size: (file.size / 1024 / 1024).toFixed(2) + " MB",
-          type: file.type,
-          width: img.width,
-          height: img.height,
-        },
+        metadata,
       }));
+      saveDraftPhoto(file, metadata);
     };
 
     img.src = url;
@@ -254,14 +332,24 @@ export default function Order({ isDark }) {
 
   const removePhoto = () => {
     setOrderData((prev) => ({ ...prev, photo: null, rawFile: null, metadata: null }));
+    clearDraftPhoto();
   };
 
   const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    if (!token || !user) {
+      toast.error("Please sign in to place your commission order");
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (!orderData.rawFile) {
+      return toast.error("Please upload a photo first");
+    }
+
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
-
       // Use FormData to send options and the file to backend
       // NOTE: NEVER send client-calculated price. Backend is the single source of truth!
       const formData = new FormData();
@@ -281,14 +369,9 @@ export default function Order({ isDark }) {
         formData.append("artworkId", orderData.artworkId);
       }
       formData.append("instructions", orderData.instructions || "");
+      formData.append("photo", orderData.rawFile);
 
-      if (orderData.rawFile) {
-        formData.append("photo", orderData.rawFile);
-      } else {
-        return toast.error("Please upload a photo first");
-      }
-
-      await axios.post(
+      const response = await axios.post(
         `${API_BASE_URL}/api/orders/create`,
         formData,
         {
@@ -298,20 +381,86 @@ export default function Order({ isDark }) {
         }
       );
 
-      toast.success("Commission request submitted successfully");
-      navigate("/orders");
+      // 1. Immediately block any further auto-saving of this placed order
+      disableOrderDraftSaving();
+      isSubmittedRef.current = true;
+
+      // 2. Wipe persistent storage completely (localStorage, sessionStorage, IndexedDB)
+      await clearOrderDraft();
+
+      // 3. Trigger party blasters celebration explosion!
+      triggerPartyBlasters();
+
+      const createdOrderId = response.data?.order?._id || "ORD-" + Date.now().toString().slice(-6);
+      const placedStyleLabel = styleLabels[orderData.artStyle] || orderData.artStyle;
+      const placedTotal = finalTotalDisplay;
+      const placedAdvance = advanceAmountDisplay;
+
+      setSuccessOrderInfo({
+        orderId: createdOrderId,
+        artStyle: placedStyleLabel,
+        total: placedTotal,
+        advance: placedAdvance,
+      });
+      setShowSuccessBlast(true);
+
+      toast.success("Order confirmed successfully! 🎉");
+
+      // 4. Revoke previous preview URL if any
+      if (orderData.photo && orderData.photo.startsWith("blob:")) {
+        try {
+          URL.revokeObjectURL(orderData.photo);
+        } catch (_) {}
+      }
+
+      // 5. Completely reset form state back to clean initial values for any subsequent order
+      setStep(1);
+      setOrderData({
+        name: user?.fullName || "",
+        email: user?.email || "",
+        phone: "",
+        address: "",
+        doorNo: "",
+        street: "",
+        landmark: "",
+        city: "",
+        state: "",
+        pincode: "",
+        addressType: "Home",
+        artStyle: "realistic",
+        frameOption: "noframe",
+        quantity: 1,
+        extraPeople: 0,
+        rushDelivery: false,
+        couponCode: "",
+        artworkId: null,
+        instructions: "",
+        photo: null,
+        rawFile: null,
+        metadata: null,
+      });
+      setPricingBreakdown(null);
+      setCouponInput("");
+      setCouponError("");
 
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Failed to submit request");
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("loginTimestamp");
+        toast.error("Your session has expired. Please sign in to place your order.");
+        setShowAuthModal(true);
+      } else {
+        toast.error(err.response?.data?.message || "Failed to submit request");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const currentStylePrice = pricingBreakdown?.styleCharge ?? stylePrices[orderData.artStyle] ?? 500;
-  const currentFramePrice = orderData.frameOption !== "noframe" ? (pricingBreakdown?.frameCharge ?? framePrices[orderData.frameOption] ?? 0) : 0;
-  const effectiveSubtotal = pricingBreakdown?.subtotal ?? (currentStylePrice + currentFramePrice);
+  const effectiveSubtotal = pricingBreakdown?.subtotal ?? currentStylePrice;
   const effectiveDiscount = pricingBreakdown?.discount ?? 0;
   const finalTotalDisplay = pricingBreakdown?.finalTotal ?? Math.max(0, effectiveSubtotal - effectiveDiscount);
   const advanceAmountDisplay = Math.round(finalTotalDisplay * 0.25);
@@ -382,67 +531,75 @@ export default function Order({ isDark }) {
           ))}
         </motion.div>
 
-        {/* MAIN GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-
-          {/* LEFT SIDE (Steps Content) */}
-          <div className="lg:col-span-8 order-2 lg:order-1">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={step}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              >
-                {step === 1 && (
-                  <Details
-                    isDark={isDark}
-                    setStep={setStep}
-                    orderData={orderData}
-                    handleInputChange={handleInputChange}
-                    user={user}
-                    setShowAuthModal={() => setShowAuthModal(true)}
-                  />
-                )}
-
-                {step === 2 && (
-                  <ArtPhoto
-                    isDark={isDark}
-                    setStep={setStep}
-                    orderData={orderData}
-                    setOrderData={setOrderData}
-                    handlePhoto={handlePhoto}
-                    removePhoto={removePhoto}
-                    setZoom={setZoom}
-                    user={user}
-                    setShowAuthModal={() => setShowAuthModal(true)}
-                    stylePrices={stylePrices}
-                    framePrices={framePrices}
-                    systemConfig={systemConfig}
-                  />
-                )}
-
-                {step === 3 && (
-                  <Review
-                    isDark={isDark}
-                    setStep={setStep}
-                    orderData={orderData}
-                    handleSubmit={handleSubmit}
-                    loading={loading}
-                  />
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* RIGHT SIDE (Dynamic Order Summary) */}
+        {/* STEP 1: DETAILS ONLY (Centered, No Commission Summary) */}
+        {step === 1 ? (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col gap-6 lg:sticky lg:top-28 self-start lg:col-span-4 order-1 lg:order-2"
+            key="step-1-details"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.4 }}
+            className="max-w-3xl mx-auto"
           >
+            <Details
+              isDark={isDark}
+              setStep={setStep}
+              orderData={orderData}
+              setOrderData={setOrderData}
+              handleInputChange={handleInputChange}
+              user={user}
+              setShowAuthModal={() => setShowAuthModal(true)}
+            />
+          </motion.div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+
+            {/* LEFT SIDE (Steps Content: Artwork or Review - First on phone, Left on desktop) */}
+            <div className="lg:col-span-8 order-1 lg:order-1">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={step}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  {step === 2 && (
+                    <ArtPhoto
+                      isDark={isDark}
+                      setStep={setStep}
+                      orderData={orderData}
+                      setOrderData={setOrderData}
+                      handlePhoto={handlePhoto}
+                      removePhoto={removePhoto}
+                      setZoom={setZoom}
+                      user={user}
+                      setShowAuthModal={() => setShowAuthModal(true)}
+                      stylePrices={stylePrices}
+                      systemConfig={systemConfig}
+                    />
+                  )}
+
+                  {step === 3 && (
+                    <Review
+                      isDark={isDark}
+                      setStep={setStep}
+                      orderData={orderData}
+                      handleSubmit={handleSubmit}
+                      loading={loading}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* RIGHT SIDE (Dynamic Order Summary - Lower on phone, Right sticky on desktop) */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex flex-col gap-6 lg:sticky lg:top-28 self-start lg:col-span-4 order-2 lg:order-2"
+            >
             {/* ORDER SUMMARY */}
             <div
               className={`rounded-3xl border p-4 sm:p-5 xl:p-6 transition-all duration-300 shadow-xl relative overflow-hidden ${isDark
@@ -479,16 +636,6 @@ export default function Order({ isDark }) {
                   <span className="text-sm font-medium">{styleLabels[orderData.artStyle]}</span>
                   <span className="text-sm font-medium">₹{currentStylePrice.toLocaleString()}</span>
                 </div>
-
-                {/* Frame Charge (shown only when selected) */}
-                {orderData.frameOption !== "noframe" && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">{frameLabels[orderData.frameOption]}</span>
-                    <span className={`text-sm font-medium ${isDark ? "text-white" : "text-black"}`}>
-                      +₹{currentFramePrice.toLocaleString()}
-                    </span>
-                  </div>
-                )}
 
                 <div className={`h-[1px] w-full my-1 ${isDark ? "bg-white/[0.08]" : "bg-black/[0.06]"}`} />
 
@@ -583,7 +730,10 @@ export default function Order({ isDark }) {
                     <div className="space-y-2.5">
                       {/* Swiggy/Blinkit Style Promotional Tile - Laptop Optimized */}
                       <div
-                        onClick={() => setIsCouponExplorerOpen(true)}
+                        onClick={() => {
+                          fetchAvailableCoupons();
+                          setIsCouponExplorerOpen(true);
+                        }}
                         className={`p-3 rounded-2xl border transition-all duration-300 cursor-pointer group flex items-center justify-between gap-3 ${isDark
                             ? "bg-gradient-to-r from-purple-500/[0.08] via-indigo-500/[0.05] to-purple-500/[0.08] border-purple-500/20 hover:border-purple-500/40 hover:bg-purple-500/[0.12] shadow-sm"
                             : "bg-gradient-to-r from-purple-50 via-indigo-50/50 to-purple-50 border-purple-200/70 hover:border-purple-300 hover:shadow-sm"
@@ -771,9 +921,99 @@ export default function Order({ isDark }) {
               </p>
             </div>
 
+            {/* MOBILE NAVIGATION BUTTONS (Under Order Summary on Phone, Hidden on Desktop) */}
+            <div className="block lg:hidden pt-1 pb-4">
+              {step === 2 && (
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => {
+                      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+                      setStep(1);
+                    }}
+                    className={`px-4 py-3.5 text-[12px] sm:text-[13px] uppercase font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                      isDark
+                        ? "bg-[#141416] text-white border border-white/10 hover:bg-neutral-800"
+                        : "bg-white text-black border border-black/10 shadow-sm hover:bg-neutral-50"
+                    }`}
+                  >
+                    <ArrowLeft size={16} />
+                    Go Back
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      if (!user) {
+                        setShowAuthModal(true);
+                        return;
+                      }
+                      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+                      setStep(3);
+                    }}
+                    disabled={user && !orderData.photo}
+                    className={`px-4 py-3.5 text-[12px] sm:text-[13px] uppercase font-bold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group cursor-pointer ${
+                      isDark
+                        ? "bg-white text-black hover:bg-neutral-200 disabled:bg-neutral-800 disabled:text-neutral-600 disabled:cursor-not-allowed"
+                        : "bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed"
+                    }`}
+                  >
+                    Review Order
+                    <ArrowRight size={16} className="transition-transform duration-300 ease-out group-hover:translate-x-1" />
+                  </button>
+                </div>
+              )}
+
+              {step === 3 && (
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => {
+                      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+                      setStep(2);
+                    }}
+                    className={`px-4 py-3.5 text-[12px] sm:text-[13px] uppercase font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                      isDark
+                        ? "bg-[#141416] text-white border border-white/10 hover:bg-neutral-800"
+                        : "bg-white text-black border border-black/10 shadow-sm hover:bg-neutral-50"
+                    }`}
+                  >
+                    <ArrowLeft size={16} />
+                    Go Back
+                  </button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className={`px-4 py-3.5 text-[12px] sm:text-[13px] uppercase font-bold cursor-pointer rounded-xl shadow-2xl flex items-center justify-center gap-2 ${
+                      loading
+                        ? isDark
+                          ? "bg-white/50 text-black/50"
+                          : "bg-black/50 text-white/50"
+                        : isDark
+                          ? "bg-white text-black hover:bg-neutral-200"
+                          : "bg-black text-white hover:bg-neutral-800"
+                    }`}
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Confirming...
+                      </>
+                    ) : (
+                      <>
+                        Confirm Order
+                        <Check size={16} strokeWidth={3} />
+                      </>
+                    )}
+                  </motion.button>
+                </div>
+              )}
+            </div>
+
           </motion.div>
 
         </div>
+      )}
 
       </div>
 
@@ -869,6 +1109,108 @@ export default function Order({ isDark }) {
         onRemoveCoupon={handleRemoveCoupon}
         isDark={isDark}
       />
+
+      {/* SUCCESS BLAST & PARTY BLASTERS CELEBRATION MODAL */}
+      <AnimatePresence>
+        {showSuccessBlast && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0, y: 40 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 18, stiffness: 280 }}
+              className={`relative max-w-md w-full rounded-3xl p-6 sm:p-8 text-center border shadow-2xl overflow-hidden ${
+                isDark
+                  ? "bg-[#141416] border-white/15 text-white shadow-emerald-500/10"
+                  : "bg-white border-black/10 text-black"
+              }`}
+            >
+              {/* Background celebration radial glow */}
+              <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-emerald-500/25 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Animated Party Popper and Check Icon */}
+              <div className="relative flex items-center justify-center gap-3 mb-5">
+               
+
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center shadow-xl shadow-emerald-500/30">
+                    <Check size={32} className="text-emerald-500" strokeWidth={3} />
+                  </div>
+                </div>
+
+                
+              </div>
+
+              {/* Celebration Headline */}
+              <h2
+                className="text-2xl sm:text-3xl font-medium tracking-tight mb-2"
+                style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+              >
+                Order Confirmed!
+              </h2>
+              <p className={`text-xs sm:text-sm mb-6 ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+                Your custom portrait commission is placed! Our artist is ready to craft your masterpiece.
+              </p>
+
+              {/* Order Info Card */}
+              <div
+                className={`rounded-2xl p-4 mb-6 border text-left space-y-2.5 ${
+                  isDark ? "bg-white/[0.03] border-white/10" : "bg-black/[0.02] border-black/10"
+                }`}
+              >
+                <div className="flex justify-between items-center text-xs">
+                  <span className="opacity-60">Order Reference</span>
+                  <span className="font-mono font-medium text-emerald-500">
+                    #{successOrderInfo?.orderId?.slice(-8) || "CONFIRMED"}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center text-xs">
+                  <span className="opacity-60">Art Style</span>
+                  <span className="font-medium">{successOrderInfo?.artStyle || "Custom Art"}</span>
+                </div>
+
+                <div className="flex justify-between items-center text-xs pt-2 border-t border-dashed border-gray-500/20">
+                  <span className="opacity-60">Total Amount</span>
+                  <span className="font-bold text-sm">₹{successOrderInfo?.total?.toLocaleString() || "0"}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuccessBlast(false);
+                    setSuccessOrderInfo(null);
+                    navigate("/orders");
+                  }}
+                  className={`w-full py-3.5 px-6 rounded-xl font-bold text-xs uppercase transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2 ${
+                    isDark
+                      ? "bg-white text-black hover:bg-neutral-200"
+                      : "bg-black text-white hover:bg-neutral-800"
+                  }`}
+                >
+                  <span>View My Orders</span>
+                  <ArrowRight size={16} />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => triggerPartyBlasters()}
+                  className={`w-full py-2.5 px-4 rounded-xl text-xs font-medium transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
+                    isDark
+                      ? "text-neutral-400 hover:text-white hover:bg-white/5"
+                      : "text-neutral-600 hover:text-black hover:bg-black/5"
+                  }`}
+                >
+                  <span>🎉 Blast Again!</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
