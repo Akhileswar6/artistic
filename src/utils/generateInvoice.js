@@ -78,18 +78,28 @@ export const generateInvoice = async (order) => {
 
   const snap = order.pricingSnapshot;
   const qty = String(order.quantity || snap?.details?.quantity || 1);
+  const styleTitleMap = {
+    realistic: "Realistic Portrait",
+    sketch: "Pencil Sketch",
+    couple: "Couple Art",
+    anime: "Cartoon Anime Style",
+    cartoon: "Cartoon Anime Style",
+    cartoon_anime: "Cartoon Anime Style",
+  };
+  const artStyleName = styleTitleMap[order.artStyle] || (order.artStyle ? order.artStyle.charAt(0).toUpperCase() + order.artStyle.slice(1) + " Portrait" : "Custom Portrait");
+
   const tableRows = snap ? [
     ...(snap.baseArtworkPrice > 0 ? [["Base Artwork", qty, `Rs. ${Number(snap.baseArtworkPrice).toLocaleString("en-IN")}`, `Rs. ${(snap.baseArtworkPrice * Number(qty)).toLocaleString("en-IN")}`]] : []),
-    [`Style: ${order.artStyle}`, qty, `Rs. ${Number(snap.styleCharge).toLocaleString("en-IN")}`, `Rs. ${(snap.styleCharge * Number(qty)).toLocaleString("en-IN")}`],
-    ...(snap.frameCharge > 0 ? [[`Frame: ${order.frameOption}`, qty, `Rs. ${Number(snap.frameCharge).toLocaleString("en-IN")}`, `Rs. ${(snap.frameCharge * Number(qty)).toLocaleString("en-IN")}`]] : []),
+    [`Art Style: ${artStyleName}`, qty, `Rs. ${Number(snap.styleCharge || order.totalPrice).toLocaleString("en-IN")}`, `Rs. ${((snap.styleCharge || order.totalPrice) * Number(qty)).toLocaleString("en-IN")}`],
+    ...(snap.frameCharge > 0 && order.frameOption && order.frameOption !== 'noframe' ? [[`Frame: ${order.frameOption}`, qty, `Rs. ${Number(snap.frameCharge).toLocaleString("en-IN")}`, `Rs. ${(snap.frameCharge * Number(qty)).toLocaleString("en-IN")}`]] : []),
     ...(snap.extraPersonCharge > 0 ? [[`Extra Subjects (${order.extraPeople || 1})`, "1", `Rs. ${Number(snap.extraPersonCharge).toLocaleString("en-IN")}`, `Rs. ${Number(snap.extraPersonCharge).toLocaleString("en-IN")}`]] : []),
     ...(snap.rushDeliveryCharge > 0 ? [["Express Rush Delivery", "1", `Rs. ${Number(snap.rushDeliveryCharge).toLocaleString("en-IN")}`, `Rs. ${Number(snap.rushDeliveryCharge).toLocaleString("en-IN")}`]] : []),
     ...(snap.discount > 0 ? [[`Discount (${snap.couponCode || 'PROMO'})`, "1", `-Rs. ${Number(snap.discount).toLocaleString("en-IN")}`, `-Rs. ${Number(snap.discount).toLocaleString("en-IN")}`]] : []),
     ...(snap.shipping > 0 ? [["Standard Shipping", "1", `Rs. ${Number(snap.shipping).toLocaleString("en-IN")}`, `Rs. ${Number(snap.shipping).toLocaleString("en-IN")}`]] : []),
     ...(snap.tax > 0 ? [["GST / Tax", "1", `Rs. ${Number(snap.tax).toLocaleString("en-IN")}`, `Rs. ${Number(snap.tax).toLocaleString("en-IN")}`]] : []),
   ] : [
-    [order.artStyle || "Art Style", "1", `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`, `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`],
-    ...(order.frameOption ? [[order.frameOption, "1", "Rs. 0", "Rs. 0"]] : []),
+    [artStyleName, "1", `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`, `Rs. ${Number(order.totalPrice || 0).toLocaleString("en-IN")}`],
+    ...(order.frameOption && order.frameOption !== 'noframe' ? [[order.frameOption, "1", "Rs. 0", "Rs. 0"]] : []),
   ];
 
   // Table
