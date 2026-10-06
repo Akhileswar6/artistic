@@ -7,6 +7,41 @@ import { useNavigate } from "react-router-dom";
 import TestimonialSettings from "./TestimonialSettings";
 import CouponSettings from "./CouponSettings";
 
+const ART_STYLES_CONFIG = [
+  {
+    key: "realistic",
+    name: "Realistic Portrait",
+    badge: "Most Popular",
+    description: "Detailed, lifelike portrait captured with hyper-realistic precision.",
+    image: "/styles/realistic.jpg",
+    defaultPrice: 500,
+  },
+  {
+    key: "sketch",
+    name: "Pencil Sketch",
+    badge: "Classic Line Art",
+    description: "Sophisticated architectural line work and elegant artistic shading.",
+    image: "/styles/sketch.jpg",
+    defaultPrice: 300,
+  },
+  {
+    key: "couple",
+    name: "Couple Art",
+    badge: "Specialized Duo",
+    description: "Romantic duo portrait celebrating love, togetherness, and cherished moments.",
+    image: "/styles/couple.jpg",
+    defaultPrice: 700,
+  },
+  {
+    key: "anime",
+    name: "Cartoon Anime Style",
+    badge: "Stylized & Vibrant",
+    description: "Vibrant, expressive anime & manga inspired hand-drawn character illustration.",
+    image: "/styles/anime.jpg",
+    defaultPrice: 600,
+  },
+];
+
 export default function Settings({ isDark }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
@@ -39,8 +74,12 @@ export default function Settings({ isDark }) {
   const [systemConfig, setSystemConfig] = useState(null);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [pricingForm, setPricingForm] = useState({
-    basePricing: { realistic: 1500, charcoal: 1500, sketch: 2000, caricature: 1800 },
-    framePricing: { noframe: 0, standard8x10: 200, standard12x16: 400, custom: 600 }
+    artworkStyles: {
+      realistic: 500,
+      sketch: 300,
+      couple: 700,
+      anime: 600,
+    }
   });
 
   const [galleryItems, setGalleryItems] = useState([]);
@@ -82,11 +121,16 @@ export default function Settings({ isDark }) {
         const data = await res.json();
         setSystemConfig(data);
         setMaintenanceMode(data.maintenanceMode);
-        if (data.basePricing) {
-          setPricingForm(prev => ({
-            basePricing: { ...prev.basePricing, ...data.basePricing },
-            framePricing: { ...prev.framePricing, ...data.framePricing }
-          }));
+        if (data.artworkStyles || data.basePricing) {
+          const styles = { ...(data.basePricing || {}), ...(data.artworkStyles || {}) };
+          setPricingForm({
+            artworkStyles: {
+              realistic: styles.realistic ?? 500,
+              sketch: styles.sketch ?? 300,
+              couple: styles.couple ?? 700,
+              anime: styles.anime ?? 600,
+            }
+          });
         }
       }
     } catch (err) {
@@ -124,19 +168,39 @@ export default function Settings({ isDark }) {
     e.preventDefault();
     setLoading(true);
     try {
+      const updatedArtworkStyles = {
+        realistic: Number(pricingForm.artworkStyles.realistic) || 0,
+        sketch: Number(pricingForm.artworkStyles.sketch) || 0,
+        couple: Number(pricingForm.artworkStyles.couple) || 0,
+        anime: Number(pricingForm.artworkStyles.anime) || 0,
+      };
+
       const res = await fetch(`${API_BASE_URL}/api/admin/config`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("adminToken"),
         },
-        body: JSON.stringify({ ...systemConfig, basePricing: pricingForm.basePricing, framePricing: pricingForm.framePricing }),
+        body: JSON.stringify({
+          ...systemConfig,
+          artworkStyles: {
+            ...systemConfig?.artworkStyles,
+            ...updatedArtworkStyles,
+          },
+          basePricing: {
+            ...systemConfig?.basePricing,
+            ...updatedArtworkStyles,
+          },
+        }),
       });
+
       if (res.ok) {
-        toast.success("Pricing updated successfully");
-        setSystemConfig(prev => ({ ...prev, basePricing: pricingForm.basePricing, framePricing: pricingForm.framePricing }));
+        const updatedConfig = await res.json();
+        toast.success("Art styles pricing updated successfully");
+        setSystemConfig(updatedConfig);
       } else {
-        toast.error("Failed to update pricing");
+        const errorData = await res.json().catch(() => ({}));
+        toast.error(errorData.message || "Failed to update pricing");
       }
     } catch (err) {
       toast.error("An error occurred");
@@ -710,74 +774,105 @@ export default function Settings({ isDark }) {
               <form onSubmit={handlePricingSubmit} className="animate-in fade-in slide-in-from-bottom-10 duration-700 space-y-6">
                 <div className="space-y-1">
                    <h3 className={`text-lg ${isDark ? "text-white" : "text-black"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Pricing Configuration</h3>
-                   <p className={`text-[12px] font-normal ${isDark ? "text-gray-500" : "text-gray-400"}`}>Update the base prices for art styles and frame options.</p>
+                   <p className={`text-[12px] font-normal ${isDark ? "text-gray-500" : "text-gray-400"}`}>
+                     Set and update the active prices for each artwork style displayed on the customer studio.
+                   </p>
                 </div>
 
-                {/* Base Pricing */}
-                <div className={`p-5 rounded-xl border transition-all duration-300 ${isDark ? "bg-white/[0.02] border-white/5" : "bg-gray-50 border-black/5"}`}>
-                  <h4 className="text-[14px] font-semibold mb-4" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Art Style Base Pricing (₹)</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.keys(pricingForm.basePricing).map(style => (
-                      <div key={style} className="space-y-1">
-                        <label className={`text-[10px] uppercase font-bold ${isDark ? "text-gray-500" : "text-gray-500"}`}>{style}</label>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          required
-                          value={pricingForm.basePricing[style]}
-                          onChange={(e) => {
-                            let val = e.target.value.replace(/[^0-9]/g, "");
-                            if (val.length > 1 && val.startsWith("0")) val = val.replace(/^0+/, '');
-                            setPricingForm(prev => ({
-                              ...prev,
-                              basePricing: { ...prev.basePricing, [style]: val === '' ? '' : Number(val) }
-                            }));
-                          }}
-                          className={`w-full py-2 px-3 rounded-lg text-[13px] outline-none border transition-all
-                            ${isDark ? "bg-black/40 border-white/10 text-white focus:border-white/30" : "bg-white border-black/10 text-black focus:border-black/30"}`}
+                {/* Art Styles Pricing Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {ART_STYLES_CONFIG.map((style) => (
+                    <div
+                      key={style.key}
+                      className={`rounded-2xl border overflow-hidden flex flex-col transition-all duration-300 ${
+                        isDark ? "bg-[#141416] border-white/10 shadow-xl" : "bg-white border-black/10 shadow-md"
+                      }`}
+                    >
+                      {/* Image Preview & Badge */}
+                      <div className="relative w-full aspect-[4/3] overflow-hidden bg-black/40">
+                        <img
+                          src={style.image}
+                          alt={style.name}
+                          className="w-full h-full object-cover"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        <span className="absolute top-3 left-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/60 text-white/90 backdrop-blur-md border border-white/20">
+                          {style.badge}
+                        </span>
+                        <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                          <span className="text-[13px] font-semibold text-white truncate drop-shadow">
+                            {style.name}
+                          </span>
+                          <span className="text-[12px] font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/20 backdrop-blur-md border border-emerald-500/30">
+                            Active: ₹{Number(pricingForm.artworkStyles[style.key] || 0).toLocaleString()}
+                          </span>
+                        </div>
                       </div>
-                    ))}
-                  </div>
+
+                      {/* Details & Price Input */}
+                      <div className="p-4 flex flex-col justify-between flex-1 space-y-4">
+                        <p className={`text-[12px] leading-relaxed line-clamp-2 ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+                          {style.description}
+                        </p>
+
+                        <div className="space-y-1.5 pt-2 border-t border-dashed border-gray-500/20">
+                          <label className={`text-[11px] uppercase font-bold tracking-wider block ${isDark ? "text-neutral-400" : "text-neutral-600"}`}>
+                            Base Price (₹)
+                          </label>
+                          <div className="relative">
+                            <span className={`absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
+                              ₹
+                            </span>
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              required
+                              value={pricingForm.artworkStyles[style.key] ?? ""}
+                              onChange={(e) => {
+                                let val = e.target.value.replace(/[^0-9]/g, "");
+                                if (val.length > 1 && val.startsWith("0")) val = val.replace(/^0+/, '');
+                                setPricingForm((prev) => ({
+                                  ...prev,
+                                  artworkStyles: {
+                                    ...prev.artworkStyles,
+                                    [style.key]: val === "" ? "" : Number(val),
+                                  },
+                                }));
+                              }}
+                              placeholder={`Default: ${style.defaultPrice}`}
+                              className={`w-full py-2.5 pl-8 pr-3 rounded-xl text-[14px] font-semibold outline-none border transition-all ${
+                                isDark
+                                  ? "bg-black/50 border-white/10 text-white focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30"
+                                  : "bg-neutral-50 border-black/10 text-black focus:border-emerald-600/60 focus:ring-1 focus:ring-emerald-600/30"
+                              }`}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
-                {/* Frame Pricing */}
-                <div className={`p-5 rounded-xl border transition-all duration-300 ${isDark ? "bg-white/[0.02] border-white/5" : "bg-gray-50 border-black/5"}`}>
-                  <h4 className="text-[14px] font-semibold mb-4" style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>Frame Pricing (₹)</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.keys(pricingForm.framePricing).map(frame => (
-                      <div key={frame} className="space-y-1">
-                        <label className={`text-[10px] uppercase font-bold ${isDark ? "text-gray-500" : "text-gray-500"}`}>{frame}</label>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          required
-                          value={pricingForm.framePricing[frame]}
-                          onChange={(e) => {
-                            let val = e.target.value.replace(/[^0-9]/g, "");
-                            if (val.length > 1 && val.startsWith("0")) val = val.replace(/^0+/, '');
-                            setPricingForm(prev => ({
-                              ...prev,
-                              framePricing: { ...prev.framePricing, [frame]: val === '' ? '' : Number(val) }
-                            }));
-                          }}
-                          className={`w-full py-2 px-3 rounded-lg text-[13px] outline-none border transition-all
-                            ${isDark ? "bg-black/40 border-white/10 text-white focus:border-white/30" : "bg-white border-black/10 text-black focus:border-black/30"}`}
-                        />
-                      </div>
-                    ))}
-                  </div>
+                {/* Info Note */}
+                <div className={`p-4 rounded-xl border flex items-start gap-3 text-xs leading-relaxed ${
+                  isDark ? "bg-white/[0.02] border-white/5 text-neutral-400" : "bg-neutral-50 border-black/5 text-neutral-600"
+                }`}>
+                  <ShieldCheck size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+                  <p>
+                    Frame options have been removed. Prices configured above apply in real-time across the client portrait studio selection cards, milestone advance calculation, and backend price verification.
+                  </p>
                 </div>
 
-                <div className="flex justify-end pt-4">
+                <div className="flex justify-end pt-2">
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`flex items-center justify-center gap-3 px-8 py-2 rounded-lg uppercase text-[11px] font-bold tracking-[0.1em] transition-all transform hover:scale-[1.02] shadow-xl
-                      ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-neutral-800"}`}
+                    className={`flex items-center justify-center gap-3 px-8 py-2.5 rounded-xl uppercase text-[11px] font-bold tracking-[0.1em] transition-all transform hover:scale-[1.02] shadow-xl cursor-pointer ${
+                      isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-neutral-800"
+                    }`}
                   >
                     {loading ? <RefreshCcw size={14} className="animate-spin" /> : <Save size={16} />}
-                    {loading ? "Saving..." : "Save Pricing"}
+                    {loading ? "Saving..." : "Save Pricing Changes"}
                   </button>
                 </div>
               </form>

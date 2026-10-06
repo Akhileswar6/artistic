@@ -557,9 +557,9 @@ export default function UserOrders({ isDark }) {
                   <span>
                     {styleFilter === "all" && "All Styles"}
                     {styleFilter === "realistic" && "Realistic"}
-                    {styleFilter === "charcoal" && "Charcoal"}
-                    {styleFilter === "pencil" && "Pencil"}
-                    {styleFilter === "color" && "Color"}
+                    {styleFilter === "sketch" && "Pencil Sketch"}
+                    {styleFilter === "couple" && "Couple Art"}
+                    {styleFilter === "anime" && "Cartoon Anime"}
                   </span>
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 opacity-50 ml-1" />
@@ -571,9 +571,9 @@ export default function UserOrders({ isDark }) {
                   {[
                     { label: "All Styles", value: "all" },
                     { label: "Realistic", value: "realistic" },
-                    { label: "Charcoal", value: "charcoal" },
-                    { label: "Pencil", value: "pencil" },
-                    { label: "Color", value: "color" },
+                    { label: "Pencil Sketch", value: "sketch" },
+                    { label: "Couple Art", value: "couple" },
+                    { label: "Cartoon Anime", value: "anime" },
                   ].map((item) => (
                     <div
                       key={item.value}
