@@ -6,15 +6,19 @@ const systemConfigSchema = new mongoose.Schema({
   artworkStyles: {
     sketch: { type: Number, default: 300 },
     realistic: { type: Number, default: 500 },
+    couple: { type: Number, default: 700 },
+    anime: { type: Number, default: 600 },
     charcoal: { type: Number, default: 500 },
     caricature: { type: Number, default: 400 },
     digital: { type: Number, default: 200 }
   },
   basePricing: {
-    realistic: { type: Number, default: 1500 },
-    charcoal: { type: Number, default: 1500 },
-    sketch: { type: Number, default: 2000 },
-    caricature: { type: Number, default: 1800 }
+    sketch: { type: Number, default: 300 },
+    realistic: { type: Number, default: 500 },
+    couple: { type: Number, default: 700 },
+    anime: { type: Number, default: 600 },
+    charcoal: { type: Number, default: 500 },
+    caricature: { type: Number, default: 400 }
   },
   framePricing: {
     none: { type: Number, default: 0 },

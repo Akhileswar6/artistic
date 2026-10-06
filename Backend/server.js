@@ -59,12 +59,14 @@ app.get("/api/config", async (req, res) => {
     res.json({ 
       maintenanceMode: config?.maintenanceMode || false,
       baseArtworkPrice: config?.baseArtworkPrice ?? 0,
-      artworkStyles: config?.artworkStyles || {
-        sketch: 300,
-        realistic: 500,
-        charcoal: 500,
-        caricature: 400,
-        digital: 200,
+      artworkStyles: {
+        sketch: config?.artworkStyles?.sketch ?? config?.basePricing?.sketch ?? 300,
+        realistic: config?.artworkStyles?.realistic ?? config?.basePricing?.realistic ?? 500,
+        couple: config?.artworkStyles?.couple ?? config?.basePricing?.couple ?? 700,
+        anime: config?.artworkStyles?.anime ?? config?.basePricing?.anime ?? 600,
+        charcoal: config?.artworkStyles?.charcoal ?? config?.basePricing?.charcoal ?? 500,
+        caricature: config?.artworkStyles?.caricature ?? config?.basePricing?.caricature ?? 400,
+        digital: config?.artworkStyles?.digital ?? config?.basePricing?.digital ?? 200,
       },
       basePricing: config?.basePricing || {},
       framePricing: config?.framePricing || {},

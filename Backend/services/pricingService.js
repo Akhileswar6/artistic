@@ -86,17 +86,32 @@ class PricingService {
     // Map style charge from artworkStyles with strict standard defaults (e.g. realistic: 500)
     const defaultStylePrices = {
       realistic: 500,
-      charcoal: 500,
       sketch: 300,
+      couple: 700,
+      anime: 600,
+      cartoon: 600,
+      cartoon_anime: 600,
+      cartoonanime: 600,
+      charcoal: 500,
       caricature: 400,
       digital: 200,
     };
 
+    const resolvedStyleKey = (normalizedStyle === "cartoon" || normalizedStyle === "cartoon_anime" || normalizedStyle === "cartoonanime")
+      ? "anime"
+      : normalizedStyle;
+
     let styleCharge = null;
-    if (config.artworkStyles && config.artworkStyles[normalizedStyle] !== undefined) {
+    if (config.artworkStyles && config.artworkStyles[resolvedStyleKey] !== undefined) {
+      styleCharge = config.artworkStyles[resolvedStyleKey];
+    } else if (config.artworkStyles && config.artworkStyles[normalizedStyle] !== undefined) {
       styleCharge = config.artworkStyles[normalizedStyle];
-    } else {
-      styleCharge = defaultStylePrices[normalizedStyle] ?? 500;
+    } else if (config.basePricing && config.basePricing[resolvedStyleKey] !== undefined) {
+      styleCharge = config.basePricing[resolvedStyleKey];
+    } else if (config.basePricing && config.basePricing[normalizedStyle] !== undefined) {
+      styleCharge = config.basePricing[normalizedStyle];
+    } else if (defaultStylePrices[normalizedStyle] !== undefined) {
+      styleCharge = defaultStylePrices[normalizedStyle];
     }
 
     if (styleCharge === null || isNaN(styleCharge)) {
