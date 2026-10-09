@@ -31,13 +31,12 @@ export function OrderSkeleton() {
 
 export function GallerySkeleton() {
   return (
-    <div className="columns-2 md:columns-3 xl:columns-4 gap-6 space-y-6">
-      {[...Array(8)].map((_, i) => (
-        <div key={i} className="break-inside-avoid space-y-3">
-          <Skeleton className={`w-full rounded-2xl ${i % 2 === 0 ? "h-64" : "h-96"}`} />
-          <div className="flex justify-between items-center px-1">
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-6 w-6 rounded-full" />
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6">
+      {[...Array(10)].map((_, i) => (
+        <div key={i} className="rounded-xl overflow-hidden space-y-2">
+          <Skeleton className="w-full aspect-[3/4] rounded-xl" />
+          <div className="p-2">
+            <Skeleton className="h-3 w-3/4" />
           </div>
         </div>
       ))}

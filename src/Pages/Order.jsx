@@ -58,7 +58,7 @@ export default function Order({ isDark }) {
       state: initialDraft?.state || "",
       pincode: initialDraft?.pincode || "",
       addressType: initialDraft?.addressType || "Home",
-      artStyle: initialDraft?.artStyle || "realistic",
+      artStyle: location.state?.artStyle || initialDraft?.artStyle || "realistic",
       frameOption: initialDraft?.frameOption || "noframe",
       quantity: initialDraft?.quantity ?? 1,
       extraPeople: initialDraft?.extraPeople ?? 0,
