@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Layers, ChevronLeft, ChevronRight, Instagram, X, Heart, MessageCircle, Send, Bookmark } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const carouselPosts = [
   {
@@ -46,79 +45,124 @@ const carouselPosts = [
 ];
 
 export default function CarouselPostsSection({ isDark }) {
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [expandedId, setExpandedId] = useState(null);
+  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
+  const scrollRef = useRef(null);
 
-  const openPostModal = (e, post) => {
-    e.preventDefault();
-    setSelectedPost(post);
-    setCurrentImgIndex(0);
+  const handleDesktopColumnClick = (id) => {
+    setExpandedId((prev) => (prev === id ? null : id));
   };
 
-  const handleColumnClick = (id) => {
-    if (expandedId === id) {
-      setExpandedId(null);
-    } else {
-      setExpandedId(id);
+  const scrollToMobileIndex = (index) => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const targetChild = container.children[index];
+    if (targetChild) {
+      targetChild.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+      setActiveMobileIndex(index);
     }
   };
 
-  const nextImg = (e) => {
-    e.stopPropagation();
-    if (selectedPost) {
-      setCurrentImgIndex((prev) => (prev + 1) % selectedPost.images.length);
+  const handleMobileScroll = () => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const containerCenter = container.scrollLeft + container.clientWidth / 2;
+    const children = Array.from(container.children);
+
+    let closestIndex = 0;
+    let minDistance = Infinity;
+
+    children.forEach((child, index) => {
+      const childCenter = child.offsetLeft + child.offsetWidth / 2;
+      const distance = Math.abs(containerCenter - childCenter);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    if (closestIndex !== activeMobileIndex) {
+      setActiveMobileIndex(closestIndex);
     }
   };
 
-  const prevImg = (e) => {
-    e.stopPropagation();
-    if (selectedPost) {
-      setCurrentImgIndex((prev) => (prev - 1 + selectedPost.images.length) % selectedPost.images.length);
-    }
-  };
+  // Center initial slide on mobile mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (scrollRef.current && scrollRef.current.children[0]) {
+        scrollRef.current.children[0].scrollIntoView({
+          behavior: "auto",
+          inline: "center",
+          block: "nearest",
+        });
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="py-10" >
+    <div className="py-6 sm:py-10">
       <div className="mb-6 sm:mb-10 text-center">
-        <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-2 sm:mb-4 ${isDark ? "text-white" : "text-neutral-900"}`} style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}>
-          Interactive <span className="text-neutral-500 ">Carousel Gallery</span>
+        <h2
+          className={`text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-2 sm:mb-4 ${
+            isDark ? "text-white" : "text-neutral-900"
+          }`}
+          style={{ fontFamily: "Bricolage Grotesque, sans-serif" }}
+        >
+          Interactive <span className="text-neutral-500">Carousel Gallery</span>
         </h2>
-        <p className={`text-[13px] sm:text-[14px] leading-relaxed max-w-xl mx-auto px-2 ${isDark ? "text-neutral-400" : "text-neutral-500"}`}>
-          Hover to expand and explore the different stages of the masterpiece in full detail.
+        <p
+          className={`text-[13px] sm:text-[14px] leading-relaxed max-w-xl mx-auto px-2 ${
+            isDark ? "text-neutral-400" : "text-neutral-500"
+          }`}
+        >
+          <span className="hidden md:inline">
+            Hover to expand and explore the different stages of the masterpiece in full detail.
+          </span>
+          <span className="md:hidden">
+            Scroll horizontally to view each stage of the masterpiece in large detail.
+          </span>
         </p>
       </div>
 
-      {/* Expanding Flex Gallery */}
-      <div className="w-full max-w-full mx-auto px-2 box-border">
-        <div className={`flex flex-col md:flex-row gap-2 sm:gap-3 h-auto md:h-[350px] overflow-hidden group/wrapper ${expandedId ? 'has-expanded' : ''}`}>
+      {/* ======================================================== */}
+      {/* DESKTOP VIEW (>= 768px): Expanding Hover Flex Accordion */}
+      {/* ======================================================== */}
+      <div className="hidden md:block w-full max-w-full mx-auto px-2 box-border">
+        <div
+          className={`flex flex-row gap-2 sm:gap-3 h-[420px] overflow-hidden group/wrapper ${
+            expandedId ? "has-expanded" : ""
+          }`}
+        >
           {carouselPosts.map((post) => {
             const isExpanded = expandedId === post.id;
             return (
               <div
                 key={post.id}
-                onClick={(e) => {
-                  if (expandedId === post.id || window.innerWidth >= 768) {
-                    openPostModal(e, post);
-                  } else {
-                    handleColumnClick(post.id);
+                onClick={() => handleDesktopColumnClick(post.id)}
+                className={`relative flex-1 h-full rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group/column
+                  ${isExpanded ? "md:flex-[4]" : ""}
+                  md:hover:flex-[4]
+                  md:group-hover/wrapper:not(:hover):not(.md\\:flex-\\[4\\]) ${
+                    !isExpanded && expandedId ? "md:flex-[0.5] opacity-70" : ""
                   }
-                }}
-                className={`relative flex-1 md:h-full h-[60px] sm:h-[80px] rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group/column
-                  ${isExpanded ? 'md:flex-[3] flex-none h-[250px] sm:h-[300px]' : ''}
-                  md:hover:flex-[3] 
-                  md:group-hover/wrapper:not(:hover):not(.md\\:flex-\\[3\\]) ${!isExpanded && expandedId ? 'md:flex-[0.5] h-[40px] sm:h-[50px] opacity-70' : ''}
                 `}
-                style={
-                  !isExpanded && expandedId ? { flex: "0.5" } : {}
-                }
+                style={!isExpanded && expandedId ? { flex: "0.5" } : {}}
               >
-                <div className="block w-full h-full relative overflow-hidden">
+                <div className="block w-full h-full relative overflow-hidden bg-neutral-900/40">
                   <img
                     src={post.images[0]}
                     alt={`Process step ${post.id}`}
-                    className={`w-full h-full object-cover object-center block rounded-3xl transition-transform duration-700 ease-in-out group-hover/column:scale-110 ${isDark ? "opacity-90 hover:opacity-100" : ""}`}
+                    className={`w-full h-full object-cover object-center block rounded-2xl sm:rounded-3xl transition-transform duration-700 ease-in-out group-hover/column:scale-105 ${
+                      isDark ? "opacity-90 hover:opacity-100" : ""
+                    }`}
+                    loading="lazy"
                   />
+                  <div className="absolute inset-0 opacity-0 group-hover/column:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                 </div>
               </div>
             );
@@ -126,103 +170,106 @@ export default function CarouselPostsSection({ isDark }) {
         </div>
       </div>
 
-    {/* Instagram Style Carousel Modal */}
-      <AnimatePresence>
-        {selectedPost && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[110] flex items-center justify-center p-4 md:p-8 backdrop-blur-2xl bg-black/90"
-            onClick={() => setSelectedPost(null)}
+      {/* ======================================================== */}
+      {/* MOBILE VIEW (< 768px): Horizontal Scroll Track with Big Cards */}
+      {/* ======================================================== */}
+      <div className="block md:hidden w-full">
+        {/* Horizontal Scroll Track */}
+        <div
+          ref={scrollRef}
+          onScroll={handleMobileScroll}
+          className="flex flex-row overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 px-4 py-3"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          {carouselPosts.map((post, index) => {
+            const isActive = activeMobileIndex === index;
+            return (
+              <div
+                key={post.id}
+                onClick={() => scrollToMobileIndex(index)}
+                className={`snap-center shrink-0 w-[80vw] max-w-[340px] h-[390px] rounded-3xl overflow-hidden relative cursor-pointer transition-all duration-500 ease-out ${
+                  isActive
+                    ? "scale-100 opacity-100 shadow-2xl ring-1 ring-white/20"
+                    : "scale-[0.92] opacity-60"
+                } ${isDark ? "bg-neutral-900" : "bg-neutral-100"}`}
+              >
+                <img
+                  src={post.images[0]}
+                  alt={`Process step ${post.id}`}
+                  className="w-full h-full object-cover object-center block rounded-3xl"
+                  loading="lazy"
+                />
+
+                {/* Step Pill */}
+                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-semibold border border-white/10 shadow-lg">
+                  Step {post.id} of {carouselPosts.length}
+                </div>
+
+                {/* Subtle vignette */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Mobile Navigation Controls & Dots */}
+        <div className="flex items-center justify-between px-6 mt-4">
+          <button
+            type="button"
+            onClick={() => scrollToMobileIndex(Math.max(0, activeMobileIndex - 1))}
+            disabled={activeMobileIndex === 0}
+            className={`p-2 rounded-full border transition-all ${
+              activeMobileIndex === 0
+                ? "opacity-25 cursor-not-allowed border-transparent"
+                : isDark
+                ? "border-white/10 text-white hover:bg-white/10 active:scale-95"
+                : "border-black/10 text-black hover:bg-black/5 active:scale-95"
+            }`}
+            aria-label="Previous step"
           >
-            <button
-              onClick={() => setSelectedPost(null)}
-              className="absolute top-4 sm:top-6 right-4 sm:right-6 z-[120] text-white hover:scale-110 transition-transform"
-            >
-              <X size={24} className="sm:w-8 sm:h-8" />
-            </button>
+            <ChevronLeft size={18} />
+          </button>
 
-            <div 
-              className={`relative w-full max-w-5xl aspect-[4/5] sm:aspect-square md:aspect-video rounded-2xl overflow-hidden flex flex-col md:flex-row ${
-                isDark ? "bg-black" : "bg-white"
-              }`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Image Side */}
-              <div className="relative flex-1 bg-neutral-950 flex items-center justify-center group/modal">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={currentImgIndex}
-                    src={selectedPost.images[currentImgIndex]}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="max-w-full max-h-full object-contain"
-                  />
-                </AnimatePresence>
+          {/* Dots Indicator */}
+          <div className="flex items-center gap-1.5">
+            {carouselPosts.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => scrollToMobileIndex(idx)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  idx === activeMobileIndex
+                    ? isDark
+                      ? "w-6 bg-white"
+                      : "w-6 bg-black"
+                    : isDark
+                    ? "w-1.5 bg-white/30"
+                    : "w-1.5 bg-black/25"
+                }`}
+                aria-label={`Go to step ${idx + 1}`}
+              />
+            ))}
+          </div>
 
-                {/* Nav Arrows */}
-                <button 
-                  onClick={prevImg}
-                  className="absolute left-2 sm:left-4 p-1.5 sm:p-2 rounded-full bg-black/40 text-white hover:bg-black/60 transition-all z-10"
-                >
-                  <ChevronLeft size={20} className="sm:w-6 sm:h-6" />
-                </button>
-                <button 
-                  onClick={nextImg}
-                  className="absolute right-2 sm:right-4 p-1.5 sm:p-2 rounded-full bg-black/40 text-white hover:bg-black/60 transition-all z-10"
-                >
-                  <ChevronRight size={20} className="sm:w-6 sm:h-6" />
-                </button>
-
-                {/* Image Dots */}
-                <div className="absolute bottom-4 sm:bottom-6 flex gap-1.5 z-10">
-                  {selectedPost.images.map((_, idx) => (
-                    <div 
-                      key={idx}
-                      className={`w-1.5 h-1.5 rounded-full transition-all ${
-                        idx === currentImgIndex ? "bg-blue-500 scale-125" : "bg-white/40"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Sidebar Side (Desktop) */}
-              <div className={`hidden md:flex flex-col w-80 border-l ${isDark ? "border-white/10" : "border-black/10"}`}>
-                <div className="p-4 border-b flex items-center justify-between border-neutral-800">
-                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-neutral-800 flex items-center justify-center text-[10px] font-bold text-white">A</div>
-                    <p className={`text-[12px] font-bold ${isDark ? "text-white" : "text-black"}`}>{selectedPost.user}</p>
-                   </div>
-                   <Instagram size={18} className="text-pink-500" />
-                </div>
-                
-                <div className="flex-1 p-4 overflow-y-auto">
-                   <p className={`text-[13px] leading-relaxed ${isDark ? "text-neutral-300" : "text-neutral-700"}`}>
-                     <span className={`font-bold mr-2 ${isDark ? "text-white" : "text-black"}`}>{selectedPost.user}</span>
-                     {selectedPost.caption}
-                   </p>
-                </div>
-
-                <div className="p-4 border-t border-neutral-800">
-                   <div className={`flex items-center justify-between mb-2 ${isDark ? "text-white" : "text-black"}`}>
-                      <div className="flex gap-4">
-                        <Heart size={22} />
-                        <MessageCircle size={22} />
-                        <Send size={22} />
-                      </div>
-                      <Bookmark size={22} />
-                   </div>
-                   <p className={`text-[13px] font-bold ${isDark ? "text-white" : "text-black"}`}>{selectedPost.likes} likes</p>
-                   <p className="text-[10px] text-neutral-500 uppercase mt-1">2 DAYS AGO</p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          <button
+            type="button"
+            onClick={() =>
+              scrollToMobileIndex(Math.min(carouselPosts.length - 1, activeMobileIndex + 1))
+            }
+            disabled={activeMobileIndex === carouselPosts.length - 1}
+            className={`p-2 rounded-full border transition-all ${
+              activeMobileIndex === carouselPosts.length - 1
+                ? "opacity-25 cursor-not-allowed border-transparent"
+                : isDark
+                ? "border-white/10 text-white hover:bg-white/10 active:scale-95"
+                : "border-black/10 text-black hover:bg-black/5 active:scale-95"
+            }`}
+            aria-label="Next step"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
